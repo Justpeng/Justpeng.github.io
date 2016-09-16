@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://doublesharejust.com.cn/"/>
-  <updated>2016-09-03T12:15:58.000Z</updated>
+  <updated>2016-09-16T15:21:08.472Z</updated>
   <id>http://doublesharejust.com.cn/</id>
   
   <author>
@@ -14,6 +14,38 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>我的Hexo博客搭建</title>
+    <link href="http://doublesharejust.com.cn/2016/09/16/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/"/>
+    <id>http://doublesharejust.com.cn/2016/09/16/我的博客搭建/</id>
+    <published>2016-09-15T16:00:00.000Z</published>
+    <updated>2016-09-16T15:21:08.472Z</updated>
+    
+    <content type="html"><![CDATA[<p>##关于本文</p>
+<blockquote>
+<p>记录在搭建自己博客的过程中得一些值得记录的事情，方便自己，当然，也可以方便如有需要的你！</p>
+<p>##Hexo<br>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p>
+<p>##参考的博客<br>当然，很感谢这位博主，让我搭建除了自己的博客！<br>-基础篇：<a href="http://code.youmeek.com/2016/02/28/2016/02/Hexo/" target="_blank" rel="external">http://code.youmeek.com/2016/02/28/2016/02/Hexo/</a><br>-增强篇：<a href="http://code.youmeek.com/2016/02/29/2016/02/Hexo-Intensify/" target="_blank" rel="external">http://code.youmeek.com/2016/02/29/2016/02/Hexo-Intensify/</a></p>
+</blockquote>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;##关于本文&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;记录在搭建自己博客的过程中得一些值得记录的事情，方便自己，当然，也可以方便如有需要的你！&lt;/p&gt;
+&lt;p&gt;##Hexo&lt;br&gt;Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解
+    
+    </summary>
+    
+      <category term="Hexo" scheme="http://doublesharejust.com.cn/categories/Hexo/"/>
+    
+      <category term="GitHub" scheme="http://doublesharejust.com.cn/categories/Hexo/GitHub/"/>
+    
+      <category term="七牛，MakeDown" scheme="http://doublesharejust.com.cn/categories/Hexo/GitHub/%E4%B8%83%E7%89%9B%EF%BC%8CMakeDown/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>Web部署应用性能调优问题</title>
