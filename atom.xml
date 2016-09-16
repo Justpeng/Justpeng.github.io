@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>DoubleShare</title>
+  <subtitle>我的一些技术分享</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://doublesharejust.com.cn/"/>
+  <updated>2016-09-03T12:15:58.000Z</updated>
+  <id>http://doublesharejust.com.cn/</id>
+  
+  <author>
+    <name>Just</name>
+    <email>1055767089@qq.com</email>
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Web部署应用性能调优问题</title>
+    <link href="http://doublesharejust.com.cn/2016/09/02/%E5%85%B3%E4%BA%8E%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E8%AE%B0%E5%BD%95/"/>
+    <id>http://doublesharejust.com.cn/2016/09/02/关于性能调优记录/</id>
+    <published>2016-09-02T09:58:27.000Z</published>
+    <updated>2016-09-03T12:15:58.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="本文目的"><a href="#本文目的" class="headerlink" title="本文目的"></a>本文目的</h2><blockquote>
+<p>记录在维护JavaWeb服务的性能问题时，一些可能的解决方法，涉及方面有局面性。（持续更新）</p>
+</blockquote>
+<h2 id="已遇到的问题"><a href="#已遇到的问题" class="headerlink" title="已遇到的问题"></a>已遇到的问题</h2><p>-系统卡住不动，一些操作无法进行</p>
+<blockquote>
+<p>原因：删除数据，涉及其他数据表，该表的主键没有索引，导致锁表情况发生。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1 是否死锁查询：</div><div class="line">select username,lockwait,status,machine,program from v<span class="variable">$session</span> <span class="built_in">where</span> sid <span class="keyword">in</span> (select session_id from    v<span class="variable">$locked_object</span>) </div><div class="line">2 锁表语句查询：</div><div class="line">select sql_text from v<span class="variable">$sql</span> <span class="built_in">where</span> hash_value <span class="keyword">in</span> ( select sql_hash_value from v<span class="variable">$session</span> <span class="built_in">where</span> sid <span class="keyword">in</span> (select   session_id from v<span class="variable">$locked_object</span>) )</div></pre></td></tr></table></figure></p>
+</blockquote>
+<p>-系统使用一段时间后，速度变慢</p>
+<blockquote>
+<p>这个最后解决的方式比较特殊，更换tomcat。现象是：可以明显看到 tomcat console后台打印速度变慢，觉得出现这种现场的原因是一些不可控的因素导致tomcat某些文件丢失。</p>
+</blockquote>
+<h2 id="在解决问题时，需要验证的一些点"><a href="#在解决问题时，需要验证的一些点" class="headerlink" title="在解决问题时，需要验证的一些点"></a>在解决问题时，需要验证的一些点</h2><h3 id="最直接，查看日志"><a href="#最直接，查看日志" class="headerlink" title="最直接，查看日志"></a>最直接，查看日志</h3><blockquote>
+<p>从日志中获取有效信息，如是有报错信息</p>
+</blockquote>
+<h3 id="oracle-连接池配置"><a href="#oracle-连接池配置" class="headerlink" title="oracle 连接池配置"></a>oracle 连接池配置</h3><ul>
+<li>prototypeCount  连接池中可用的连接数量.如果当前的连接池中的连接少于这个数值.新的连接将被建立</li>
+<li>maximumConnectionCount  最大的数据库连接数</li>
+<li>minimumConnectionCount  最小的数据库连接数</li>
+<li>maximumConnectionLifetime  一个线程的最大寿命</li>
+<li>maximumActiveTime 如果housekeeper检测到某个线程的活动时间大于这个数值.它将会杀掉这个线程. 而且与 housekeeper检测的时间间隔有关</li>
+</ul>
+<blockquote>
+<p>每个属性值的设置，需要与服务器的性能进行选择，如，一般maximumConnectionCount比minimumConnectionCount 多十几个数值。</p>
+</blockquote>
+<h3 id="oracle-进程和会话值"><a href="#oracle-进程和会话值" class="headerlink" title="oracle 进程和会话值"></a>oracle 进程和会话值</h3><p>-查询<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">select count(*) from v<span class="variable">$process</span>; </div><div class="line">select count(*) from v<span class="variable">$session</span>; </div><div class="line">show parameter processes;</div></pre></td></tr></table></figure></p>
+<p>-修改，如根据应用服务器性能设置，sessions值为 1.1*processes+5，然后需要重启服务<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">alter system <span class="built_in">set</span> processes = 500 scope = spfile;</div><div class="line">alter system <span class="built_in">set</span> sessions = 885 scope = spfile;</div></pre></td></tr></table></figure></p>
+<h3 id="用户实例权限，至少需要三种"><a href="#用户实例权限，至少需要三种" class="headerlink" title="用户实例权限，至少需要三种"></a>用户实例权限，至少需要三种</h3><blockquote>
+<p>connect 、resource 和 recovery_catalog_ower</p>
+</blockquote>
+<h3 id="其他特殊情况"><a href="#其他特殊情况" class="headerlink" title="其他特殊情况"></a>其他特殊情况</h3><blockquote>
+<p>如jdk、tomcat丢失文件，更换即可</p>
+</blockquote>]]></content>
+    
+    <summary type="html">
+    
+      本文用于记录在维护web应用过程中遇到的问题，以及可能的解决方法！
+    
+    </summary>
+    
+      <category term="性能调优" scheme="http://doublesharejust.com.cn/categories/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"/>
+    
+      <category term="Java Web" scheme="http://doublesharejust.com.cn/categories/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/Java-Web/"/>
+    
+      <category term="Oracle" scheme="http://doublesharejust.com.cn/categories/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/Java-Web/Oracle/"/>
+    
+    
+      <category term="oracle" scheme="http://doublesharejust.com.cn/tags/oracle/"/>
+    
+      <category term="java Web" scheme="http://doublesharejust.com.cn/tags/java-Web/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello</title>
+    <link href="http://doublesharejust.com.cn/2016/08/30/my_first/"/>
+    <id>http://doublesharejust.com.cn/2016/08/30/my_first/</id>
+    <published>2016-08-30T02:48:27.000Z</published>
+    <updated>2016-09-03T12:15:58.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to Just’s  Share World！</p>
+<h2 id="New-Beginning"><a href="#New-Beginning" class="headerlink" title="New Beginning"></a>New Beginning</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">敬请期待...</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Welcome to Just’s  Share World！&lt;/p&gt;
+&lt;h2 id=&quot;New-Beginning&quot;&gt;&lt;a href=&quot;#New-Beginning&quot; class=&quot;headerlink&quot; title=&quot;New Beginning&quot;&gt;&lt;/a&gt;New Begi
+    
+    </summary>
+    
+      <category term="Hello" scheme="http://doublesharejust.com.cn/categories/Hello/"/>
+    
+      <category term="Share" scheme="http://doublesharejust.com.cn/categories/Hello/Share/"/>
+    
+    
+  </entry>
+  
+</feed>
