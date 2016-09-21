@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://doublesharejust.com.cn/"/>
-  <updated>2016-09-16T16:16:57.521Z</updated>
+  <updated>2016-09-03T12:15:58.000Z</updated>
   <id>http://doublesharejust.com.cn/</id>
   
   <author>
@@ -14,48 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>我的Hexo博客搭建</title>
-    <link href="http://doublesharejust.com.cn/2016/09/16/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/"/>
-    <id>http://doublesharejust.com.cn/2016/09/16/我的博客搭建/</id>
-    <published>2016-09-15T16:00:00.000Z</published>
-    <updated>2016-09-16T16:16:57.521Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="关于本文"><a href="#关于本文" class="headerlink" title="关于本文"></a>关于本文</h2><blockquote>
-<p>记录在搭建自己博客的过程中得一些心得。</p>
-</blockquote>
-<h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><blockquote>
-<p>一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。<br>-Hexo 的中文官网：<a href="http://hexo.io/zh-cn/" target="_blank" rel="external">http://hexo.io/zh-cn/</a><br>-作者 Tommy Chen：<a href="https://zespia.tw/" target="_blank" rel="external">https://zespia.tw/</a></p>
-</blockquote>
-<h2 id="参考的博客"><a href="#参考的博客" class="headerlink" title="参考的博客"></a>参考的博客</h2><blockquote>
-<p>当然，很感谢这位博主，让我搭建了自己的博客！</p>
-<ul>
-<li>基础篇：<a href="http://code.youmeek.com/2016/02/28/2016/02/Hexo/" target="_blank" rel="external">http://code.youmeek.com/2016/02/28/2016/02/Hexo/</a></li>
-<li>增强篇：<a href="http://code.youmeek.com/2016/02/29/2016/02/Hexo-Intensify/" target="_blank" rel="external">http://code.youmeek.com/2016/02/29/2016/02/Hexo-Intensify/</a></li>
-</ul>
-</blockquote>
-<h2 id="图片上传"><a href="#图片上传" class="headerlink" title="图片上传"></a>图片上传</h2>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;关于本文&quot;&gt;&lt;a href=&quot;#关于本文&quot; class=&quot;headerlink&quot; title=&quot;关于本文&quot;&gt;&lt;/a&gt;关于本文&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;记录在搭建自己博客的过程中得一些心得。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&quot;Hex
-    
-    </summary>
-    
-      <category term="Hexo" scheme="http://doublesharejust.com.cn/categories/Hexo/"/>
-    
-      <category term="GitHub" scheme="http://doublesharejust.com.cn/categories/Hexo/GitHub/"/>
-    
-      <category term="七牛" scheme="http://doublesharejust.com.cn/categories/Hexo/GitHub/%E4%B8%83%E7%89%9B/"/>
-    
-      <category term="MakeDown" scheme="http://doublesharejust.com.cn/categories/Hexo/GitHub/%E4%B8%83%E7%89%9B/MakeDown/"/>
-    
-    
-  </entry>
   
   <entry>
     <title>Web部署应用性能调优问题</title>
