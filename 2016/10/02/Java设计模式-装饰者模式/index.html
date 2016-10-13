@@ -13,15 +13,16 @@
 
 
 
-<meta name="description" content="一切刚刚开始...">
-<meta property="og:type" content="website">
-<meta property="og:title" content="DoubleShare">
-<meta property="og:url" content="http://doublesharejust.com.cn/categories/Hello/index.html">
+<meta name="description" content="Java设计模式学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java设计模式-装饰者模式">
+<meta property="og:url" content="http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/index.html">
 <meta property="og:site_name" content="DoubleShare">
-<meta property="og:description" content="一切刚刚开始...">
+<meta property="og:description" content="Java设计模式学习笔记">
+<meta property="og:updated_time" content="2016-10-13T14:29:44.874Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DoubleShare">
-<meta name="twitter:description" content="一切刚刚开始...">
+<meta name="twitter:title" content="Java设计模式-装饰者模式">
+<meta name="twitter:description" content="Java设计模式学习笔记">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -51,7 +52,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Category: Hello | DoubleShare</title>
+<title>Java设计模式-装饰者模式 | DoubleShare</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -61,10 +62,10 @@
         fancybox: true,
         animate: false,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
         isTag: false,
-        isCategory: true,
+        isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
         search: undefined
@@ -133,13 +134,13 @@
                 <div class="tips-box hide">
                     <div class="tips-arrow"></div>
                     <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
+                        <li>Menu</li>
+                        <li>Tags</li>
                         
-                        <li>友情链接</li>
+                        <li>Friends</li>
                         
                         
-                        <li>关于我</li>
+                        <li>About Me</li>
                         
                     </ul>
                 </div>
@@ -182,7 +183,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-Web/">java Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/">oracle</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-Web/">java Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/">oracle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
                     </div>
                 </section>
                 
@@ -261,38 +262,170 @@
             </nav>
         </header>                
     </div>
-    <link class="menu-list" tags="标签" friends="友情链接" about="关于我">
+    <link class="menu-list" tags="Tags" friends="Friends" about="About Me">
 </nav>
-      <div class="body-wrap"><section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-          <div class="article-meta">
-              <a href="/2016/08/30/my_first/" class="archive-article-date">
-      <time datetime="2016-08-30T02:48:27.000Z" itemprop="datePublished">08-30</time>
+      <div class="body-wrap"><article id="post-Java设计模式-装饰者模式" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/02/Java设计模式-装饰者模式/" class="article-date">
+      <time datetime="2016-10-02T09:58:27.000Z" itemprop="datePublished">2016-10-02</time>
 </a>
-        </div>
-         <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/08/30/my_first/">Hello</a>
-    </h1>
-        <div class="article-info info-on-archive">
-          <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Hello/">Hello</a><a class="article-category-link" href="/categories/Hello/Share/">Share</a>
     </div>
-          
-        </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        <h1 class="article-title" itemprop="name">
+      Java设计模式-装饰者模式
+    </h1>
+      </header>
+      
+      <div class="article-info article-info-post">
+        <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/装饰者模式/">装饰者模式</a>
+    </div>
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
+    </div>
         <div class="clearfix"></div>
-    </header>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>项目：咖啡馆订单系统</p>
+<ul>
+<li>咖啡种类：Espresso,ShortBlack,LongBlack,Decaf</li>
+<li>调料：Milk,Soy,Chocolate</li>
+<li>扩展性好：有新品种咖啡，无需改动之前的，不会对原有代码有影响、改动方便、维护方便</li>
+</ul>
+<p>1 装饰者模式就像打包一个快递</p>
+<ul>
+<li>主体：陶瓷、衣服</li>
+<li>包装：报纸填充、塑料泡沫、纸板<br>2 Component:主体超类 或再添加一中间层(实现公共功能)</li>
+</ul>
+<p>3 ConcreteComponent 待包装的主体，如Decaf 和 Decorator </p>
+<p>4 装饰者模式：动态的将新功能附加到对象上。在对象功能拓展方面，它比继承更有弹性</p>
+<h2 id="Java内置装饰者"><a href="#Java内置装饰者" class="headerlink" title="Java内置装饰者"></a>Java内置装饰者</h2><p>Java的IO结构<br>InputStream是超类 FilterInputStream是中间类 BufferedInputStream属于装饰类</p>
+<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><ul>
+<li>开放、关闭原则：对添加新代码开放，对已测试好功能关闭</li>
+<li>易拓展</li>
+</ul>
+      
+    </div>
+    
   </div>
+  
+    <div class="copyright">
+        <p><span>Title:</span><a href="/2016/10/02/Java设计模式-装饰者模式/">Java设计模式-装饰者模式</a></p>
+        <p><span>Author:</span><a href="/" title="Back to Homepage">Just</a></p>
+        <p><span>Created:</span>2016-10-02, 17:58:27</p>
+        <p><span>Updated:</span>2016-10-13, 22:29:44</p>
+        <p>
+            <span>Full URL:</span><a class="post-url" href="/2016/10/02/Java设计模式-装饰者模式/" title="Java设计模式-装饰者模式">http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/</a>
+            <span class="copy-path" data-clipboard-text="From http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/　　By Just" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>License:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"CC BY-NC-SA 4.0"</a> Keep Link &amp; Author if Distribute.
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/10/02/Java并发工具包（下）/">
+                    Java并发工具包(下)
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/09/02/关于性能调优记录/">
+                    Web部署应用性能调优问题
+                </a>
+            </div>
+        
+    </nav>
+  
 </article>
-  
-  
-    </div></section></div>
+<div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原理"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java内置装饰者"><span class="toc-number">2.</span> <span class="toc-text">Java内置装饰者</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关键点"><span class="toc-number">3.</span> <span class="toc-text">关键点</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="Hide" title="Show or Hide Table of Contents">
+
+    <script>
+        yiliaConfig.toc = ["Hide", "Show", !!"false"];
+    </script>
+
+
+    <div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Java设计模式-装饰者模式　| DoubleShare　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+    
+
+
+<div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/10/02/Java并发工具包（下）/" title="Pre: Java并发工具包(下)">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/09/02/关于性能调优记录/" title="Next: Web部署应用性能调优问题">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-单例模式/">Java设计模式-单例模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-装饰者模式/">Java设计模式-装饰者模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（上）/">Java并发工具包（上）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（下）/">Java并发工具包(下)</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java 多线程 - Thread/">Java 多线程-Thread</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/关于性能调优记录/">Web部署应用性能调优问题</a></li></ul>
+
+
+    <script>
+        
+    </script></div>
       <footer id="footer">
     <div class="outer">
         <div id="footer-info">
@@ -301,14 +434,14 @@
                 2016 Just
             </div>
             <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+                <a href="http://hexo.io/" target="_blank" title="A fast, simple &amp; powerful blog framework">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="Another simple and elegant theme for Hexo  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
             </div>
         </div>
         
             <div class="visit">
                 
                     <span id="busuanzi_container_site_pv" style="display:none">
-                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        <span id="site-visit" title="Site Visitors"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
                 
@@ -317,7 +450,7 @@
                 
                 
                     <span id="busuanzi_container_page_pv" style="display:none">
-                        <span id="page-visit" title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        <span id="page-visit" title="Page Hits"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
                         </span>
                     </span>
                 
@@ -346,9 +479,9 @@
 
 
 <div class="scroll" id="scroll">
-    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments" onclick="load$hide()" title="查看评论"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+    <a href="#" title="Back to Top"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide()" title="Comments"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="Go to Bottom"><i class="fa fa-arrow-down"></i></a>
 </div>
 <script>
     // Open in New Window
