@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://doublesharejust.com.cn/"/>
-  <updated>2016-10-13T14:28:37.612Z</updated>
+  <updated>2016-10-22T16:07:15.396Z</updated>
   <id>http://doublesharejust.com.cn/</id>
   
   <author>
@@ -14,6 +14,113 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Dom4j-使用指导</title>
+    <link href="http://doublesharejust.com.cn/2016/10/22/Dom4j/"/>
+    <id>http://doublesharejust.com.cn/2016/10/22/Dom4j/</id>
+    <published>2016-10-22T09:58:27.000Z</published>
+    <updated>2016-10-22T16:07:15.396Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="what-is-dom4j"><a href="#what-is-dom4j" class="headerlink" title="what is dom4j?"></a>what is dom4j?</h2><p>dom4j 是一个为Java服务的开源的XML框架，可以对xml文档进行读写,操作,创建和修改，集成了DOM和SAX，同样支持xPath</p>
+<p>接下来我们开始了解dom4j的基本用法</p>
+<h2 id="解析xml文档"><a href="#解析xml文档" class="headerlink" title="解析xml文档"></a>解析xml文档</h2><h3 id="获得Document对象"><a href="#获得Document对象" class="headerlink" title="获得Document对象"></a>获得Document对象</h3><p>解析xml文档，首先需要通过 SAXReader 创建一个 document对象</p>
+<blockquote>
+<p>SAXReader.read() 方法可以通过多种方式进行读取，例如：URL、InputStream、File、Reader等</p>
+</blockquote>
+<ul>
+<li>URL路径方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public Document parse(URL url) throws DocumentException &#123;</div><div class="line">       SAXReader reader = new SAXReader();</div><div class="line">       Document document = reader.read(url);</div><div class="line">       return document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>InputStream方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SAXReader reader = new SAXReader();</div><div class="line">//获取类加载器</div><div class="line">ClassLoader loader = Thread.currentThread().getContextClassLoader();</div><div class="line">//获取文件流</div><div class="line">java.io.InputStream inputStream = loader.getResourceAsStream(&quot;out.xml&quot;);</div><div class="line">//创建document对象</div><div class="line">Document doc = reader.read(inputStream);</div></pre></td></tr></table></figure>
+<ul>
+<li>File方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div></pre></td></tr></table></figure>
+<p>那么，接下来就是对xml中的Element(Node)，进行获取了。</p>
+<h3 id="获取root元素"><a href="#获取root元素" class="headerlink" title="获取root元素"></a>获取root元素</h3><p>方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Element root = document.getRootElement();</div></pre></td></tr></table></figure>
+<h3 id="使用Iterator获取元素"><a href="#使用Iterator获取元素" class="headerlink" title="使用Iterator获取元素"></a>使用Iterator获取元素</h3><p>dom4j通过内置的方法，可以返回标准的java迭代，方便我们获取元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void bar(Document document)&#123;</div><div class="line">     Element element = document.getRootElement();</div><div class="line"></div><div class="line">     //root 元素的子元素进行迭代</div><div class="line">     for(Iterator i = element.elementIterator();i.hasNext();) &#123;</div><div class="line">        Element element1 = (Element) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line">     //iterate through child elements of root with element name &quot;foo&quot;</div><div class="line">     //获取子元素name为 foo的迭代</div><div class="line">     for(Iterator i=element.elementIterator(&quot;foo&quot;);i.hasNext();) &#123;</div><div class="line">         Element foo = (Element) i.next();</div><div class="line">         //do something</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     // iterate through attribute of root</div><div class="line">     // 节点属性</div><div class="line">     for(Iterator i = element.attributeIterator();i.hasNext();) &#123;</div><div class="line">         Attribute attribute = (Attribute) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>例如，模拟SpringIOC 依赖注入机制(通过反射实现)，有如下spring_core.xml配置，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"></div><div class="line">&lt;beans&gt;</div><div class="line">  &lt;bean id=&quot;testBean&quot; class=&quot;com.just.Test&quot;/&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<p>我们需要根据spring_core.xml配置来获取bean id为 “testBean” 的 class,即类的全路径，获取类的全路径后，就可以随心所欲的进行反射调用了~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> for (Iterator i = root.elementIterator(&quot;bean&quot;); i.hasNext();)&#123;</div><div class="line">      foo = (Element) i.next();</div><div class="line">      //针对每一个bean实例获取id和name属性</div><div class="line">      Attribute id = foo.attribute(&quot;id&quot;);</div><div class="line">      Attribute clazz = foo.attribute(&quot;class&quot;);</div><div class="line"></div><div class="line">      //利用反射，通过class名称获取class对象</div><div class="line">      Class bean = Class.forName(clazz.getText());</div><div class="line">      // other 省略无关的反射操作</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果需要处理的XML文件非常大，每次循环都使用Iterator，那么性能会降低，于是dom4j还提供了更加快速的获取元素的方法 element.nodeCount</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public class ReadXml &#123;</div><div class="line">    public static void init()&#123;</div><div class="line">        try &#123;</div><div class="line">            SAXReader saxReader = new SAXReader();</div><div class="line">            File file = new File(&quot;spring_core.xml&quot;);</div><div class="line">            Document document = saxReader.read(file);</div><div class="line">            Element rootElement = document.getRootElement();</div><div class="line">            treeWalk(rootElement);</div><div class="line">        &#125; catch (DocumentException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static  void treeWalk(Element element) &#123;</div><div class="line">        for ( int i = 0, size = element.nodeCount(); i &lt; size; i++ ) &#123;</div><div class="line">            Node node = element.node(i);</div><div class="line">            if(node instanceof  Element)&#123;</div><div class="line">                Element e = (Element) node;</div><div class="line">                System.out.println(e.attribute(&quot;id&quot;).getText());</div><div class="line">                System.out.println(e.attribute(&quot;class&quot;).getText());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="创建一个document"><a href="#创建一个document" class="headerlink" title="创建一个document"></a>创建一个document</h2><p>使用对象 DocumentHelper对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public Document createDocument() &#123;</div><div class="line">       Document document = DocumentHelper.createDocument();</div><div class="line">       Element root = document.addElement(&quot;root&quot;);</div><div class="line">       Element author1 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lip&quot;)</div><div class="line">               .addText(&quot;1323&quot;);</div><div class="line">       Element author2 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lin&quot;)</div><div class="line">               .addText(&quot;4444&quot;);</div><div class="line">       return  document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><p>通过创建XMLWriter对象进行写操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public class WriteXml &#123;</div><div class="line">    public static void init() throws IOException &#123;</div><div class="line">        Document document = DocumentHelper.createDocument();</div><div class="line">        Element root = document.addElement(&quot;beans&quot;);</div><div class="line">        Element bean = root.addElement(&quot;bean&quot;)</div><div class="line">                .addAttribute(&quot;id&quot;, &quot;testBean&quot;)</div><div class="line">                .addAttribute(&quot;class&quot;,&quot;com.just.Test&quot;);</div><div class="line">        write(document);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void write(Document document) throws IOException &#123;</div><div class="line">        //输出到文件 out.xml</div><div class="line">        XMLWriter writer = new XMLWriter(new FileWriter(&quot;out.xml&quot;));</div><div class="line">        writer.write(document);</div><div class="line">        writer.flush();</div><div class="line">        writer.close();</div><div class="line">        System.out.println(&quot;------------&quot;);</div><div class="line">        /**</div><div class="line">         * 通过 createPrettyPrint美化输出到控制台</div><div class="line">         */</div><div class="line">        OutputFormat outputFormat = OutputFormat.createPrettyPrint();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line">        System.out.println(&quot;----------------------------------&quot;);</div><div class="line">        /**</div><div class="line">         * 实现压缩</div><div class="line">         */</div><div class="line">        outputFormat = OutputFormat.createCompactFormat();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    public static void main(String args[]) throws IOException &#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="String与Xml转换"><a href="#String与Xml转换" class="headerlink" title="String与Xml转换"></a>String与Xml转换</h2><ul>
+<li>String 转为document对象或其他Node，使用 DocumentHelper.parseText()</li>
+<li>document或其他node节点，转为String，直接调用 .asXML()<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">  * convert from string</div><div class="line">  */</div><div class="line"> public Document convert(String xml) throws DocumentException &#123;</div><div class="line">     Document document = DocumentHelper.parseText(xml);</div><div class="line">     return  document;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * convert to string</div><div class="line">  */</div><div class="line"> public String convert(Document document) throws DocumentException &#123;</div><div class="line">     String str = document.asXML();</div><div class="line">     return str;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="xPath路径处理"><a href="#xPath路径处理" class="headerlink" title="xPath路径处理"></a>xPath路径处理</h2><p>对于xPath,在浏览器debug模式中，查看元素，对于元素进行复制时可以保存为xPath，那么可以理解为一种路径表示方式，在自动化测试中，xPath是一种非常重要的获取页面元素的手段。</p>
+<p>使用xPath需要引入依赖包，顺便贴上maven依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;dom4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;dom4j&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;jaxen&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jaxen&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.1.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>xPath的基本语法</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>expression</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodename</td>
+<td>当前节点的所有子节点</td>
+</tr>
+<tr>
+<td>/</td>
+<td>根节点选取</td>
+</tr>
+<tr>
+<td>//</td>
+<td>匹配文档中节点，不考虑位置</td>
+</tr>
+<tr>
+<td>.</td>
+<td>当前节点</td>
+</tr>
+<tr>
+<td>..</td>
+<td>当前节点的父节点</td>
+</tr>
+<tr>
+<td>@</td>
+<td>选取属性</td>
+</tr>
+</tbody>
+</table>
+<p>for Example：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div><div class="line">Element rootElement = document.getRootElement();</div><div class="line">List&lt;Object&gt; list = document.selectNodes(&quot;//bean&quot;);</div><div class="line">for (Object n : list) &#123;</div><div class="line">    if(n instanceof Element)&#123;</div><div class="line">        Element e = (Element) n;</div><div class="line">        System.out.println(e.getName());</div><div class="line">        List&lt;Object&gt; aList  = e.selectNodes(&quot;@class&quot;);</div><div class="line">        for(Object a :aList)</div><div class="line">            if(a instanceof Attribute)&#123;</div><div class="line">                Attribute attribute = (Attribute) a;</div><div class="line">                System.out.println(attribute.getText());</div><div class="line"></div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bean</div><div class="line">com.just.Test</div></pre></td></tr></table></figure>
+<h2 id="处理XSLT"><a href="#处理XSLT" class="headerlink" title="处理XSLT"></a>处理XSLT</h2><p>对于XSLT，不甚了解，贴上官方例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class Foo &#123;</div><div class="line"></div><div class="line">    public Document styleDocument(</div><div class="line">        Document document,</div><div class="line">        String stylesheet</div><div class="line">    ) throws Exception &#123;</div><div class="line"></div><div class="line">        // load the transformer using JAXP</div><div class="line">        TransformerFactory factory = TransformerFactory.newInstance();</div><div class="line">        Transformer transformer = factory.newTransformer(</div><div class="line">            new StreamSource( stylesheet )</div><div class="line">        );</div><div class="line"></div><div class="line">        // now lets style the given document</div><div class="line">        DocumentSource source = new DocumentSource( document );</div><div class="line">        DocumentResult result = new DocumentResult();</div><div class="line">        transformer.transform( source, result );</div><div class="line"></div><div class="line">        // return the transformed document</div><div class="line">        Document transformedDoc = result.getDocument();</div><div class="line">        return transformedDoc;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>以上只是基于官方guide文档学习时所记录，更多移步<a href="http://www.dom4j.org//" target="_blank" rel="external">http://www.dom4j.org/</a></p>
+<p>.END</p>]]></content>
+    
+    <summary type="html">
+    
+      Dom4j的基础读写处理
+    
+    </summary>
+    
+      <category term="Dom4j" scheme="http://doublesharejust.com.cn/categories/Dom4j/"/>
+    
+      <category term="XML" scheme="http://doublesharejust.com.cn/categories/Dom4j/XML/"/>
+    
+    
+      <category term="Dom4j" scheme="http://doublesharejust.com.cn/tags/Dom4j/"/>
+    
+  </entry>
   
   <entry>
     <title>Java设计模式-单例模式</title>

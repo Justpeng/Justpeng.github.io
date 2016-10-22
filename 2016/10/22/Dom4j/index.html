@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="Just">
+
+
+
+<meta name="description" content="Dom4j的基础读写处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dom4j-使用指导">
+<meta property="og:url" content="http://doublesharejust.com.cn/2016/10/22/Dom4j/index.html">
+<meta property="og:site_name" content="DoubleShare">
+<meta property="og:description" content="Dom4j的基础读写处理">
+<meta property="og:updated_time" content="2016-10-22T16:07:15.396Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dom4j-使用指导">
+<meta name="twitter:description" content="Dom4j的基础读写处理">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="DoubleShare" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Dom4j-使用指导 | DoubleShare</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: false,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Just</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">我的一些技术分享</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:1055767089@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/u/3826264194/home" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" href="http://blog.csdn.net/louislip" title="CSDN"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dom4j/">Dom4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-Web/">java Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/">oracle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://www.jikexueyuan.com/">JiKe</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于Java Web 开发，也喜欢前端内容</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Just</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Just</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">我的一些技术分享</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:1055767089@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/u/3826264194/home" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="http://blog.csdn.net/louislip" title="CSDN"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我">
+</nav>
+      <div class="body-wrap"><article id="post-Dom4j" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/22/Dom4j/" class="article-date">
+      <time datetime="2016-10-22T09:58:27.000Z" itemprop="datePublished">2016-10-22</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        <h1 class="article-title" itemprop="name">
+      Dom4j-使用指导
+    </h1>
+      </header>
+      
+      <div class="article-info article-info-post">
+        <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Dom4j/">Dom4j</a><a class="article-category-link" href="/categories/Dom4j/XML/">XML</a>
+    </div>
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dom4j/">Dom4j</a></li></ul>
+    </div>
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="what-is-dom4j"><a href="#what-is-dom4j" class="headerlink" title="what is dom4j?"></a>what is dom4j?</h2><p>dom4j 是一个为Java服务的开源的XML框架，可以对xml文档进行读写,操作,创建和修改，集成了DOM和SAX，同样支持xPath</p>
+<p>接下来我们开始了解dom4j的基本用法</p>
+<h2 id="解析xml文档"><a href="#解析xml文档" class="headerlink" title="解析xml文档"></a>解析xml文档</h2><h3 id="获得Document对象"><a href="#获得Document对象" class="headerlink" title="获得Document对象"></a>获得Document对象</h3><p>解析xml文档，首先需要通过 SAXReader 创建一个 document对象</p>
+<blockquote>
+<p>SAXReader.read() 方法可以通过多种方式进行读取，例如：URL、InputStream、File、Reader等</p>
+</blockquote>
+<ul>
+<li>URL路径方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public Document parse(URL url) throws DocumentException &#123;</div><div class="line">       SAXReader reader = new SAXReader();</div><div class="line">       Document document = reader.read(url);</div><div class="line">       return document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>InputStream方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SAXReader reader = new SAXReader();</div><div class="line">//获取类加载器</div><div class="line">ClassLoader loader = Thread.currentThread().getContextClassLoader();</div><div class="line">//获取文件流</div><div class="line">java.io.InputStream inputStream = loader.getResourceAsStream(&quot;out.xml&quot;);</div><div class="line">//创建document对象</div><div class="line">Document doc = reader.read(inputStream);</div></pre></td></tr></table></figure>
+<ul>
+<li>File方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div></pre></td></tr></table></figure>
+<p>那么，接下来就是对xml中的Element(Node)，进行获取了。</p>
+<h3 id="获取root元素"><a href="#获取root元素" class="headerlink" title="获取root元素"></a>获取root元素</h3><p>方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Element root = document.getRootElement();</div></pre></td></tr></table></figure>
+<h3 id="使用Iterator获取元素"><a href="#使用Iterator获取元素" class="headerlink" title="使用Iterator获取元素"></a>使用Iterator获取元素</h3><p>dom4j通过内置的方法，可以返回标准的java迭代，方便我们获取元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void bar(Document document)&#123;</div><div class="line">     Element element = document.getRootElement();</div><div class="line"></div><div class="line">     //root 元素的子元素进行迭代</div><div class="line">     for(Iterator i = element.elementIterator();i.hasNext();) &#123;</div><div class="line">        Element element1 = (Element) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line">     //iterate through child elements of root with element name &quot;foo&quot;</div><div class="line">     //获取子元素name为 foo的迭代</div><div class="line">     for(Iterator i=element.elementIterator(&quot;foo&quot;);i.hasNext();) &#123;</div><div class="line">         Element foo = (Element) i.next();</div><div class="line">         //do something</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     // iterate through attribute of root</div><div class="line">     // 节点属性</div><div class="line">     for(Iterator i = element.attributeIterator();i.hasNext();) &#123;</div><div class="line">         Attribute attribute = (Attribute) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>例如，模拟SpringIOC 依赖注入机制(通过反射实现)，有如下spring_core.xml配置，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"></div><div class="line">&lt;beans&gt;</div><div class="line">  &lt;bean id=&quot;testBean&quot; class=&quot;com.just.Test&quot;/&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<p>我们需要根据spring_core.xml配置来获取bean id为 “testBean” 的 class,即类的全路径，获取类的全路径后，就可以随心所欲的进行反射调用了~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> for (Iterator i = root.elementIterator(&quot;bean&quot;); i.hasNext();)&#123;</div><div class="line">      foo = (Element) i.next();</div><div class="line">      //针对每一个bean实例获取id和name属性</div><div class="line">      Attribute id = foo.attribute(&quot;id&quot;);</div><div class="line">      Attribute clazz = foo.attribute(&quot;class&quot;);</div><div class="line"></div><div class="line">      //利用反射，通过class名称获取class对象</div><div class="line">      Class bean = Class.forName(clazz.getText());</div><div class="line">      // other 省略无关的反射操作</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果需要处理的XML文件非常大，每次循环都使用Iterator，那么性能会降低，于是dom4j还提供了更加快速的获取元素的方法 element.nodeCount</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public class ReadXml &#123;</div><div class="line">    public static void init()&#123;</div><div class="line">        try &#123;</div><div class="line">            SAXReader saxReader = new SAXReader();</div><div class="line">            File file = new File(&quot;spring_core.xml&quot;);</div><div class="line">            Document document = saxReader.read(file);</div><div class="line">            Element rootElement = document.getRootElement();</div><div class="line">            treeWalk(rootElement);</div><div class="line">        &#125; catch (DocumentException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static  void treeWalk(Element element) &#123;</div><div class="line">        for ( int i = 0, size = element.nodeCount(); i &lt; size; i++ ) &#123;</div><div class="line">            Node node = element.node(i);</div><div class="line">            if(node instanceof  Element)&#123;</div><div class="line">                Element e = (Element) node;</div><div class="line">                System.out.println(e.attribute(&quot;id&quot;).getText());</div><div class="line">                System.out.println(e.attribute(&quot;class&quot;).getText());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="创建一个document"><a href="#创建一个document" class="headerlink" title="创建一个document"></a>创建一个document</h2><p>使用对象 DocumentHelper对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public Document createDocument() &#123;</div><div class="line">       Document document = DocumentHelper.createDocument();</div><div class="line">       Element root = document.addElement(&quot;root&quot;);</div><div class="line">       Element author1 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lip&quot;)</div><div class="line">               .addText(&quot;1323&quot;);</div><div class="line">       Element author2 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lin&quot;)</div><div class="line">               .addText(&quot;4444&quot;);</div><div class="line">       return  document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><p>通过创建XMLWriter对象进行写操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public class WriteXml &#123;</div><div class="line">    public static void init() throws IOException &#123;</div><div class="line">        Document document = DocumentHelper.createDocument();</div><div class="line">        Element root = document.addElement(&quot;beans&quot;);</div><div class="line">        Element bean = root.addElement(&quot;bean&quot;)</div><div class="line">                .addAttribute(&quot;id&quot;, &quot;testBean&quot;)</div><div class="line">                .addAttribute(&quot;class&quot;,&quot;com.just.Test&quot;);</div><div class="line">        write(document);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void write(Document document) throws IOException &#123;</div><div class="line">        //输出到文件 out.xml</div><div class="line">        XMLWriter writer = new XMLWriter(new FileWriter(&quot;out.xml&quot;));</div><div class="line">        writer.write(document);</div><div class="line">        writer.flush();</div><div class="line">        writer.close();</div><div class="line">        System.out.println(&quot;------------&quot;);</div><div class="line">        /**</div><div class="line">         * 通过 createPrettyPrint美化输出到控制台</div><div class="line">         */</div><div class="line">        OutputFormat outputFormat = OutputFormat.createPrettyPrint();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line">        System.out.println(&quot;----------------------------------&quot;);</div><div class="line">        /**</div><div class="line">         * 实现压缩</div><div class="line">         */</div><div class="line">        outputFormat = OutputFormat.createCompactFormat();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    public static void main(String args[]) throws IOException &#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="String与Xml转换"><a href="#String与Xml转换" class="headerlink" title="String与Xml转换"></a>String与Xml转换</h2><ul>
+<li>String 转为document对象或其他Node，使用 DocumentHelper.parseText()</li>
+<li>document或其他node节点，转为String，直接调用 .asXML()<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">  * convert from string</div><div class="line">  */</div><div class="line"> public Document convert(String xml) throws DocumentException &#123;</div><div class="line">     Document document = DocumentHelper.parseText(xml);</div><div class="line">     return  document;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * convert to string</div><div class="line">  */</div><div class="line"> public String convert(Document document) throws DocumentException &#123;</div><div class="line">     String str = document.asXML();</div><div class="line">     return str;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="xPath路径处理"><a href="#xPath路径处理" class="headerlink" title="xPath路径处理"></a>xPath路径处理</h2><p>对于xPath,在浏览器debug模式中，查看元素，对于元素进行复制时可以保存为xPath，那么可以理解为一种路径表示方式，在自动化测试中，xPath是一种非常重要的获取页面元素的手段。</p>
+<p>使用xPath需要引入依赖包，顺便贴上maven依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;dom4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;dom4j&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;jaxen&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jaxen&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.1.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>xPath的基本语法</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>expression</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodename</td>
+<td>当前节点的所有子节点</td>
+</tr>
+<tr>
+<td>/</td>
+<td>根节点选取</td>
+</tr>
+<tr>
+<td>//</td>
+<td>匹配文档中节点，不考虑位置</td>
+</tr>
+<tr>
+<td>.</td>
+<td>当前节点</td>
+</tr>
+<tr>
+<td>..</td>
+<td>当前节点的父节点</td>
+</tr>
+<tr>
+<td>@</td>
+<td>选取属性</td>
+</tr>
+</tbody>
+</table>
+<p>for Example：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div><div class="line">Element rootElement = document.getRootElement();</div><div class="line">List&lt;Object&gt; list = document.selectNodes(&quot;//bean&quot;);</div><div class="line">for (Object n : list) &#123;</div><div class="line">    if(n instanceof Element)&#123;</div><div class="line">        Element e = (Element) n;</div><div class="line">        System.out.println(e.getName());</div><div class="line">        List&lt;Object&gt; aList  = e.selectNodes(&quot;@class&quot;);</div><div class="line">        for(Object a :aList)</div><div class="line">            if(a instanceof Attribute)&#123;</div><div class="line">                Attribute attribute = (Attribute) a;</div><div class="line">                System.out.println(attribute.getText());</div><div class="line"></div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bean</div><div class="line">com.just.Test</div></pre></td></tr></table></figure>
+<h2 id="处理XSLT"><a href="#处理XSLT" class="headerlink" title="处理XSLT"></a>处理XSLT</h2><p>对于XSLT，不甚了解，贴上官方例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class Foo &#123;</div><div class="line"></div><div class="line">    public Document styleDocument(</div><div class="line">        Document document,</div><div class="line">        String stylesheet</div><div class="line">    ) throws Exception &#123;</div><div class="line"></div><div class="line">        // load the transformer using JAXP</div><div class="line">        TransformerFactory factory = TransformerFactory.newInstance();</div><div class="line">        Transformer transformer = factory.newTransformer(</div><div class="line">            new StreamSource( stylesheet )</div><div class="line">        );</div><div class="line"></div><div class="line">        // now lets style the given document</div><div class="line">        DocumentSource source = new DocumentSource( document );</div><div class="line">        DocumentResult result = new DocumentResult();</div><div class="line">        transformer.transform( source, result );</div><div class="line"></div><div class="line">        // return the transformed document</div><div class="line">        Document transformedDoc = result.getDocument();</div><div class="line">        return transformedDoc;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>以上只是基于官方guide文档学习时所记录，更多移步<a href="http://www.dom4j.org//" target="_blank" rel="external">http://www.dom4j.org/</a></p>
+<p>.END</p>
+      
+    </div>
+    
+  </div>
+  
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/10/22/Dom4j/">Dom4j-使用指导</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Just</a></p>
+        <p><span>发布时间:</span>2016-10-22, 17:58:27</p>
+        <p><span>最后更新:</span>2016-10-23, 00:07:15</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/22/Dom4j/" title="Dom4j-使用指导">http://doublesharejust.com.cn/2016/10/22/Dom4j/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://doublesharejust.com.cn/2016/10/22/Dom4j/　　作者: Just" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/10/02/Java设计模式-单例模式/">
+                    Java设计模式-单例模式
+                </a>
+            </div>
+        
+    </nav>
+  
+</article>
+<div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#what-is-dom4j"><span class="toc-number">1.</span> <span class="toc-text">what is dom4j?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解析xml文档"><span class="toc-number">2.</span> <span class="toc-text">解析xml文档</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#获得Document对象"><span class="toc-number">2.1.</span> <span class="toc-text">获得Document对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取root元素"><span class="toc-number">2.2.</span> <span class="toc-text">获取root元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用Iterator获取元素"><span class="toc-number">2.3.</span> <span class="toc-text">使用Iterator获取元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建一个document"><span class="toc-number">3.</span> <span class="toc-text">创建一个document</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写入文件"><span class="toc-number">4.</span> <span class="toc-text">写入文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#String与Xml转换"><span class="toc-number">5.</span> <span class="toc-text">String与Xml转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xPath路径处理"><span class="toc-number">6.</span> <span class="toc-text">xPath路径处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#处理XSLT"><span class="toc-number">7.</span> <span class="toc-text">处理XSLT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在后面"><span class="toc-number">8.</span> <span class="toc-text">写在后面</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+    <div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Dom4j-使用指导　| DoubleShare　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+    
+
+
+<div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/10/02/Java设计模式-单例模式/" title="下一篇: Java设计模式-单例模式">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Dom4j/">Dom4j-使用指导</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-单例模式/">Java设计模式-单例模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-装饰者模式/">Java设计模式-装饰者模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（上）/">Java并发工具包（上）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（下）/">Java并发工具包(下)</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java 多线程 - Thread/">Java 多线程-Thread</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/关于性能调优记录/">Web部署应用性能调优问题</a></li></ul>
+
+
+    <script>
+        
+    </script></div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016 Just
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style="display:none">
+                        <span id="page-visit" title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    <script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+<script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 1;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide()" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        $("a").attr("target", "_blank");
+        $("#scroll a, #toc a").removeAttr("target");
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
