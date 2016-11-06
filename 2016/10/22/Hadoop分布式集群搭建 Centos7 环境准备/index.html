@@ -13,16 +13,16 @@
 
 
 
-<meta name="description" content="Java设计模式学习笔记">
+<meta name="description" content="Hadoop分布式集群搭建">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java设计模式-装饰者模式">
-<meta property="og:url" content="http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/index.html">
+<meta property="og:title" content="Hadoop分布式集群搭建 Centos7 环境准备">
+<meta property="og:url" content="http://doublesharejust.com.cn/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/index.html">
 <meta property="og:site_name" content="DoubleShare">
-<meta property="og:description" content="Java设计模式学习笔记">
-<meta property="og:updated_time" content="2016-10-13T14:29:44.874Z">
+<meta property="og:description" content="Hadoop分布式集群搭建">
+<meta property="og:updated_time" content="2016-11-06T15:39:02.889Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java设计模式-装饰者模式">
-<meta name="twitter:description" content="Java设计模式学习笔记">
+<meta name="twitter:title" content="Hadoop分布式集群搭建 Centos7 环境准备">
+<meta name="twitter:description" content="Hadoop分布式集群搭建">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -52,7 +52,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Java设计模式-装饰者模式 | DoubleShare</title>
+<title>Hadoop分布式集群搭建 Centos7 环境准备 | DoubleShare</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -264,11 +264,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我">
 </nav>
-      <div class="body-wrap"><article id="post-Java设计模式-装饰者模式" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Hadoop分布式集群搭建 Centos7 环境准备" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/02/Java设计模式-装饰者模式/" class="article-date">
-      <time datetime="2016-10-02T09:58:27.000Z" itemprop="datePublished">2016-10-02</time>
+      <a href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/" class="article-date">
+      <time datetime="2016-10-22T09:58:27.000Z" itemprop="datePublished">2016-10-22</time>
 </a>
     </div>
   
@@ -279,16 +279,16 @@
     
       <header class="article-header">
         <h1 class="article-title" itemprop="name">
-      Java设计模式-装饰者模式
+      Hadoop分布式集群搭建 Centos7 环境准备
     </h1>
       </header>
       
       <div class="article-info article-info-post">
         <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/装饰者模式/">装饰者模式</a>
+    <a class="article-category-link" href="/categories/Hadoop/">Hadoop</a>
     </div>
         <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop/">Hadoop</a></li></ul>
     </div>
         <div class="clearfix"></div>
       </div>
@@ -297,37 +297,112 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>项目：咖啡馆订单系统</p>
+        <h2 id="机器准备"><a href="#机器准备" class="headerlink" title="机器准备"></a>机器准备</h2><ul>
+<li>Centos7 </li>
+<li>Vmware10</li>
+<li>jdk</li>
+</ul>
+<h3 id="安装和配置IP"><a href="#安装和配置IP" class="headerlink" title="安装和配置IP"></a>安装和配置IP</h3><table>
+<thead>
+<tr>
+<th>主机名称</th>
+<th>用户</th>
+<th>密码</th>
+<th>ip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>master</td>
+<td>master</td>
+<td>master</td>
+<td>192.168.1.122</td>
+</tr>
+<tr>
+<td>slave1</td>
+<td>hadoop</td>
+<td>hadoop</td>
+<td>192.168.1.123</td>
+</tr>
+<tr>
+<td>slave2</td>
+<td>hadoop</td>
+<td>hadoop</td>
+<td>192.168.1.124</td>
+</tr>
+<tr>
+<td>slave3</td>
+<td>hadoop</td>
+<td>hadoop</td>
+<td>192.168.1.125</td>
+</tr>
+</tbody>
+</table>
+<p>在每台主机添加用户 hadoop 密码 hadoop</p>
+<blockquote>
+<p>使用命令 useradd添加用户， passwd为用户hadoop设置密码</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@slave1 ~]# useradd hadoop</div><div class="line">[root@slave1 ~]# passwd hadoop</div><div class="line">Changing password for user hadoop.</div><div class="line">New password: </div><div class="line">BAD PASSWORD: The password is shorter than 8 characters</div><div class="line">Retype new password: </div><div class="line">passwd: all authentication tokens updated successfully.</div><div class="line">[root@slave1 ~]#</div></pre></td></tr></table></figure>
+<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><p>关闭防火墙是必须的,centos7默认是不用iptables</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl stop firewalld.service &amp;&amp; sudo  systemctl disable firewalld.service</div></pre></td></tr></table></figure>
+<h3 id="配置hosts文件"><a href="#配置hosts文件" class="headerlink" title="配置hosts文件"></a>配置hosts文件</h3><p>注意： <strong><em>==sudo==</em></strong> 命名为使用超级管理员用户操作 相当于 root 用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@localhost ~]$ sudo vim /etc/hosts</div></pre></td></tr></table></figure>
+<p>问题：若无法使用sudo命令？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hadoop is not in the sudoers file.  This incident will be reported.</div></pre></td></tr></table></figure></p>
+<p>需要在 /etc/sudoers文件中添加配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">## Allow root to run any commands anywhere </div><div class="line">root	ALL=(ALL) 	ALL</div><div class="line">hadoop ALL=(ALL) ALL</div></pre></td></tr></table></figure>
+<p>hosts文件中添加内容为(其他主机同样添加)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">192.168.1.122 master</div><div class="line">192.168.1.123 slave1</div><div class="line">192.168.1.124 slave2</div><div class="line">192.168.1.125 slave3</div></pre></td></tr></table></figure></p>
+<h2 id="配置SSH-免登陆"><a href="#配置SSH-免登陆" class="headerlink" title="配置SSH 免登陆"></a>配置SSH 免登陆</h2><p>这里需要对 所有机器上的 ==hadoop@主机== 用户配置ssh免密码登录</p>
+<p>在Centos7中已经默认安装ssh服务，ssh-keygen命令无效，说明需要先安装ssh服务,即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo yum install openssh-server</div></pre></td></tr></table></figure></p>
+<h3 id="以-master-主机为例"><a href="#以-master-主机为例" class="headerlink" title="以==master==主机为例."></a>以==master==主机为例.</h3><ul>
+<li><p>生成无密码密钥对,在命令中一路回车即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ ssh-keygen</div></pre></td></tr></table></figure>
+</li>
+<li><h3 id="将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys"><a href="#将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys" class="headerlink" title="将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys"></a>将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys</h3></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</div></pre></td></tr></table></figure>
+<p>查看.ssh中内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd ~/.ssh</div><div class="line">[hadoop@master .ssh]$ ls</div><div class="line">authorized_keys  id_rsa  id_rsa.pub  known_hosts</div></pre></td></tr></table></figure></p>
 <ul>
-<li>咖啡种类：Espresso,ShortBlack,LongBlack,Decaf</li>
-<li>调料：Milk,Soy,Chocolate</li>
-<li>扩展性好：有新品种咖啡，无需改动之前的，不会对原有代码有影响、改动方便、维护方便</li>
+<li><p>设置公钥库权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ chmod 600 authorized_keys</div></pre></td></tr></table></figure>
+</li>
+<li><p>重启ssh服务 (root权限)</p>
+</li>
 </ul>
-<p>1 装饰者模式就像打包一个快递</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo service sshd restart</div></pre></td></tr></table></figure>
+<p><strong>其他主机，即slave1,slave2,slave3，分别执行 ssh-keygen生成密钥对</strong></p>
 <ul>
-<li>主体：陶瓷、衣服</li>
-<li>包装：报纸填充、塑料泡沫、纸板<br>2 Component:主体超类 或再添加一中间层(实现公共功能)</li>
+<li>将maser主机中的ssh分别发至 slave1,slave2,slave3主机</li>
 </ul>
-<p>3 ConcreteComponent 待包装的主体，如Decaf 和 Decorator </p>
-<p>4 装饰者模式：动态的将新功能附加到对象上。在对象功能拓展方面，它比继承更有弹性</p>
-<h2 id="Java内置装饰者"><a href="#Java内置装饰者" class="headerlink" title="Java内置装饰者"></a>Java内置装饰者</h2><p>Java的IO结构<br>InputStream是超类 FilterInputStream是中间类 BufferedInputStream属于装饰类</p>
-<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><ul>
-<li>开放、关闭原则：对添加新代码开放，对已测试好功能关闭</li>
-<li>易拓展</li>
+<p>其中 slave1@slave1 即 xx@yy xx代表用户名，yy代表主机名<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave1:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave2:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave3:~/.ssh/</div></pre></td></tr></table></figure></p>
+<p>重启其他主机的ssh服务</p>
+<ul>
+<li>测试</li>
 </ul>
+<p>主机之间第一次访问时，会需要接受ESDSA可以，yes接受即可，再次互相访问时，就就不在需要了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave3 ~]$ ssh master</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">Last login: Sun Nov  6 06:03:47 2016 from 192.168.1.105</div><div class="line">[hadoop@master ~]$ ssh slave1</div><div class="line">Last login: Sun Nov  6 06:05:12 2016 from 192.168.1.105</div><div class="line">[hadoop@slave1 ~]$ ssh slave2</div><div class="line">Last login: Sun Nov  6 06:11:48 2016 from 192.168.1.105</div><div class="line">[hadoop@slave2 ~]$ ssh slave3</div></pre></td></tr></table></figure>
+<p>maser,slave1,slave2,slave3 四台主机之间都可以无密码访问，即是ssh设置成功了！</p>
+<h2 id="配置JDK"><a href="#配置JDK" class="headerlink" title="配置JDK"></a>配置JDK</h2><p>这里对==master==主机进行配置 将jdk等软件上传至/opt/目录：</p>
+<ul>
+<li>使用<em>超级管理员</em>用户解压 jdk</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tar -zxvf jdk-7u67-linux-x64.tar.gz</div></pre></td></tr></table></figure>
+<p>配置jdk环境变量 /etc/profile，并查看是否成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67/</div><div class="line">export JRE_HOME=/opt/jdk1.7.0_67/jre</div><div class="line">export CLASSPATH=.:$CLASSPATH:$JAVA_HOME/lib:$JRE_HOME/lib</div><div class="line">export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin</div></pre></td></tr></table></figure></p>
+<p>注意，上面配置中，最后一行，$PATH放在前面不生效时，也可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin：$PATH</div></pre></td></tr></table></figure></p>
+<p>重新加载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">source /etc/profile</div></pre></td></tr></table></figure>
       
     </div>
     
   </div>
   
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/02/Java设计模式-装饰者模式/">Java设计模式-装饰者模式</a></p>
+        <p><span>本文标题:</span><a href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/">Hadoop分布式集群搭建 Centos7 环境准备</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Just</a></p>
-        <p><span>发布时间:</span>2016-10-02, 17:58:27</p>
-        <p><span>最后更新:</span>2016-10-13, 22:29:44</p>
+        <p><span>发布时间:</span>2016-10-22, 17:58:27</p>
+        <p><span>最后更新:</span>2016-11-06, 23:39:02</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/02/Java设计模式-装饰者模式/" title="Java设计模式-装饰者模式">http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/　　作者: Just" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/" title="Hadoop分布式集群搭建 Centos7 环境准备">http://doublesharejust.com.cn/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://doublesharejust.com.cn/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/　　作者: Just" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -339,16 +414,10 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/22/Hadoop分布式本地集群搭建（二）/">
-                    Hadoop分布式集群搭建（二）
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/02/Java 多线程 - Thread/">
-                    Java 多线程-Thread
+                <a href="/2016/10/22/Dom4j/">
+                    Dom4j-使用指导
                 </a>
             </div>
         
@@ -358,7 +427,7 @@
 <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#原理"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java内置装饰者"><span class="toc-number">2.</span> <span class="toc-text">Java内置装饰者</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关键点"><span class="toc-number">3.</span> <span class="toc-text">关键点</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#机器准备"><span class="toc-number">1.</span> <span class="toc-text">机器准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装和配置IP"><span class="toc-number">1.1.</span> <span class="toc-text">安装和配置IP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关闭防火墙"><span class="toc-number">1.2.</span> <span class="toc-text">关闭防火墙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置hosts文件"><span class="toc-number">1.3.</span> <span class="toc-text">配置hosts文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置SSH-免登陆"><span class="toc-number">2.</span> <span class="toc-text">配置SSH 免登陆</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#以-master-主机为例"><span class="toc-number">2.1.</span> <span class="toc-text">以==master==主机为例.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys"><span class="toc-number">2.2.</span> <span class="toc-text">将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置JDK"><span class="toc-number">3.</span> <span class="toc-text">配置JDK</span></a></li></ol>
         
     </div>
     <style>
@@ -392,7 +461,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Java设计模式-装饰者模式　| DoubleShare　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Hadoop分布式集群搭建 Centos7 环境准备　| DoubleShare　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -406,15 +475,13 @@
 
 <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/10/22/Hadoop分布式本地集群搭建（二）/" title="上一篇: Hadoop分布式集群搭建（二）">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/02/Java 多线程 - Thread/" title="下一篇: Java 多线程-Thread">
+            <a href="/2016/10/22/Dom4j/" title="下一篇: Dom4j-使用指导">
                 <i class="fa fa-angle-right"></i>
             </a>
         
