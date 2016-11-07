@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://doublesharejust.com.cn/"/>
-  <updated>2016-11-06T15:39:02.889Z</updated>
+  <updated>2016-11-07T15:14:05.252Z</updated>
   <id>http://doublesharejust.com.cn/</id>
   
   <author>
@@ -16,653 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hadoop分布式集群搭建 Centos7 环境准备</title>
-    <link href="http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%20Centos7%20%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/"/>
-    <id>http://doublesharejust.com.cn/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/</id>
-    <published>2016-10-22T09:58:27.000Z</published>
-    <updated>2016-11-06T15:39:02.889Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="机器准备"><a href="#机器准备" class="headerlink" title="机器准备"></a>机器准备</h2><ul>
-<li>Centos7 </li>
-<li>Vmware10</li>
-<li>jdk</li>
-</ul>
-<h3 id="安装和配置IP"><a href="#安装和配置IP" class="headerlink" title="安装和配置IP"></a>安装和配置IP</h3><table>
-<thead>
-<tr>
-<th>主机名称</th>
-<th>用户</th>
-<th>密码</th>
-<th>ip</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>master</td>
-<td>master</td>
-<td>master</td>
-<td>192.168.1.122</td>
-</tr>
-<tr>
-<td>slave1</td>
-<td>hadoop</td>
-<td>hadoop</td>
-<td>192.168.1.123</td>
-</tr>
-<tr>
-<td>slave2</td>
-<td>hadoop</td>
-<td>hadoop</td>
-<td>192.168.1.124</td>
-</tr>
-<tr>
-<td>slave3</td>
-<td>hadoop</td>
-<td>hadoop</td>
-<td>192.168.1.125</td>
-</tr>
-</tbody>
-</table>
-<p>在每台主机添加用户 hadoop 密码 hadoop</p>
-<blockquote>
-<p>使用命令 useradd添加用户， passwd为用户hadoop设置密码</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@slave1 ~]# useradd hadoop</div><div class="line">[root@slave1 ~]# passwd hadoop</div><div class="line">Changing password for user hadoop.</div><div class="line">New password: </div><div class="line">BAD PASSWORD: The password is shorter than 8 characters</div><div class="line">Retype new password: </div><div class="line">passwd: all authentication tokens updated successfully.</div><div class="line">[root@slave1 ~]#</div></pre></td></tr></table></figure>
-<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><p>关闭防火墙是必须的,centos7默认是不用iptables</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl stop firewalld.service &amp;&amp; sudo  systemctl disable firewalld.service</div></pre></td></tr></table></figure>
-<h3 id="配置hosts文件"><a href="#配置hosts文件" class="headerlink" title="配置hosts文件"></a>配置hosts文件</h3><p>注意： <strong><em>==sudo==</em></strong> 命名为使用超级管理员用户操作 相当于 root 用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@localhost ~]$ sudo vim /etc/hosts</div></pre></td></tr></table></figure>
-<p>问题：若无法使用sudo命令？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hadoop is not in the sudoers file.  This incident will be reported.</div></pre></td></tr></table></figure></p>
-<p>需要在 /etc/sudoers文件中添加配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">## Allow root to run any commands anywhere </div><div class="line">root	ALL=(ALL) 	ALL</div><div class="line">hadoop ALL=(ALL) ALL</div></pre></td></tr></table></figure>
-<p>hosts文件中添加内容为(其他主机同样添加)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">192.168.1.122 master</div><div class="line">192.168.1.123 slave1</div><div class="line">192.168.1.124 slave2</div><div class="line">192.168.1.125 slave3</div></pre></td></tr></table></figure></p>
-<h2 id="配置SSH-免登陆"><a href="#配置SSH-免登陆" class="headerlink" title="配置SSH 免登陆"></a>配置SSH 免登陆</h2><p>这里需要对 所有机器上的 ==hadoop@主机== 用户配置ssh免密码登录</p>
-<p>在Centos7中已经默认安装ssh服务，ssh-keygen命令无效，说明需要先安装ssh服务,即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo yum install openssh-server</div></pre></td></tr></table></figure></p>
-<h3 id="以-master-主机为例"><a href="#以-master-主机为例" class="headerlink" title="以==master==主机为例."></a>以==master==主机为例.</h3><ul>
-<li><p>生成无密码密钥对,在命令中一路回车即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ ssh-keygen</div></pre></td></tr></table></figure>
-</li>
-<li><h3 id="将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys"><a href="#将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys" class="headerlink" title="将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys"></a>将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys</h3></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</div></pre></td></tr></table></figure>
-<p>查看.ssh中内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd ~/.ssh</div><div class="line">[hadoop@master .ssh]$ ls</div><div class="line">authorized_keys  id_rsa  id_rsa.pub  known_hosts</div></pre></td></tr></table></figure></p>
-<ul>
-<li><p>设置公钥库权限</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ chmod 600 authorized_keys</div></pre></td></tr></table></figure>
-</li>
-<li><p>重启ssh服务 (root权限)</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo service sshd restart</div></pre></td></tr></table></figure>
-<p><strong>其他主机，即slave1,slave2,slave3，分别执行 ssh-keygen生成密钥对</strong></p>
-<ul>
-<li>将maser主机中的ssh分别发至 slave1,slave2,slave3主机</li>
-</ul>
-<p>其中 slave1@slave1 即 xx@yy xx代表用户名，yy代表主机名<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave1:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave2:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave3:~/.ssh/</div></pre></td></tr></table></figure></p>
-<p>重启其他主机的ssh服务</p>
-<ul>
-<li>测试</li>
-</ul>
-<p>主机之间第一次访问时，会需要接受ESDSA可以，yes接受即可，再次互相访问时，就就不在需要了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave3 ~]$ ssh master</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">Last login: Sun Nov  6 06:03:47 2016 from 192.168.1.105</div><div class="line">[hadoop@master ~]$ ssh slave1</div><div class="line">Last login: Sun Nov  6 06:05:12 2016 from 192.168.1.105</div><div class="line">[hadoop@slave1 ~]$ ssh slave2</div><div class="line">Last login: Sun Nov  6 06:11:48 2016 from 192.168.1.105</div><div class="line">[hadoop@slave2 ~]$ ssh slave3</div></pre></td></tr></table></figure>
-<p>maser,slave1,slave2,slave3 四台主机之间都可以无密码访问，即是ssh设置成功了！</p>
-<h2 id="配置JDK"><a href="#配置JDK" class="headerlink" title="配置JDK"></a>配置JDK</h2><p>这里对==master==主机进行配置 将jdk等软件上传至/opt/目录：</p>
-<ul>
-<li>使用<em>超级管理员</em>用户解压 jdk</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tar -zxvf jdk-7u67-linux-x64.tar.gz</div></pre></td></tr></table></figure>
-<p>配置jdk环境变量 /etc/profile，并查看是否成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67/</div><div class="line">export JRE_HOME=/opt/jdk1.7.0_67/jre</div><div class="line">export CLASSPATH=.:$CLASSPATH:$JAVA_HOME/lib:$JRE_HOME/lib</div><div class="line">export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin</div></pre></td></tr></table></figure></p>
-<p>注意，上面配置中，最后一行，$PATH放在前面不生效时，也可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin：$PATH</div></pre></td></tr></table></figure></p>
-<p>重新加载</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">source /etc/profile</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      Hadoop分布式集群搭建
-    
-    </summary>
-    
-      <category term="Hadoop" scheme="http://doublesharejust.com.cn/categories/Hadoop/"/>
-    
-    
-      <category term="Hadoop" scheme="http://doublesharejust.com.cn/tags/Hadoop/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Dom4j-使用指导</title>
-    <link href="http://doublesharejust.com.cn/2016/10/22/Dom4j/"/>
-    <id>http://doublesharejust.com.cn/2016/10/22/Dom4j/</id>
-    <published>2016-10-22T09:58:27.000Z</published>
-    <updated>2016-10-22T16:08:53.098Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="what-is-dom4j"><a href="#what-is-dom4j" class="headerlink" title="what is dom4j?"></a>what is dom4j?</h2><p>dom4j 是一个为Java服务的开源的XML框架，可以对xml文档进行读写,操作,创建和修改，集成了DOM和SAX，同样支持xPath</p>
-<p>接下来我们开始了解dom4j的基本用法</p>
-<h2 id="解析xml文档"><a href="#解析xml文档" class="headerlink" title="解析xml文档"></a>解析xml文档</h2><h3 id="获得Document对象"><a href="#获得Document对象" class="headerlink" title="获得Document对象"></a>获得Document对象</h3><p>解析xml文档，首先需要通过 SAXReader 创建一个 document对象</p>
-<blockquote>
-<p>SAXReader.read() 方法可以通过多种方式进行读取，例如：URL、InputStream、File、Reader等</p>
-</blockquote>
-<ul>
-<li>URL路径方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public Document parse(URL url) throws DocumentException &#123;</div><div class="line">       SAXReader reader = new SAXReader();</div><div class="line">       Document document = reader.read(url);</div><div class="line">       return document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>InputStream方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SAXReader reader = new SAXReader();</div><div class="line">//获取类加载器</div><div class="line">ClassLoader loader = Thread.currentThread().getContextClassLoader();</div><div class="line">//获取文件流</div><div class="line">java.io.InputStream inputStream = loader.getResourceAsStream(&quot;out.xml&quot;);</div><div class="line">//创建document对象</div><div class="line">Document doc = reader.read(inputStream);</div></pre></td></tr></table></figure>
-<ul>
-<li>File方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div></pre></td></tr></table></figure>
-<p>那么，接下来就是对xml中的Element(Node)，进行获取了。</p>
-<h3 id="获取root元素"><a href="#获取root元素" class="headerlink" title="获取root元素"></a>获取root元素</h3><p>方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Element root = document.getRootElement();</div></pre></td></tr></table></figure>
-<h3 id="使用Iterator获取元素"><a href="#使用Iterator获取元素" class="headerlink" title="使用Iterator获取元素"></a>使用Iterator获取元素</h3><p>dom4j通过内置的方法，可以返回标准的java迭代，方便我们获取元素</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void bar(Document document)&#123;</div><div class="line">     Element element = document.getRootElement();</div><div class="line"></div><div class="line">     //root 元素的子元素进行迭代</div><div class="line">     for(Iterator i = element.elementIterator();i.hasNext();) &#123;</div><div class="line">        Element element1 = (Element) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line">     //iterate through child elements of root with element name &quot;foo&quot;</div><div class="line">     //获取子元素name为 foo的迭代</div><div class="line">     for(Iterator i=element.elementIterator(&quot;foo&quot;);i.hasNext();) &#123;</div><div class="line">         Element foo = (Element) i.next();</div><div class="line">         //do something</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     // iterate through attribute of root</div><div class="line">     // 节点属性</div><div class="line">     for(Iterator i = element.attributeIterator();i.hasNext();) &#123;</div><div class="line">         Attribute attribute = (Attribute) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<p>例如，模拟SpringIOC 依赖注入机制(通过反射实现)，有如下spring_core.xml配置，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"></div><div class="line">&lt;beans&gt;</div><div class="line">  &lt;bean id=&quot;testBean&quot; class=&quot;com.just.Test&quot;/&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
-<p>我们需要根据spring_core.xml配置来获取bean id为 “testBean” 的 class,即类的全路径，获取类的全路径后，就可以随心所欲的进行反射调用了~</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> for (Iterator i = root.elementIterator(&quot;bean&quot;); i.hasNext();)&#123;</div><div class="line">      foo = (Element) i.next();</div><div class="line">      //针对每一个bean实例获取id和name属性</div><div class="line">      Attribute id = foo.attribute(&quot;id&quot;);</div><div class="line">      Attribute clazz = foo.attribute(&quot;class&quot;);</div><div class="line"></div><div class="line">      //利用反射，通过class名称获取class对象</div><div class="line">      Class bean = Class.forName(clazz.getText());</div><div class="line">      // other 省略无关的反射操作</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如果需要处理的XML文件非常大，每次循环都使用Iterator，那么性能会降低，于是dom4j还提供了更加快速的获取元素的方法 element.nodeCount</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public class ReadXml &#123;</div><div class="line">    public static void init()&#123;</div><div class="line">        try &#123;</div><div class="line">            SAXReader saxReader = new SAXReader();</div><div class="line">            File file = new File(&quot;spring_core.xml&quot;);</div><div class="line">            Document document = saxReader.read(file);</div><div class="line">            Element rootElement = document.getRootElement();</div><div class="line">            treeWalk(rootElement);</div><div class="line">        &#125; catch (DocumentException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static  void treeWalk(Element element) &#123;</div><div class="line">        for ( int i = 0, size = element.nodeCount(); i &lt; size; i++ ) &#123;</div><div class="line">            Node node = element.node(i);</div><div class="line">            if(node instanceof  Element)&#123;</div><div class="line">                Element e = (Element) node;</div><div class="line">                System.out.println(e.attribute(&quot;id&quot;).getText());</div><div class="line">                System.out.println(e.attribute(&quot;class&quot;).getText());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="创建一个document"><a href="#创建一个document" class="headerlink" title="创建一个document"></a>创建一个document</h2><p>使用对象 DocumentHelper对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public Document createDocument() &#123;</div><div class="line">       Document document = DocumentHelper.createDocument();</div><div class="line">       Element root = document.addElement(&quot;root&quot;);</div><div class="line">       Element author1 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lip&quot;)</div><div class="line">               .addText(&quot;1323&quot;);</div><div class="line">       Element author2 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lin&quot;)</div><div class="line">               .addText(&quot;4444&quot;);</div><div class="line">       return  document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><p>通过创建XMLWriter对象进行写操作</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public class WriteXml &#123;</div><div class="line">    public static void init() throws IOException &#123;</div><div class="line">        Document document = DocumentHelper.createDocument();</div><div class="line">        Element root = document.addElement(&quot;beans&quot;);</div><div class="line">        Element bean = root.addElement(&quot;bean&quot;)</div><div class="line">                .addAttribute(&quot;id&quot;, &quot;testBean&quot;)</div><div class="line">                .addAttribute(&quot;class&quot;,&quot;com.just.Test&quot;);</div><div class="line">        write(document);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void write(Document document) throws IOException &#123;</div><div class="line">        //输出到文件 out.xml</div><div class="line">        XMLWriter writer = new XMLWriter(new FileWriter(&quot;out.xml&quot;));</div><div class="line">        writer.write(document);</div><div class="line">        writer.flush();</div><div class="line">        writer.close();</div><div class="line">        System.out.println(&quot;------------&quot;);</div><div class="line">        /**</div><div class="line">         * 通过 createPrettyPrint美化输出到控制台</div><div class="line">         */</div><div class="line">        OutputFormat outputFormat = OutputFormat.createPrettyPrint();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line">        System.out.println(&quot;----------------------------------&quot;);</div><div class="line">        /**</div><div class="line">         * 实现压缩</div><div class="line">         */</div><div class="line">        outputFormat = OutputFormat.createCompactFormat();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    public static void main(String args[]) throws IOException &#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="String与Xml转换"><a href="#String与Xml转换" class="headerlink" title="String与Xml转换"></a>String与Xml转换</h2><ul>
-<li>String 转为document对象或其他Node，使用 DocumentHelper.parseText()</li>
-<li>document或其他node节点，转为String，直接调用 .asXML()<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">  * convert from string</div><div class="line">  */</div><div class="line"> public Document convert(String xml) throws DocumentException &#123;</div><div class="line">     Document document = DocumentHelper.parseText(xml);</div><div class="line">     return  document;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * convert to string</div><div class="line">  */</div><div class="line"> public String convert(Document document) throws DocumentException &#123;</div><div class="line">     String str = document.asXML();</div><div class="line">     return str;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="xPath路径处理"><a href="#xPath路径处理" class="headerlink" title="xPath路径处理"></a>xPath路径处理</h2><p>对于xPath,在浏览器debug模式中，查看元素，对于元素进行复制时可以保存为xPath，那么可以理解为一种路径表示方式，在自动化测试中，xPath是一种非常重要的获取页面元素的手段。</p>
-<p>使用xPath需要引入依赖包，顺便贴上maven依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;dom4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;dom4j&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;jaxen&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jaxen&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.1.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>xPath的基本语法</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>expression</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>nodename</td>
-<td>当前节点的所有子节点</td>
-</tr>
-<tr>
-<td>/</td>
-<td>根节点选取</td>
-</tr>
-<tr>
-<td>//</td>
-<td>匹配文档中节点，不考虑位置</td>
-</tr>
-<tr>
-<td>.</td>
-<td>当前节点</td>
-</tr>
-<tr>
-<td>..</td>
-<td>当前节点的父节点</td>
-</tr>
-<tr>
-<td>@</td>
-<td>选取属性</td>
-</tr>
-</tbody>
-</table>
-<p>for Example：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div><div class="line">Element rootElement = document.getRootElement();</div><div class="line">List&lt;Object&gt; list = document.selectNodes(&quot;//bean&quot;);</div><div class="line">for (Object n : list) &#123;</div><div class="line">    if(n instanceof Element)&#123;</div><div class="line">        Element e = (Element) n;</div><div class="line">        System.out.println(e.getName());</div><div class="line">        List&lt;Object&gt; aList  = e.selectNodes(&quot;@class&quot;);</div><div class="line">        for(Object a :aList)</div><div class="line">            if(a instanceof Attribute)&#123;</div><div class="line">                Attribute attribute = (Attribute) a;</div><div class="line">                System.out.println(attribute.getText());</div><div class="line"></div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bean</div><div class="line">com.just.Test</div></pre></td></tr></table></figure>
-<h2 id="处理XSLT"><a href="#处理XSLT" class="headerlink" title="处理XSLT"></a>处理XSLT</h2><p>对于XSLT，不甚了解，贴上官方例子</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class Foo &#123;</div><div class="line"></div><div class="line">    public Document styleDocument(</div><div class="line">        Document document,</div><div class="line">        String stylesheet</div><div class="line">    ) throws Exception &#123;</div><div class="line"></div><div class="line">        // load the transformer using JAXP</div><div class="line">        TransformerFactory factory = TransformerFactory.newInstance();</div><div class="line">        Transformer transformer = factory.newTransformer(</div><div class="line">            new StreamSource( stylesheet )</div><div class="line">        );</div><div class="line"></div><div class="line">        // now lets style the given document</div><div class="line">        DocumentSource source = new DocumentSource( document );</div><div class="line">        DocumentResult result = new DocumentResult();</div><div class="line">        transformer.transform( source, result );</div><div class="line"></div><div class="line">        // return the transformed document</div><div class="line">        Document transformedDoc = result.getDocument();</div><div class="line">        return transformedDoc;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>以上只是基于官方guide文档学习时所记录，更多移步<a href="http://www.dom4j.org//" target="_blank" rel="external">http://www.dom4j.org/</a></p>
-<p>.END</p>]]></content>
-    
-    <summary type="html">
-    
-      Dom4j的基础读写处理
-    
-    </summary>
-    
-      <category term="Dom4j" scheme="http://doublesharejust.com.cn/categories/Dom4j/"/>
-    
-      <category term="XML" scheme="http://doublesharejust.com.cn/categories/Dom4j/XML/"/>
-    
-    
-      <category term="Dom4j" scheme="http://doublesharejust.com.cn/tags/Dom4j/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hadoop分布式集群搭建（二）</title>
-    <link href="http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%AC%E5%9C%B0%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
-    <id>http://doublesharejust.com.cn/2016/10/22/Hadoop分布式本地集群搭建（二）/</id>
-    <published>2016-10-22T09:58:27.000Z</published>
-    <updated>2016-11-06T15:39:02.893Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Hadoop"><a href="#Hadoop" class="headerlink" title="Hadoop"></a>Hadoop</h1><h2 id="基础环境"><a href="#基础环境" class="headerlink" title="基础环境"></a>基础环境</h2><ul>
-<li>centOS 64(已配置ssh,jdk,hosts,防火墙关闭) </li>
-<li>hadoop 1.2.1 (推荐)</li>
-</ul>
-<p>所有主机都需要配置，其中个别端口号和地址需要按照主机进行修改，已知/etc/hosts配置</p>
-<table>
-<thead>
-<tr>
-<th>主机</th>
-<th>ip</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>master</td>
-<td>192.168.1.122</td>
-</tr>
-<tr>
-<td>slave1</td>
-<td>192.168.1.123</td>
-</tr>
-<tr>
-<td>slave2</td>
-<td>192.168.1.124</td>
-</tr>
-<tr>
-<td>slave3</td>
-<td>192.168.1.125</td>
-</tr>
-</tbody>
-</table>
-<h2 id="安装hadoop"><a href="#安装hadoop" class="headerlink" title="安装hadoop"></a>安装hadoop</h2><p>在目录/home/hadoop/ 下，这里统一使用hadoop用户安装，在安装过程中必须保证使用hadoop用户安装，否则在后面可能会出现无权限的情况，增加工作量，当然，若都使用root用户操作也可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf hadoop-1.2.1.tar.gz</div></pre></td></tr></table></figure></p>
-<ul>
-<li>环境变量配置(/etc/profile)<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">export HADOOP_HOME=/home/hadoop/hadoop-1.2.1</div><div class="line">export PATH=$PATH:$HADOOP_HOME/bin</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>source /etc/profile 重启加载生效</p>
-<h2 id="hadoop配置文件"><a href="#hadoop配置文件" class="headerlink" title="hadoop配置文件"></a>hadoop配置文件</h2><h3 id="修改hadoop配置文件-hadoop-env-sh"><a href="#修改hadoop配置文件-hadoop-env-sh" class="headerlink" title="修改hadoop配置文件 hadoop-env.sh"></a>修改hadoop配置文件 hadoop-env.sh</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master conf]$ vim hadoop-env.sh</div></pre></td></tr></table></figure>
-<p>添加jdk目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67</div></pre></td></tr></table></figure></p>
-<h3 id="配置core-site-xml"><a href="#配置core-site-xml" class="headerlink" title="配置core-site.xml"></a>配置core-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;fs.default.name&lt;/name&gt;</div><div class="line">        &lt;value&gt;hdfs://master:9000&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</div><div class="line">        &lt;value&gt;/home/hadoop/hadoop-data/tmp&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
-<p>属性：</p>
-<ul>
-<li>fs.default.name：是NameNode的URI：hdfs://主机名:端口</li>
-<li>hadoop.tmp.dir ：目录可自己创建，Hadoop的默认临时路径，如进程文件存储，这个最好配置，如果在新增节点或者其他情况下莫名其妙的DataNode启动不了，就删除此文件中的tmp目录即可。不过如果删除了NameNode机器的此目录，那么就需要重新执行NameNode格式化的命令。</li>
-</ul>
-<p>注意：此处的/home/hadoop/hadoop-data/tmp 可先进行创建</p>
-<ul>
-<li>配置 hdfs-site.xml</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.replication&lt;/name&gt;</div><div class="line">    &lt;value&gt;3&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.name.dir&lt;/name&gt;</div><div class="line">    &lt;value&gt;/home/hadoop/hadoop-data/hdfs/name&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.data.dir&lt;/name&gt;</div><div class="line">    &lt;value&gt;/home/hadoop/hadoop-data/hdfs/data&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.permissions&lt;/name&gt;</div><div class="line">    &lt;value&gt;false&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
-<p>属性：</p>
-<ul>
-<li>dfs.replication ：几个从节点，有slave1,slave2,slave3三个</li>
-<li>dfs.name.dir: NameNode元数据存储位置，持久存储名字空间及事务日志的本地文件系统路径。 当这个值是一个逗号分割的目录列表时，nametable数据将会被复制到所有目录中做冗余备份</li>
-<li>dfs.data.dir: DataNode元数据存储本地文件系统路径，存储所有用户数据，逗号分割的列表。 当这个值是逗号分割的目录列表时，数据将被存储在所有目录下，通常分布在不同设备上</li>
-<li>dfs.permissions: 为false不考虑权限</li>
-</ul>
-<p>注意：此处的/home/hadoop/hadoop-data/hdfs/name 与 /home/hadoop/hadoop-data/hdfs/data目录不能预先创建，hadoop格式化时会自动创建</p>
-<h3 id="配置-mapred-site-xml"><a href="#配置-mapred-site-xml" class="headerlink" title="配置 mapred-site.xml"></a>配置 mapred-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">   &lt;property&gt;</div><div class="line">         &lt;name&gt;mapred.job.tracker&lt;/name&gt;</div><div class="line">        &lt;!--&lt;value&gt;192.168.1.122:9001&lt;/value&gt;--&gt;</div><div class="line">        &lt;value&gt;master:9001&lt;/value&gt;</div><div class="line">   &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.local.dir&lt;/name&gt;</div><div class="line">        &lt;value&gt;/home/hadoop/hadoop-data/tmp&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.tasktracker.map.tasks.maximum&lt;/name&gt;</div><div class="line">        &lt;value&gt;3&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.tasktracker.reduce.tasks.maximum&lt;/name&gt;</div><div class="line">        &lt;value&gt;3&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
-<p>属性：</p>
-<ul>
-<li>mapred.job.tracker 为jobtracker 的主机名和端口</li>
-<li>mapred.tasktracker.map.tasks.maximum 为最大map的任务个数</li>
-<li>mapred.tasktracker.reduce.tasks.maximum 为最大reduce任务的个数</li>
-</ul>
-<h3 id="配置-slaves、masters文件"><a href="#配置-slaves、masters文件" class="headerlink" title="配置 slaves、masters文件"></a>配置 slaves、masters文件</h3><p>使用ip或者主机名，做好使用主机名</p>
-<ul>
-<li><p>slaves</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">slave1</div><div class="line">slave2</div><div class="line">slave3</div></pre></td></tr></table></figure>
-</li>
-<li><p>masters</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">master</div></pre></td></tr></table></figure>
-<p>注意: </p>
-<ul>
-<li>其他三台主机也需要进行jdk等基础环境的配置</li>
-<li>从机中的hadoop配置是相同的，如 core-site.xml的配置是相同的<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">scp -r  hadoop-1.2.1 hadoop@slave1:/home/hadoop/</div><div class="line">scp -r  hadoop-1.2.1 hadoop@slave2:/home/hadoop/</div><div class="line">scp -r  hadoop-1.2.1 hadoop@slave3:/home/hadoop/</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="格式化文件系统"><a href="#格式化文件系统" class="headerlink" title="格式化文件系统"></a>格式化文件系统</h2><p>在 /安装目录/bin目录下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master bin]$ hadoop namenode -format</div></pre></td></tr></table></figure>
-<p>可在之前配置的数据目录中，看到生成的文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd /home/hadoop/hadoop-data/</div><div class="line">[hadoop@master hadoop-data]$ ls</div><div class="line">hdfs  tmp</div><div class="line">[hadoop@master hadoop-data]$ cd hdfs/</div><div class="line">[hadoop@master hdfs]$ ls</div><div class="line">name</div></pre></td></tr></table></figure></p>
-<h2 id="启动Hadoop"><a href="#启动Hadoop" class="headerlink" title="启动Hadoop"></a>启动Hadoop</h2><p>终于到了启动的时刻了！</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master hadoop-1.2.1]$ bin/start-all.sh</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">Warning: $HADOOP_HOME is deprecated.</div><div class="line"></div><div class="line">starting namenode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-namenode-master.out</div><div class="line">slave3: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave3.out</div><div class="line">slave2: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave2.out</div><div class="line">slave1: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave1.out</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">master: Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">master: starting secondarynamenode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-secondarynamenode-master.out</div><div class="line">starting jobtracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-jobtracker-master.out</div><div class="line">slave1: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave1.out</div><div class="line">slave3: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave3.out</div><div class="line">slave2: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave2.out</div></pre></td></tr></table></figure>
-<p>查看是不是配置成功了!!!</p>
-<ul>
-<li><p>[x] - 在master中，显示四个进程!</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ jps</div><div class="line">15575 SecondaryNameNode</div><div class="line">15723 JobTracker</div><div class="line">15924 Jps</div><div class="line">15361 NameNode</div></pre></td></tr></table></figure>
-</li>
-<li><p>[x] 在三个从节点中显示三个进程!</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave1 ~]$ jps</div><div class="line">10195 TaskTracker</div><div class="line">10549 Jps</div><div class="line">9935 DataNode</div></pre></td></tr></table></figure>
-<p>心里感觉很舒畅，但是还没有完，要验证是否每个datanode都是正常与master链接，如果防火墙不关闭的话，会有问题的！</p>
-<ul>
-<li><a href="http://master:50070" target="_blank" rel="external">http://master:50070</a><br>如下图所示，可以看到 容量、LiveNodes=3</li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/hadoop_done.png" alt="image"></p>
-<ul>
-<li><a href="http://master:50030" target="_blank" rel="external">http://master:50030</a></li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/hadoop_node.jpg" alt="image"></p>
-<p>以上两个地址正常出现，则表示集群正式搭建成功了！ Congratulation!</p>
-<p>此外，如果从机节点不是全部启用的话，可以单独在从机节点，启动hdfs和mpared<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">start-dfs.sh</div><div class="line">start-mapred.sh</div></pre></td></tr></table></figure></p>
-<h3 id="关闭Hadoop"><a href="#关闭Hadoop" class="headerlink" title="关闭Hadoop"></a>关闭Hadoop</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ hadoop-1.2.1/bin/stop-all.sh</div></pre></td></tr></table></figure>
-<h3 id="END"><a href="#END" class="headerlink" title="END"></a>END</h3><p>接下来，就是对集群的使用了 ~ </p>]]></content>
-    
-    <summary type="html">
-    
-      Hadoop分布式集群搭建
-    
-    </summary>
-    
-      <category term="Hadoop" scheme="http://doublesharejust.com.cn/categories/Hadoop/"/>
-    
-    
-      <category term="Hadoop" scheme="http://doublesharejust.com.cn/tags/Hadoop/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java 多线程-Thread</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%20%E5%A4%9A%E7%BA%BF%E7%A8%8B%20-%20Thread/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java 多线程 - Thread/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.727Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="interrupt-线程中断方法"><a href="#interrupt-线程中断方法" class="headerlink" title="interrupt() 线程中断方法"></a>interrupt() 线程中断方法</h2><blockquote>
-<p>javaDoc</p>
-<ul>
-<li>若中断的不是自身线程，需要进行权限检查 checkAccess(),有权限才可对目标中断</li>
-<li>若线程T在执行以下三种情况时，对线程T使用interrupted()方法，T的中断标志变为true，当T捕获异常后，中断标志重新变为false<ol>
-<li>执行Object.wait(…)方法或该类join(…),sleep(…)方法</li>
-<li>java.nio.channels.InterruptibleChannel的I/O操作，关闭通道</li>
-<li>java.nio.channels.Selector，立即返回操作数，并可能带有一个非0值<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public void interrupt() &#123;</div><div class="line">      if (this != Thread.currentThread())</div><div class="line">          checkAccess();</div><div class="line"></div><div class="line">      synchronized (blockerLock) &#123;</div><div class="line">          Interruptible b = blocker;</div><div class="line">          if (b != null) &#123;</div><div class="line">              interrupt0();           // Just to set the interrupt flag</div><div class="line">              b.interrupt(this);</div><div class="line">              return;</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">      interrupt0();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-</li>
-</ul>
-</blockquote>
-<h3 id="interrupted-与-isInterrunpted区别"><a href="#interrupted-与-isInterrunpted区别" class="headerlink" title="interrupted 与 isInterrunpted区别"></a>interrupted 与 isInterrunpted区别</h3><ul>
-<li>interrupted() 测试<strong>当前线程</strong>是否已经是中断状态，执行后具有状态标志位清除为false的可能，第二次调用 Thread.interrupted()方法，总是返回 false，除非中断了线程。</li>
-<li>isInterrupted() 测试<strong>目标线程对象</strong>是否已经是中断状态，但不清除状态标识</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public static boolean interrupted() &#123;</div><div class="line">    return currentThread().isInterrupted(true);</div><div class="line">&#125;</div><div class="line">public boolean isInterrupted() &#123;</div><div class="line">    return isInterrupted(false);</div><div class="line">&#125;</div><div class="line">private native boolean isInterrupted(boolean ClearInterrupted);</div></pre></td></tr></table></figure>
-<blockquote>
-<p>示例：interrupt +isInterrupted<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">public class InterruptedDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Thread t = new Thread(new ThreadDemo());</div><div class="line">        t.start();</div><div class="line"></div><div class="line">        System.out.println(&quot;线程t开始，中断标志：&quot;+ t.isInterrupted());//false</div><div class="line">        //中断线程</div><div class="line">        t.interrupt();</div><div class="line">        System.out.println(&quot;线程t中断标志:：&quot;+ t.isInterrupted());//true</div><div class="line">        try &#123;</div><div class="line">            //模拟 t 抛出异常后中断标志是否消失</div><div class="line">            Thread.sleep(2000);</div><div class="line">            System.out.println(&quot;线程t处理异常后,中断标志：&quot;+ t.isInterrupted());//false</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class ThreadDemo extends Thread &#123;</div><div class="line">    public void run() &#123;</div><div class="line">        try &#123;</div><div class="line">            System.out.println(&quot;开始方法...&quot;);</div><div class="line">            Thread.sleep(300000);</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            System.out.println(&quot;线程被中断&quot;);</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        System.out.println(&quot;结束方法...&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>示例</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public static void main(String args[]) &#123;</div><div class="line">      System.out.println(&quot;A:&quot;+Thread.interrupted()); //false</div><div class="line">      Thread.currentThread().interrupt();</div><div class="line">      System.out.println(&quot;B:&quot;+Thread.interrupted()); //true</div><div class="line">      System.out.println(&quot;C:&quot;+Thread.interrupted()); //false</div><div class="line">      System.out.println(&quot;D:&quot;+Thread.interrupted()); //false</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>此外：终止线程</p>
-<ul>
-<li>使用退出标志，是线程正常退出，也就是当run方法完成后线程终止；</li>
-<li>使用stop方法强行终止线程，但是不推荐使用这个方法，因为stop和suspend及resume一样都是作废过期的方法，使用它们可能产生不可预料的结果；(已淘汰)</li>
-</ul>
-</blockquote>
-<p>问题：一，当线程终止时，很少有机会执行清理工作；二，当在某个线程上调用 stop()方法时，线程释放它当前持有的所有锁，持有这些锁必定有某种合适的理由——也许是阻止其他线程访问尚未处于一致性状态的数据，突然释放锁可能使某些对象中的数据处于不一致状态，而且不会出现数据可能崩溃的任何警告</p>
-<ul>
-<li>使用interrupt方法中断线程；（推荐）</li>
-</ul>
-<h2 id="线程阻塞-yield-，sleep"><a href="#线程阻塞-yield-，sleep" class="headerlink" title="线程阻塞 yield()，sleep()"></a>线程阻塞 yield()，sleep()</h2><blockquote>
-<p>sleep(ms)</p>
-</blockquote>
-<p>暂停一段时间</p>
-<blockquote>
-<p> yield()</p>
-</blockquote>
-<p>yield()方法的作用是放弃当前的CPU资源，将它让给其他的任务去占用CPU执行时间。但放弃时间不确定，有可能刚刚放弃，马上又获得CPU时间片。这里需要注意的是<strong>yield()方法和sleep方法一样，线程并不会让出锁</strong>，和wait不同。</p>
-<h2 id="DaemonThread守护线程"><a href="#DaemonThread守护线程" class="headerlink" title="DaemonThread守护线程"></a>DaemonThread守护线程</h2><p>只要当前JVM实例中尚存任何一个非守护线程没有结束，守护线程就全部工作；只有当最后一个非守护线程结束是，守护线程随着JVM一同结束工作，Daemon作用是为其他线程提供便利服务，守护线程最典型的应用就是GC(垃圾回收器)</p>
-<ul>
-<li>设置守护线程必须在用户线程start前设置</li>
-<li>在Daemon线程中产生的新线程也是Daemon</li>
-<li>java的线程池会将守护线程转换为用户线程，所以如果要使用后台线程就不能用java的线程池。<br>如下，线程池中将daemon线程转换为用户线程的程序片段<blockquote>
-<p>示例1</p>
-</blockquote>
-</li>
-</ul>
-<p>一个主线程(Daemon),一个用户线程，主线程结束，用户线程也结束</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">public class DaemonDemo1 &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Thread daemonThread = new Thread(new Runnable() &#123;</div><div class="line">            @Override</div><div class="line">            public void run() &#123;</div><div class="line">                Thread t = new Thread(new UserThread());</div><div class="line">                t.setDaemon(true);</div><div class="line">                t.start();</div><div class="line">                try &#123;</div><div class="line">                    TimeUnit.MILLISECONDS.sleep(1200);//</div><div class="line">                &#125; catch (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">                System.out.println(&quot;DaemonThread&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        daemonThread.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class UserThread extends  Thread&#123;</div><div class="line">    public void run()&#123;</div><div class="line">        while(true)&#123;</div><div class="line">            System.out.println(&quot;用户线程...&quot;);</div><div class="line">            try &#123;</div><div class="line">                TimeUnit.MILLISECONDS.sleep(1000);//如果参数小于0，则不sleep</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>注：若当前jvm应用实例中有其他用户线程继续执行，那么后台线程不会中断<blockquote>
-<p>示例</p>
-</blockquote>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">public class DaemonDemo1 &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Thread daemonThread = new Thread(new Runnable() &#123;</div><div class="line">            @Override</div><div class="line">            public void run() &#123;</div><div class="line">                Thread t = new Thread(new UserThread());</div><div class="line">                t.setDaemon(true);</div><div class="line">                t.start();</div><div class="line">                try &#123;</div><div class="line">                    TimeUnit.MILLISECONDS.sleep(1200);//</div><div class="line">                &#125; catch (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">                System.out.println(&quot;DaemonThread&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        daemonThread.start();</div><div class="line">        Thread daemonThread2 = new Thread(new Runnable() &#123;</div><div class="line">            public void run()&#123;</div><div class="line">                while(true)&#123;</div><div class="line">                    try &#123;</div><div class="line">                        TimeUnit.MILLISECONDS.sleep(1200);//</div><div class="line">                    &#125; catch (InterruptedException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                    System.out.println(&quot;DaemonThread2&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        daemonThread2.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class UserThread extends  Thread&#123;</div><div class="line">    public void run()&#123;</div><div class="line">        while(true)&#123;</div><div class="line">            System.out.println(&quot;用户线程...&quot;);</div><div class="line">            try &#123;</div><div class="line">                TimeUnit.MILLISECONDS.sleep(1000);//如果参数小于0，则不sleep</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">用户线程...</div><div class="line">用户线程...</div><div class="line">DaemonThread</div><div class="line">DaemonThread2</div><div class="line">用户线程...</div><div class="line">DaemonThread2</div><div class="line">用户线程...</div><div class="line">DaemonThread2 (无限执行)</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      Java线程的基础知识笔记
-    
-    </summary>
-    
-      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
-    
-    
-      <category term="Java" scheme="http://doublesharejust.com.cn/tags/Java/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java并发工具包（上）</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（上）/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.741Z</updated>
-    
-    <content type="html"><![CDATA[<p>有助于创建强大的并发编程</p>
-<ul>
-<li>同步器：为每种特定的同步问题提供了解决方案</li>
-<li>执行器：用来管理线程的执行，如线程池</li>
-<li>并发集合：提供了集合框架中集合的并发版本</li>
-</ul>
-<h2 id="Semaphore"><a href="#Semaphore" class="headerlink" title="Semaphore"></a>Semaphore</h2><p>控制一定资源的消费与回收，Semaphore 可以控制某个资源被同时访问的任务数，它通过acquire()获取一个许可，release()释放一个许可。如果被同时访问的任务数已满，则其他 acquire 的任务进入等待状态，直到有一个任务被 release 掉，它才能得到许可。</p>
-<blockquote>
-<p>特点:经典的信号量，通过计数器控制对共享资源的访问<br>常用</p>
-<ul>
-<li>Semaphore(int count):创建拥有count个许可证的信号量</li>
-<li>acquire()/acquire(int num)：获取1/num个信号量</li>
-<li>release()/release(int num):释放1/num个信号量</li>
-</ul>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Semaphore;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class SemaphoreDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //创建2个信号量，有三个对象要使用</div><div class="line">        Semaphore semaphore = new Semaphore(2);</div><div class="line">        new Person(semaphore,&quot;A&quot;).start();</div><div class="line">        new Person(semaphore,&quot;B&quot;).start();</div><div class="line">        new Person(semaphore,&quot;C&quot;).start();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">&#125;</div><div class="line">class Person extends Thread&#123;</div><div class="line">    private Semaphore semaphore;</div><div class="line">    public Person(Semaphore semaphore,String name)&#123;</div><div class="line">        this.semaphore = semaphore;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        System.out.println(getName() + &quot; is waiting&quot;);</div><div class="line">        try &#123;</div><div class="line">            //获取信号量</div><div class="line">            semaphore.acquire();//默认获取一个</div><div class="line">            System.out.println(getName()+&quot; is serving&quot;);</div><div class="line">            Thread.sleep(1000);</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        System.out.println(getName()+&quot; is done.&quot;);</div><div class="line">        semaphore.release();//释放信号量</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="CountDownLatch-同步器"><a href="#CountDownLatch-同步器" class="headerlink" title="CountDownLatch 同步器"></a>CountDownLatch 同步器</h2><blockquote>
-<p>特点：需要等待几秒后才会触发</p>
-<p>常用</p>
-<ul>
-<li>必须发生指定数量的事件后才可以继续运行</li>
-<li>CountDownLatch(int count):必须发生count个数量才可以打开锁存器</li>
-<li>await()：等待锁存器</li>
-<li>countDown()：触发事件</li>
-</ul>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.CountDownLatch;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 模拟赛跑，倒数指令</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class CountDownLatchDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //3 表示有三个事件发生才会执行该线程</div><div class="line">        CountDownLatch countDownLatch = new CountDownLatch(3);</div><div class="line">        new Racer(countDownLatch, &quot;A&quot;).start();</div><div class="line">        new Racer(countDownLatch, &quot;B&quot;).start();</div><div class="line">        new Racer(countDownLatch, &quot;C&quot;).start();</div><div class="line">        for(int i=0;i&lt;3;i++)&#123;</div><div class="line">            System.out.println(&quot;计数:&quot;+(3-i));</div><div class="line">            countDownLatch.countDown();//触发事件</div><div class="line">            if(i==2)&#123;</div><div class="line">                System.out.println(&quot;start--&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Racer extends  Thread&#123;</div><div class="line">    CountDownLatch countDownLatch;</div><div class="line"></div><div class="line">    public Racer(CountDownLatch countDownLatch, String name) &#123;</div><div class="line">        this.countDownLatch = countDownLatch;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void run() &#123;</div><div class="line">        try &#123;</div><div class="line">            //等待</div><div class="line">            countDownLatch.await();</div><div class="line">            //执行操作</div><div class="line">            System.out.println(&quot;执行程序: &quot;+getName());</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="CyclicBarrier同步器"><a href="#CyclicBarrier同步器" class="headerlink" title="CyclicBarrier同步器"></a>CyclicBarrier同步器</h2><blockquote>
-<p>特点</p>
-<ul>
-<li>适用于只有多个线程都达到预定点时才可以继续执行</li>
-<li>CyclicBarrier(int num):等待线程的数量</li>
-<li>CyclicBarrier(int num,Runnable action)：等待线程的数量以及所有线程到达后的操作</li>
-<li>await()：到达临界点后暂停线程</li>
-</ul>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.BrokenBarrierException;</div><div class="line">import java.util.concurrent.CyclicBarrier;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 模拟斗地主</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class CyclicBarrierDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new Runnable() &#123;</div><div class="line">            @Override</div><div class="line">            public void run() &#123;</div><div class="line">                System.out.println(&quot;Game start&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        new Player(cyclicBarrier,&quot;A&quot;).start();</div><div class="line">        new Player(cyclicBarrier,&quot;B&quot;).start();</div><div class="line">        new Player(cyclicBarrier,&quot;C&quot;).start();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Player extends Thread&#123;</div><div class="line">    CyclicBarrier cyclicBarrier;</div><div class="line"></div><div class="line">    public Player(CyclicBarrier cyclicBarrier, String name) &#123;</div><div class="line">        this.cyclicBarrier = cyclicBarrier;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        System.out.println(getName()+&quot;等待&quot;);</div><div class="line">        try &#123;</div><div class="line">            cyclicBarrier.await();</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; catch (BrokenBarrierException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Exchanger-交换器"><a href="#Exchanger-交换器" class="headerlink" title="Exchanger 交换器"></a>Exchanger 交换器</h2><blockquote>
-<p>特点：简化两个线程间数据的交换</p>
-</blockquote>
-<p>常用方法</p>
-<ul>
-<li>Exchanger<v>:指定进行交换的数据类型</v></li>
-<li>V exchange(V object):等待线程到达，交换数据</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Exchanger;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class ExchangerDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Exchanger&lt;String&gt; ex = new Exchanger&lt;&gt;();</div><div class="line">        new A(ex).start();</div><div class="line">        new B(ex).start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class A extends Thread&#123;</div><div class="line">    Exchanger&lt;String&gt; ex;</div><div class="line">    public A(Exchanger ex)&#123;</div><div class="line">        this.ex = ex;</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        String str;</div><div class="line">        try &#123;</div><div class="line">            str = ex.exchange(&quot;hello&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is A&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+ str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is A1&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+ str);</div><div class="line"></div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class B extends Thread&#123;</div><div class="line">    Exchanger&lt;String&gt; ex;</div><div class="line">    public B(Exchanger ex)&#123;</div><div class="line">        this.ex = ex;</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        String str;</div><div class="line">        try &#123;</div><div class="line">            str = ex.exchange(&quot;hI&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is B&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+ str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is B1&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+ str);</div><div class="line"></div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Phaser"><a href="#Phaser" class="headerlink" title="Phaser"></a>Phaser</h2><blockquote>
-<p>特点：工作方式与CyclicBarrier类似，但是可以定义多个阶段<br>常用:</p>
-<ul>
-<li>Phaser()/Phaser(int num):使用指定0/num个party创建Phaser</li>
-<li>register():注册party</li>
-<li>arriveAndAdvance():到达时等待所有party到达</li>
-<li>arriveAndDeregister()：到达时注销线程自己</li>
-</ul>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Phaser;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class PhaserDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Phaser phaser = new Phaser(1);</div><div class="line">        System.out.println(&quot;starting...&quot;);</div><div class="line">        //假设每个订单有三道工序</div><div class="line">        new Worker(phaser,&quot;worker1&quot;).start();//执行等待</div><div class="line">        new Worker(phaser, &quot;worker2&quot;).start();</div><div class="line">        new Worker(phaser,&quot;worker3&quot;).start();</div><div class="line">        //处理三个订单</div><div class="line">        for(int i=0;i&lt;3;i++) &#123;</div><div class="line">            //处理完每一个订单都要等待，相当于开始执行下一个订单</div><div class="line">            phaser.arriveAndAwaitAdvance();</div><div class="line">        &#125;</div><div class="line">        //所有订单处理完毕，接触在phaser上注册的所有worker</div><div class="line">        phaser.arriveAndDeregister();</div><div class="line">        System.out.println(&quot;all done...&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Worker extends Thread&#123;</div><div class="line">    Phaser phaser;</div><div class="line">    public Worker(Phaser phaser,String name)&#123;</div><div class="line">        this.phaser = phaser;</div><div class="line">        setName(name);</div><div class="line">        phaser.register();//当当前线程注册到phaser中</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        //模拟三个订单</div><div class="line">        for(int i=1;i&lt;=3;i++)&#123;</div><div class="line">            System.out.println(&quot;current order:&quot;+i+&quot;:&quot;+getName());</div><div class="line">            if(i==3)&#123;</div><div class="line">                //如果是第三个订单，即所有订单都处理完毕，注销phaser</div><div class="line">                phaser.arriveAndDeregister();</div><div class="line">            &#125;else&#123;//否则，执行等待</div><div class="line">                phaser.arriveAndAwaitAdvance();</div><div class="line">            &#125;</div><div class="line">            try &#123;</div><div class="line">                Thread.sleep(1500);</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      Java并发操作中使用的工具类
-    
-    </summary>
-    
-      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
-    
-    
-      <category term="Java并发" scheme="http://doublesharejust.com.cn/tags/Java%E5%B9%B6%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java设计模式-单例模式</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-单例模式/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.734Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>保证一个类仅有一个实例，并提供一个访问它的全局访问点。</p>
-<blockquote>
-<p>适用性：当类只能有一个实例而且客户可以从一个众所周知的访问点访问它时。当这个唯一实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能使用一个扩展的实例时。</p>
-</blockquote>
-<h2 id="占位符式"><a href="#占位符式" class="headerlink" title="占位符式"></a>占位符式</h2><ul>
-<li>线程安全<blockquote>
-<p>JVM内部机制保证在执行类构造器初始化的时候是线程安全的</p>
-</blockquote>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public class JustDemo &#123;</div><div class="line">    private  static  boolean flag = true;</div><div class="line">    public JustDemo() &#123;</div><div class="line">        synchronized (JustDemo.class)&#123;</div><div class="line">            if(flag)&#123;</div><div class="line">                flag = false;</div><div class="line">            &#125;else&#123;</div><div class="line">                throw new RuntimeException(&quot;反射入侵已阻止&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    private static class Single&#123;</div><div class="line">        private static final JustDemo INSTANCE = new JustDemo();</div><div class="line">    &#125;</div><div class="line">    public JustDemo getInstance() &#123;</div><div class="line">        return Single.INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>上面示例可防止Java反射方法调用</p>
-</blockquote>
-<h2 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class LazySingleton &#123;</div><div class="line">    private static LazySingleton instance;</div><div class="line"></div><div class="line">    private LazySingleton() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static synchronized LazySingleton getInstance() &#123;</div><div class="line">        if (instance == null)&#123;</div><div class="line">            instance = new LazySingleton();</div><div class="line">        &#125;</div><div class="line">        return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Singleton &#123;</div><div class="line">    private static Singleton instance = new Singleton();</div><div class="line"></div><div class="line">    private Singleton() &#123;</div><div class="line">    &#125;</div><div class="line">    public static Singleton getInstance() &#123;</div><div class="line">            return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      Java设计模式学习笔记
-    
-    </summary>
-    
-      <category term="单例模式" scheme="http://doublesharejust.com.cn/categories/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java设计模式-装饰者模式</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.721Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>项目：咖啡馆订单系统</p>
-<ul>
-<li>咖啡种类：Espresso,ShortBlack,LongBlack,Decaf</li>
-<li>调料：Milk,Soy,Chocolate</li>
-<li>扩展性好：有新品种咖啡，无需改动之前的，不会对原有代码有影响、改动方便、维护方便</li>
-</ul>
-<p>1 装饰者模式就像打包一个快递</p>
-<ul>
-<li>主体：陶瓷、衣服</li>
-<li>包装：报纸填充、塑料泡沫、纸板<br>2 Component:主体超类 或再添加一中间层(实现公共功能)</li>
-</ul>
-<p>3 ConcreteComponent 待包装的主体，如Decaf 和 Decorator </p>
-<p>4 装饰者模式：动态的将新功能附加到对象上。在对象功能拓展方面，它比继承更有弹性</p>
-<h2 id="Java内置装饰者"><a href="#Java内置装饰者" class="headerlink" title="Java内置装饰者"></a>Java内置装饰者</h2><p>Java的IO结构<br>InputStream是超类 FilterInputStream是中间类 BufferedInputStream属于装饰类</p>
-<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><ul>
-<li>开放、关闭原则：对添加新代码开放，对已测试好功能关闭</li>
-<li>易拓展</li>
-</ul>]]></content>
-    
-    <summary type="html">
-    
-      Java设计模式学习笔记
-    
-    </summary>
-    
-      <category term="装饰者模式" scheme="http://doublesharejust.com.cn/categories/%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java并发工具包(下)</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（下）/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.746Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h2><blockquote>
-<p>特点：用于启动并控制线程执行<br>常用API</p>
-<ul>
-<li>核心接口为 Executor,包含一个execute(Runnable)用于指定被执行的线程</li>
-<li>ExecutorService接口用于控制线程执行和管理线程</li>
-<li>预定义了如下执行器：</li>
-</ul>
-<ol>
-<li>ThreadPoolExecutor(线程池)</li>
-<li>ScheduledThreadPoolExecutor</li>
-<li>ForkJoinPool</li>
-</ol>
-</blockquote>
-<h3 id="Callable-与-Future"><a href="#Callable-与-Future" class="headerlink" title="Callable 与 Future"></a>Callable 与 Future</h3><ul>
-<li>Callable<v>:表示具有返回值的线程</v></li>
-<li>V：表示返回值类型</li>
-<li>call():执行任务</li>
-<li>Future<v>:表示Callable的返回值</v></li>
-<li>V：返回值类型</li>
-<li>get():获取返回值</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.*;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class ExecutorDemo &#123;</div><div class="line"></div><div class="line">    public static void main(String args[]) throws ExecutionException, InterruptedException &#123;</div><div class="line">        //初始化具有两个固定线程的线程池 </div><div class="line">        ExecutorService es = Executors.newFixedThreadPool(2);</div><div class="line">        //通过submit方法调用call方法；即放入线程中执行</div><div class="line">        Future&lt;Integer&gt; f1 =es.submit(new Method(1,100));</div><div class="line">        Future&lt;Integer&gt; f2 = es.submit(new Method(100, 1000));</div><div class="line">        Future&lt;Integer&gt; f3 = es.submit(new Method(100, 1000));</div><div class="line">        System.out.println(&quot;f1:&quot;+f1.get());//获取返回值</div><div class="line">        System.out.println(&quot;f2:&quot;+f2.get());</div><div class="line">        System.out.println(&quot;f2:&quot;+f3.get());</div><div class="line">        //停止执行器</div><div class="line">        es.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Method implements Callable&lt;Integer&gt; &#123;</div><div class="line">    private int begin;</div><div class="line">    private int end;</div><div class="line"></div><div class="line">    public Method(int begin, int end) &#123;</div><div class="line">        this.begin = begin;</div><div class="line">        this.end = end;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public Integer call() throws Exception &#123;</div><div class="line">        int sum = 0;</div><div class="line">        for (int i = begin; i &lt;end; i++) &#123;</div><div class="line">            sum+=i;</div><div class="line">        &#125;</div><div class="line">        Thread.sleep(3000);</div><div class="line">        return sum;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="锁与原子操作"><a href="#锁与原子操作" class="headerlink" title="锁与原子操作"></a>锁与原子操作</h2><h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><ul>
-<li>为使用synchronized控制对资源访问提供了替代机制</li>
-<li>基本操纵模型：访问资源之前申请锁，访问完毕后释放锁</li>
-<li>lock/tryLock：申请锁</li>
-<li>unlock：释放锁</li>
-<li>具体锁实现类：ReentrantLock实现了Lock接口</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.locks.Lock;</div><div class="line">import java.util.concurrent.locks.ReentrantLock;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class LockDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">           new AddData().start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Data &#123;</div><div class="line">    static int i=0;</div><div class="line">    static  Lock lock = new ReentrantLock();</div><div class="line">    static void operate( )&#123;</div><div class="line">        lock.lock();</div><div class="line">        i++;</div><div class="line">        System.out.println(&quot;i:&quot;+i);</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class AddData extends Thread&#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">       while (true) &#123;</div><div class="line">            try &#123;</div><div class="line">                Thread.sleep(1000);</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">            Data.operate();</div><div class="line">       &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h3><p>java.util.concurrent.atom包中提供了对原子操作的支持</p>
-<ul>
-<li>提供了不需要锁以及其他同步机制就可以进行的一些不可中断操作</li>
-<li>主要操作为：获取，设置，比较</li>
-</ul>]]></content>
-    
-    <summary type="html">
-    
-      Java并发操作中使用的工具类
-    
-    </summary>
-    
-      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
-    
-    
-      <category term="Java并发" scheme="http://doublesharejust.com.cn/tags/Java%E5%B9%B6%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Linux常用命令小结</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%B0%8F%E7%BB%93/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Linux常用命令小结/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:57:46.108Z</updated>
+    <link href="http://doublesharejust.com.cn/2016/11/07/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%B0%8F%E7%BB%93/"/>
+    <id>http://doublesharejust.com.cn/2016/11/07/Linux常用命令小结/</id>
+    <published>2016-11-07T11:58:27.000Z</published>
+    <updated>2016-11-07T15:14:05.252Z</updated>
     
     <content type="html"><![CDATA[<p>环境：Centos7</p>
 <h3 id="查询如何使用命令"><a href="#查询如何使用命令" class="headerlink" title="查询如何使用命令"></a>查询如何使用命令</h3><table>
@@ -794,8 +152,7 @@
 <tr>
 <td>  模糊匹配</td>
 <td>grep</td>
-<td>more test.txt</td>
-<td>grep te 查看文件test.txt中 包含’te’字符串</td>
+<td><img src="http://og6e19zce.bkt.clouddn.com/linux_grep.png" alt="image"></td>
 </tr>
 </tbody>
 </table>
@@ -1342,6 +699,648 @@
     
       <category term="Linux" scheme="http://doublesharejust.com.cn/categories/Linux/"/>
     
+    
+  </entry>
+  
+  <entry>
+    <title>Dom4j-使用指导</title>
+    <link href="http://doublesharejust.com.cn/2016/10/22/Dom4j/"/>
+    <id>http://doublesharejust.com.cn/2016/10/22/Dom4j/</id>
+    <published>2016-10-22T09:58:27.000Z</published>
+    <updated>2016-10-22T16:08:53.098Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="what-is-dom4j"><a href="#what-is-dom4j" class="headerlink" title="what is dom4j?"></a>what is dom4j?</h2><p>dom4j 是一个为Java服务的开源的XML框架，可以对xml文档进行读写,操作,创建和修改，集成了DOM和SAX，同样支持xPath</p>
+<p>接下来我们开始了解dom4j的基本用法</p>
+<h2 id="解析xml文档"><a href="#解析xml文档" class="headerlink" title="解析xml文档"></a>解析xml文档</h2><h3 id="获得Document对象"><a href="#获得Document对象" class="headerlink" title="获得Document对象"></a>获得Document对象</h3><p>解析xml文档，首先需要通过 SAXReader 创建一个 document对象</p>
+<blockquote>
+<p>SAXReader.read() 方法可以通过多种方式进行读取，例如：URL、InputStream、File、Reader等</p>
+</blockquote>
+<ul>
+<li>URL路径方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public Document parse(URL url) throws DocumentException &#123;</div><div class="line">       SAXReader reader = new SAXReader();</div><div class="line">       Document document = reader.read(url);</div><div class="line">       return document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>InputStream方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SAXReader reader = new SAXReader();</div><div class="line">//获取类加载器</div><div class="line">ClassLoader loader = Thread.currentThread().getContextClassLoader();</div><div class="line">//获取文件流</div><div class="line">java.io.InputStream inputStream = loader.getResourceAsStream(&quot;out.xml&quot;);</div><div class="line">//创建document对象</div><div class="line">Document doc = reader.read(inputStream);</div></pre></td></tr></table></figure>
+<ul>
+<li>File方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div></pre></td></tr></table></figure>
+<p>那么，接下来就是对xml中的Element(Node)，进行获取了。</p>
+<h3 id="获取root元素"><a href="#获取root元素" class="headerlink" title="获取root元素"></a>获取root元素</h3><p>方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Element root = document.getRootElement();</div></pre></td></tr></table></figure>
+<h3 id="使用Iterator获取元素"><a href="#使用Iterator获取元素" class="headerlink" title="使用Iterator获取元素"></a>使用Iterator获取元素</h3><p>dom4j通过内置的方法，可以返回标准的java迭代，方便我们获取元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void bar(Document document)&#123;</div><div class="line">     Element element = document.getRootElement();</div><div class="line"></div><div class="line">     //root 元素的子元素进行迭代</div><div class="line">     for(Iterator i = element.elementIterator();i.hasNext();) &#123;</div><div class="line">        Element element1 = (Element) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line">     //iterate through child elements of root with element name &quot;foo&quot;</div><div class="line">     //获取子元素name为 foo的迭代</div><div class="line">     for(Iterator i=element.elementIterator(&quot;foo&quot;);i.hasNext();) &#123;</div><div class="line">         Element foo = (Element) i.next();</div><div class="line">         //do something</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     // iterate through attribute of root</div><div class="line">     // 节点属性</div><div class="line">     for(Iterator i = element.attributeIterator();i.hasNext();) &#123;</div><div class="line">         Attribute attribute = (Attribute) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>例如，模拟SpringIOC 依赖注入机制(通过反射实现)，有如下spring_core.xml配置，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"></div><div class="line">&lt;beans&gt;</div><div class="line">  &lt;bean id=&quot;testBean&quot; class=&quot;com.just.Test&quot;/&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<p>我们需要根据spring_core.xml配置来获取bean id为 “testBean” 的 class,即类的全路径，获取类的全路径后，就可以随心所欲的进行反射调用了~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> for (Iterator i = root.elementIterator(&quot;bean&quot;); i.hasNext();)&#123;</div><div class="line">      foo = (Element) i.next();</div><div class="line">      //针对每一个bean实例获取id和name属性</div><div class="line">      Attribute id = foo.attribute(&quot;id&quot;);</div><div class="line">      Attribute clazz = foo.attribute(&quot;class&quot;);</div><div class="line"></div><div class="line">      //利用反射，通过class名称获取class对象</div><div class="line">      Class bean = Class.forName(clazz.getText());</div><div class="line">      // other 省略无关的反射操作</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果需要处理的XML文件非常大，每次循环都使用Iterator，那么性能会降低，于是dom4j还提供了更加快速的获取元素的方法 element.nodeCount</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public class ReadXml &#123;</div><div class="line">    public static void init()&#123;</div><div class="line">        try &#123;</div><div class="line">            SAXReader saxReader = new SAXReader();</div><div class="line">            File file = new File(&quot;spring_core.xml&quot;);</div><div class="line">            Document document = saxReader.read(file);</div><div class="line">            Element rootElement = document.getRootElement();</div><div class="line">            treeWalk(rootElement);</div><div class="line">        &#125; catch (DocumentException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static  void treeWalk(Element element) &#123;</div><div class="line">        for ( int i = 0, size = element.nodeCount(); i &lt; size; i++ ) &#123;</div><div class="line">            Node node = element.node(i);</div><div class="line">            if(node instanceof  Element)&#123;</div><div class="line">                Element e = (Element) node;</div><div class="line">                System.out.println(e.attribute(&quot;id&quot;).getText());</div><div class="line">                System.out.println(e.attribute(&quot;class&quot;).getText());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="创建一个document"><a href="#创建一个document" class="headerlink" title="创建一个document"></a>创建一个document</h2><p>使用对象 DocumentHelper对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public Document createDocument() &#123;</div><div class="line">       Document document = DocumentHelper.createDocument();</div><div class="line">       Element root = document.addElement(&quot;root&quot;);</div><div class="line">       Element author1 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lip&quot;)</div><div class="line">               .addText(&quot;1323&quot;);</div><div class="line">       Element author2 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lin&quot;)</div><div class="line">               .addText(&quot;4444&quot;);</div><div class="line">       return  document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><p>通过创建XMLWriter对象进行写操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public class WriteXml &#123;</div><div class="line">    public static void init() throws IOException &#123;</div><div class="line">        Document document = DocumentHelper.createDocument();</div><div class="line">        Element root = document.addElement(&quot;beans&quot;);</div><div class="line">        Element bean = root.addElement(&quot;bean&quot;)</div><div class="line">                .addAttribute(&quot;id&quot;, &quot;testBean&quot;)</div><div class="line">                .addAttribute(&quot;class&quot;,&quot;com.just.Test&quot;);</div><div class="line">        write(document);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void write(Document document) throws IOException &#123;</div><div class="line">        //输出到文件 out.xml</div><div class="line">        XMLWriter writer = new XMLWriter(new FileWriter(&quot;out.xml&quot;));</div><div class="line">        writer.write(document);</div><div class="line">        writer.flush();</div><div class="line">        writer.close();</div><div class="line">        System.out.println(&quot;------------&quot;);</div><div class="line">        /**</div><div class="line">         * 通过 createPrettyPrint美化输出到控制台</div><div class="line">         */</div><div class="line">        OutputFormat outputFormat = OutputFormat.createPrettyPrint();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line">        System.out.println(&quot;----------------------------------&quot;);</div><div class="line">        /**</div><div class="line">         * 实现压缩</div><div class="line">         */</div><div class="line">        outputFormat = OutputFormat.createCompactFormat();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    public static void main(String args[]) throws IOException &#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="String与Xml转换"><a href="#String与Xml转换" class="headerlink" title="String与Xml转换"></a>String与Xml转换</h2><ul>
+<li>String 转为document对象或其他Node，使用 DocumentHelper.parseText()</li>
+<li>document或其他node节点，转为String，直接调用 .asXML()<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">  * convert from string</div><div class="line">  */</div><div class="line"> public Document convert(String xml) throws DocumentException &#123;</div><div class="line">     Document document = DocumentHelper.parseText(xml);</div><div class="line">     return  document;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * convert to string</div><div class="line">  */</div><div class="line"> public String convert(Document document) throws DocumentException &#123;</div><div class="line">     String str = document.asXML();</div><div class="line">     return str;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="xPath路径处理"><a href="#xPath路径处理" class="headerlink" title="xPath路径处理"></a>xPath路径处理</h2><p>对于xPath,在浏览器debug模式中，查看元素，对于元素进行复制时可以保存为xPath，那么可以理解为一种路径表示方式，在自动化测试中，xPath是一种非常重要的获取页面元素的手段。</p>
+<p>使用xPath需要引入依赖包，顺便贴上maven依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;dom4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;dom4j&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;jaxen&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jaxen&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.1.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>xPath的基本语法</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>expression</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodename</td>
+<td>当前节点的所有子节点</td>
+</tr>
+<tr>
+<td>/</td>
+<td>根节点选取</td>
+</tr>
+<tr>
+<td>//</td>
+<td>匹配文档中节点，不考虑位置</td>
+</tr>
+<tr>
+<td>.</td>
+<td>当前节点</td>
+</tr>
+<tr>
+<td>..</td>
+<td>当前节点的父节点</td>
+</tr>
+<tr>
+<td>@</td>
+<td>选取属性</td>
+</tr>
+</tbody>
+</table>
+<p>for Example：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div><div class="line">Element rootElement = document.getRootElement();</div><div class="line">List&lt;Object&gt; list = document.selectNodes(&quot;//bean&quot;);</div><div class="line">for (Object n : list) &#123;</div><div class="line">    if(n instanceof Element)&#123;</div><div class="line">        Element e = (Element) n;</div><div class="line">        System.out.println(e.getName());</div><div class="line">        List&lt;Object&gt; aList  = e.selectNodes(&quot;@class&quot;);</div><div class="line">        for(Object a :aList)</div><div class="line">            if(a instanceof Attribute)&#123;</div><div class="line">                Attribute attribute = (Attribute) a;</div><div class="line">                System.out.println(attribute.getText());</div><div class="line"></div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bean</div><div class="line">com.just.Test</div></pre></td></tr></table></figure>
+<h2 id="处理XSLT"><a href="#处理XSLT" class="headerlink" title="处理XSLT"></a>处理XSLT</h2><p>对于XSLT，不甚了解，贴上官方例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class Foo &#123;</div><div class="line"></div><div class="line">    public Document styleDocument(</div><div class="line">        Document document,</div><div class="line">        String stylesheet</div><div class="line">    ) throws Exception &#123;</div><div class="line"></div><div class="line">        // load the transformer using JAXP</div><div class="line">        TransformerFactory factory = TransformerFactory.newInstance();</div><div class="line">        Transformer transformer = factory.newTransformer(</div><div class="line">            new StreamSource( stylesheet )</div><div class="line">        );</div><div class="line"></div><div class="line">        // now lets style the given document</div><div class="line">        DocumentSource source = new DocumentSource( document );</div><div class="line">        DocumentResult result = new DocumentResult();</div><div class="line">        transformer.transform( source, result );</div><div class="line"></div><div class="line">        // return the transformed document</div><div class="line">        Document transformedDoc = result.getDocument();</div><div class="line">        return transformedDoc;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>以上只是基于官方guide文档学习时所记录，更多移步<a href="http://www.dom4j.org//" target="_blank" rel="external">http://www.dom4j.org/</a></p>
+<p>.END</p>]]></content>
+    
+    <summary type="html">
+    
+      Dom4j的基础读写处理
+    
+    </summary>
+    
+      <category term="Dom4j" scheme="http://doublesharejust.com.cn/categories/Dom4j/"/>
+    
+      <category term="XML" scheme="http://doublesharejust.com.cn/categories/Dom4j/XML/"/>
+    
+    
+      <category term="Dom4j" scheme="http://doublesharejust.com.cn/tags/Dom4j/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hadoop分布式集群搭建 Centos7 环境准备</title>
+    <link href="http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%20Centos7%20%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/"/>
+    <id>http://doublesharejust.com.cn/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/</id>
+    <published>2016-10-22T09:58:27.000Z</published>
+    <updated>2016-11-06T15:39:02.889Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="机器准备"><a href="#机器准备" class="headerlink" title="机器准备"></a>机器准备</h2><ul>
+<li>Centos7 </li>
+<li>Vmware10</li>
+<li>jdk</li>
+</ul>
+<h3 id="安装和配置IP"><a href="#安装和配置IP" class="headerlink" title="安装和配置IP"></a>安装和配置IP</h3><table>
+<thead>
+<tr>
+<th>主机名称</th>
+<th>用户</th>
+<th>密码</th>
+<th>ip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>master</td>
+<td>master</td>
+<td>master</td>
+<td>192.168.1.122</td>
+</tr>
+<tr>
+<td>slave1</td>
+<td>hadoop</td>
+<td>hadoop</td>
+<td>192.168.1.123</td>
+</tr>
+<tr>
+<td>slave2</td>
+<td>hadoop</td>
+<td>hadoop</td>
+<td>192.168.1.124</td>
+</tr>
+<tr>
+<td>slave3</td>
+<td>hadoop</td>
+<td>hadoop</td>
+<td>192.168.1.125</td>
+</tr>
+</tbody>
+</table>
+<p>在每台主机添加用户 hadoop 密码 hadoop</p>
+<blockquote>
+<p>使用命令 useradd添加用户， passwd为用户hadoop设置密码</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@slave1 ~]# useradd hadoop</div><div class="line">[root@slave1 ~]# passwd hadoop</div><div class="line">Changing password for user hadoop.</div><div class="line">New password: </div><div class="line">BAD PASSWORD: The password is shorter than 8 characters</div><div class="line">Retype new password: </div><div class="line">passwd: all authentication tokens updated successfully.</div><div class="line">[root@slave1 ~]#</div></pre></td></tr></table></figure>
+<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><p>关闭防火墙是必须的,centos7默认是不用iptables</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl stop firewalld.service &amp;&amp; sudo  systemctl disable firewalld.service</div></pre></td></tr></table></figure>
+<h3 id="配置hosts文件"><a href="#配置hosts文件" class="headerlink" title="配置hosts文件"></a>配置hosts文件</h3><p>注意： <strong><em>==sudo==</em></strong> 命名为使用超级管理员用户操作 相当于 root 用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@localhost ~]$ sudo vim /etc/hosts</div></pre></td></tr></table></figure>
+<p>问题：若无法使用sudo命令？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hadoop is not in the sudoers file.  This incident will be reported.</div></pre></td></tr></table></figure></p>
+<p>需要在 /etc/sudoers文件中添加配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">## Allow root to run any commands anywhere </div><div class="line">root	ALL=(ALL) 	ALL</div><div class="line">hadoop ALL=(ALL) ALL</div></pre></td></tr></table></figure>
+<p>hosts文件中添加内容为(其他主机同样添加)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">192.168.1.122 master</div><div class="line">192.168.1.123 slave1</div><div class="line">192.168.1.124 slave2</div><div class="line">192.168.1.125 slave3</div></pre></td></tr></table></figure></p>
+<h2 id="配置SSH-免登陆"><a href="#配置SSH-免登陆" class="headerlink" title="配置SSH 免登陆"></a>配置SSH 免登陆</h2><p>这里需要对 所有机器上的 ==hadoop@主机== 用户配置ssh免密码登录</p>
+<p>在Centos7中已经默认安装ssh服务，ssh-keygen命令无效，说明需要先安装ssh服务,即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo yum install openssh-server</div></pre></td></tr></table></figure></p>
+<h3 id="以-master-主机为例"><a href="#以-master-主机为例" class="headerlink" title="以==master==主机为例."></a>以==master==主机为例.</h3><ul>
+<li><p>生成无密码密钥对,在命令中一路回车即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ ssh-keygen</div></pre></td></tr></table></figure>
+</li>
+<li><h3 id="将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys"><a href="#将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys" class="headerlink" title="将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys"></a>将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys</h3></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</div></pre></td></tr></table></figure>
+<p>查看.ssh中内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd ~/.ssh</div><div class="line">[hadoop@master .ssh]$ ls</div><div class="line">authorized_keys  id_rsa  id_rsa.pub  known_hosts</div></pre></td></tr></table></figure></p>
+<ul>
+<li><p>设置公钥库权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ chmod 600 authorized_keys</div></pre></td></tr></table></figure>
+</li>
+<li><p>重启ssh服务 (root权限)</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo service sshd restart</div></pre></td></tr></table></figure>
+<p><strong>其他主机，即slave1,slave2,slave3，分别执行 ssh-keygen生成密钥对</strong></p>
+<ul>
+<li>将maser主机中的ssh分别发至 slave1,slave2,slave3主机</li>
+</ul>
+<p>其中 slave1@slave1 即 xx@yy xx代表用户名，yy代表主机名<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave1:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave2:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave3:~/.ssh/</div></pre></td></tr></table></figure></p>
+<p>重启其他主机的ssh服务</p>
+<ul>
+<li>测试</li>
+</ul>
+<p>主机之间第一次访问时，会需要接受ESDSA可以，yes接受即可，再次互相访问时，就就不在需要了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave3 ~]$ ssh master</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">Last login: Sun Nov  6 06:03:47 2016 from 192.168.1.105</div><div class="line">[hadoop@master ~]$ ssh slave1</div><div class="line">Last login: Sun Nov  6 06:05:12 2016 from 192.168.1.105</div><div class="line">[hadoop@slave1 ~]$ ssh slave2</div><div class="line">Last login: Sun Nov  6 06:11:48 2016 from 192.168.1.105</div><div class="line">[hadoop@slave2 ~]$ ssh slave3</div></pre></td></tr></table></figure>
+<p>maser,slave1,slave2,slave3 四台主机之间都可以无密码访问，即是ssh设置成功了！</p>
+<h2 id="配置JDK"><a href="#配置JDK" class="headerlink" title="配置JDK"></a>配置JDK</h2><p>这里对==master==主机进行配置 将jdk等软件上传至/opt/目录：</p>
+<ul>
+<li>使用<em>超级管理员</em>用户解压 jdk</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tar -zxvf jdk-7u67-linux-x64.tar.gz</div></pre></td></tr></table></figure>
+<p>配置jdk环境变量 /etc/profile，并查看是否成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67/</div><div class="line">export JRE_HOME=/opt/jdk1.7.0_67/jre</div><div class="line">export CLASSPATH=.:$CLASSPATH:$JAVA_HOME/lib:$JRE_HOME/lib</div><div class="line">export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin</div></pre></td></tr></table></figure></p>
+<p>注意，上面配置中，最后一行，$PATH放在前面不生效时，也可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin：$PATH</div></pre></td></tr></table></figure></p>
+<p>重新加载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">source /etc/profile</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      Hadoop分布式集群搭建
+    
+    </summary>
+    
+      <category term="Hadoop" scheme="http://doublesharejust.com.cn/categories/Hadoop/"/>
+    
+    
+      <category term="Hadoop" scheme="http://doublesharejust.com.cn/tags/Hadoop/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hadoop分布式集群搭建（二）</title>
+    <link href="http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%AC%E5%9C%B0%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
+    <id>http://doublesharejust.com.cn/2016/10/22/Hadoop分布式本地集群搭建（二）/</id>
+    <published>2016-10-22T09:58:27.000Z</published>
+    <updated>2016-11-06T15:39:02.893Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Hadoop"><a href="#Hadoop" class="headerlink" title="Hadoop"></a>Hadoop</h1><h2 id="基础环境"><a href="#基础环境" class="headerlink" title="基础环境"></a>基础环境</h2><ul>
+<li>centOS 64(已配置ssh,jdk,hosts,防火墙关闭) </li>
+<li>hadoop 1.2.1 (推荐)</li>
+</ul>
+<p>所有主机都需要配置，其中个别端口号和地址需要按照主机进行修改，已知/etc/hosts配置</p>
+<table>
+<thead>
+<tr>
+<th>主机</th>
+<th>ip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>master</td>
+<td>192.168.1.122</td>
+</tr>
+<tr>
+<td>slave1</td>
+<td>192.168.1.123</td>
+</tr>
+<tr>
+<td>slave2</td>
+<td>192.168.1.124</td>
+</tr>
+<tr>
+<td>slave3</td>
+<td>192.168.1.125</td>
+</tr>
+</tbody>
+</table>
+<h2 id="安装hadoop"><a href="#安装hadoop" class="headerlink" title="安装hadoop"></a>安装hadoop</h2><p>在目录/home/hadoop/ 下，这里统一使用hadoop用户安装，在安装过程中必须保证使用hadoop用户安装，否则在后面可能会出现无权限的情况，增加工作量，当然，若都使用root用户操作也可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf hadoop-1.2.1.tar.gz</div></pre></td></tr></table></figure></p>
+<ul>
+<li>环境变量配置(/etc/profile)<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">export HADOOP_HOME=/home/hadoop/hadoop-1.2.1</div><div class="line">export PATH=$PATH:$HADOOP_HOME/bin</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>source /etc/profile 重启加载生效</p>
+<h2 id="hadoop配置文件"><a href="#hadoop配置文件" class="headerlink" title="hadoop配置文件"></a>hadoop配置文件</h2><h3 id="修改hadoop配置文件-hadoop-env-sh"><a href="#修改hadoop配置文件-hadoop-env-sh" class="headerlink" title="修改hadoop配置文件 hadoop-env.sh"></a>修改hadoop配置文件 hadoop-env.sh</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master conf]$ vim hadoop-env.sh</div></pre></td></tr></table></figure>
+<p>添加jdk目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67</div></pre></td></tr></table></figure></p>
+<h3 id="配置core-site-xml"><a href="#配置core-site-xml" class="headerlink" title="配置core-site.xml"></a>配置core-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;fs.default.name&lt;/name&gt;</div><div class="line">        &lt;value&gt;hdfs://master:9000&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</div><div class="line">        &lt;value&gt;/home/hadoop/hadoop-data/tmp&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p>属性：</p>
+<ul>
+<li>fs.default.name：是NameNode的URI：hdfs://主机名:端口</li>
+<li>hadoop.tmp.dir ：目录可自己创建，Hadoop的默认临时路径，如进程文件存储，这个最好配置，如果在新增节点或者其他情况下莫名其妙的DataNode启动不了，就删除此文件中的tmp目录即可。不过如果删除了NameNode机器的此目录，那么就需要重新执行NameNode格式化的命令。</li>
+</ul>
+<p>注意：此处的/home/hadoop/hadoop-data/tmp 可先进行创建</p>
+<ul>
+<li>配置 hdfs-site.xml</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.replication&lt;/name&gt;</div><div class="line">    &lt;value&gt;3&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.name.dir&lt;/name&gt;</div><div class="line">    &lt;value&gt;/home/hadoop/hadoop-data/hdfs/name&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.data.dir&lt;/name&gt;</div><div class="line">    &lt;value&gt;/home/hadoop/hadoop-data/hdfs/data&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.permissions&lt;/name&gt;</div><div class="line">    &lt;value&gt;false&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p>属性：</p>
+<ul>
+<li>dfs.replication ：几个从节点，有slave1,slave2,slave3三个</li>
+<li>dfs.name.dir: NameNode元数据存储位置，持久存储名字空间及事务日志的本地文件系统路径。 当这个值是一个逗号分割的目录列表时，nametable数据将会被复制到所有目录中做冗余备份</li>
+<li>dfs.data.dir: DataNode元数据存储本地文件系统路径，存储所有用户数据，逗号分割的列表。 当这个值是逗号分割的目录列表时，数据将被存储在所有目录下，通常分布在不同设备上</li>
+<li>dfs.permissions: 为false不考虑权限</li>
+</ul>
+<p>注意：此处的/home/hadoop/hadoop-data/hdfs/name 与 /home/hadoop/hadoop-data/hdfs/data目录不能预先创建，hadoop格式化时会自动创建</p>
+<h3 id="配置-mapred-site-xml"><a href="#配置-mapred-site-xml" class="headerlink" title="配置 mapred-site.xml"></a>配置 mapred-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">   &lt;property&gt;</div><div class="line">         &lt;name&gt;mapred.job.tracker&lt;/name&gt;</div><div class="line">        &lt;!--&lt;value&gt;192.168.1.122:9001&lt;/value&gt;--&gt;</div><div class="line">        &lt;value&gt;master:9001&lt;/value&gt;</div><div class="line">   &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.local.dir&lt;/name&gt;</div><div class="line">        &lt;value&gt;/home/hadoop/hadoop-data/tmp&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.tasktracker.map.tasks.maximum&lt;/name&gt;</div><div class="line">        &lt;value&gt;3&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.tasktracker.reduce.tasks.maximum&lt;/name&gt;</div><div class="line">        &lt;value&gt;3&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p>属性：</p>
+<ul>
+<li>mapred.job.tracker 为jobtracker 的主机名和端口</li>
+<li>mapred.tasktracker.map.tasks.maximum 为最大map的任务个数</li>
+<li>mapred.tasktracker.reduce.tasks.maximum 为最大reduce任务的个数</li>
+</ul>
+<h3 id="配置-slaves、masters文件"><a href="#配置-slaves、masters文件" class="headerlink" title="配置 slaves、masters文件"></a>配置 slaves、masters文件</h3><p>使用ip或者主机名，做好使用主机名</p>
+<ul>
+<li><p>slaves</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">slave1</div><div class="line">slave2</div><div class="line">slave3</div></pre></td></tr></table></figure>
+</li>
+<li><p>masters</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">master</div></pre></td></tr></table></figure>
+<p>注意: </p>
+<ul>
+<li>其他三台主机也需要进行jdk等基础环境的配置</li>
+<li>从机中的hadoop配置是相同的，如 core-site.xml的配置是相同的<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">scp -r  hadoop-1.2.1 hadoop@slave1:/home/hadoop/</div><div class="line">scp -r  hadoop-1.2.1 hadoop@slave2:/home/hadoop/</div><div class="line">scp -r  hadoop-1.2.1 hadoop@slave3:/home/hadoop/</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="格式化文件系统"><a href="#格式化文件系统" class="headerlink" title="格式化文件系统"></a>格式化文件系统</h2><p>在 /安装目录/bin目录下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master bin]$ hadoop namenode -format</div></pre></td></tr></table></figure>
+<p>可在之前配置的数据目录中，看到生成的文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd /home/hadoop/hadoop-data/</div><div class="line">[hadoop@master hadoop-data]$ ls</div><div class="line">hdfs  tmp</div><div class="line">[hadoop@master hadoop-data]$ cd hdfs/</div><div class="line">[hadoop@master hdfs]$ ls</div><div class="line">name</div></pre></td></tr></table></figure></p>
+<h2 id="启动Hadoop"><a href="#启动Hadoop" class="headerlink" title="启动Hadoop"></a>启动Hadoop</h2><p>终于到了启动的时刻了！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master hadoop-1.2.1]$ bin/start-all.sh</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">Warning: $HADOOP_HOME is deprecated.</div><div class="line"></div><div class="line">starting namenode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-namenode-master.out</div><div class="line">slave3: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave3.out</div><div class="line">slave2: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave2.out</div><div class="line">slave1: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave1.out</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">master: Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">master: starting secondarynamenode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-secondarynamenode-master.out</div><div class="line">starting jobtracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-jobtracker-master.out</div><div class="line">slave1: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave1.out</div><div class="line">slave3: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave3.out</div><div class="line">slave2: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave2.out</div></pre></td></tr></table></figure>
+<p>查看是不是配置成功了!!!</p>
+<ul>
+<li><p>[x] - 在master中，显示四个进程!</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ jps</div><div class="line">15575 SecondaryNameNode</div><div class="line">15723 JobTracker</div><div class="line">15924 Jps</div><div class="line">15361 NameNode</div></pre></td></tr></table></figure>
+</li>
+<li><p>[x] 在三个从节点中显示三个进程!</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave1 ~]$ jps</div><div class="line">10195 TaskTracker</div><div class="line">10549 Jps</div><div class="line">9935 DataNode</div></pre></td></tr></table></figure>
+<p>心里感觉很舒畅，但是还没有完，要验证是否每个datanode都是正常与master链接，如果防火墙不关闭的话，会有问题的！</p>
+<ul>
+<li><a href="http://master:50070" target="_blank" rel="external">http://master:50070</a><br>如下图所示，可以看到 容量、LiveNodes=3</li>
+</ul>
+<p><img src="http://og6e19zce.bkt.clouddn.com/hadoop_done.png" alt="image"></p>
+<ul>
+<li><a href="http://master:50030" target="_blank" rel="external">http://master:50030</a></li>
+</ul>
+<p><img src="http://og6e19zce.bkt.clouddn.com/hadoop_node.jpg" alt="image"></p>
+<p>以上两个地址正常出现，则表示集群正式搭建成功了！ Congratulation!</p>
+<p>此外，如果从机节点不是全部启用的话，可以单独在从机节点，启动hdfs和mpared<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">start-dfs.sh</div><div class="line">start-mapred.sh</div></pre></td></tr></table></figure></p>
+<h3 id="关闭Hadoop"><a href="#关闭Hadoop" class="headerlink" title="关闭Hadoop"></a>关闭Hadoop</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ hadoop-1.2.1/bin/stop-all.sh</div></pre></td></tr></table></figure>
+<h3 id="END"><a href="#END" class="headerlink" title="END"></a>END</h3><p>接下来，就是对集群的使用了 ~ </p>]]></content>
+    
+    <summary type="html">
+    
+      Hadoop分布式集群搭建
+    
+    </summary>
+    
+      <category term="Hadoop" scheme="http://doublesharejust.com.cn/categories/Hadoop/"/>
+    
+    
+      <category term="Hadoop" scheme="http://doublesharejust.com.cn/tags/Hadoop/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java 多线程-Thread</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%20%E5%A4%9A%E7%BA%BF%E7%A8%8B%20-%20Thread/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java 多线程 - Thread/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-07T14:46:56.727Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="interrupt-线程中断方法"><a href="#interrupt-线程中断方法" class="headerlink" title="interrupt() 线程中断方法"></a>interrupt() 线程中断方法</h2><blockquote>
+<p>javaDoc</p>
+<ul>
+<li>若中断的不是自身线程，需要进行权限检查 checkAccess(),有权限才可对目标中断</li>
+<li>若线程T在执行以下三种情况时，对线程T使用interrupted()方法，T的中断标志变为true，当T捕获异常后，中断标志重新变为false<ol>
+<li>执行Object.wait(…)方法或该类join(…),sleep(…)方法</li>
+<li>java.nio.channels.InterruptibleChannel的I/O操作，关闭通道</li>
+<li>java.nio.channels.Selector，立即返回操作数，并可能带有一个非0值<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public void interrupt() &#123;</div><div class="line">      if (this != Thread.currentThread())</div><div class="line">          checkAccess();</div><div class="line"></div><div class="line">      synchronized (blockerLock) &#123;</div><div class="line">          Interruptible b = blocker;</div><div class="line">          if (b != null) &#123;</div><div class="line">              interrupt0();           // Just to set the interrupt flag</div><div class="line">              b.interrupt(this);</div><div class="line">              return;</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">      interrupt0();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<h3 id="interrupted-与-isInterrunpted区别"><a href="#interrupted-与-isInterrunpted区别" class="headerlink" title="interrupted 与 isInterrunpted区别"></a>interrupted 与 isInterrunpted区别</h3><ul>
+<li>interrupted() 测试<strong>当前线程</strong>是否已经是中断状态，执行后具有状态标志位清除为false的可能，第二次调用 Thread.interrupted()方法，总是返回 false，除非中断了线程。</li>
+<li>isInterrupted() 测试<strong>目标线程对象</strong>是否已经是中断状态，但不清除状态标识</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public static boolean interrupted() &#123;</div><div class="line">    return currentThread().isInterrupted(true);</div><div class="line">&#125;</div><div class="line">public boolean isInterrupted() &#123;</div><div class="line">    return isInterrupted(false);</div><div class="line">&#125;</div><div class="line">private native boolean isInterrupted(boolean ClearInterrupted);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>示例：interrupt +isInterrupted<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">public class InterruptedDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Thread t = new Thread(new ThreadDemo());</div><div class="line">        t.start();</div><div class="line"></div><div class="line">        System.out.println(&quot;线程t开始，中断标志：&quot;+ t.isInterrupted());//false</div><div class="line">        //中断线程</div><div class="line">        t.interrupt();</div><div class="line">        System.out.println(&quot;线程t中断标志:：&quot;+ t.isInterrupted());//true</div><div class="line">        try &#123;</div><div class="line">            //模拟 t 抛出异常后中断标志是否消失</div><div class="line">            Thread.sleep(2000);</div><div class="line">            System.out.println(&quot;线程t处理异常后,中断标志：&quot;+ t.isInterrupted());//false</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class ThreadDemo extends Thread &#123;</div><div class="line">    public void run() &#123;</div><div class="line">        try &#123;</div><div class="line">            System.out.println(&quot;开始方法...&quot;);</div><div class="line">            Thread.sleep(300000);</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            System.out.println(&quot;线程被中断&quot;);</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        System.out.println(&quot;结束方法...&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>示例</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">public static void main(String args[]) &#123;</div><div class="line">      System.out.println(&quot;A:&quot;+Thread.interrupted()); //false</div><div class="line">      Thread.currentThread().interrupt();</div><div class="line">      System.out.println(&quot;B:&quot;+Thread.interrupted()); //true</div><div class="line">      System.out.println(&quot;C:&quot;+Thread.interrupted()); //false</div><div class="line">      System.out.println(&quot;D:&quot;+Thread.interrupted()); //false</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>此外：终止线程</p>
+<ul>
+<li>使用退出标志，是线程正常退出，也就是当run方法完成后线程终止；</li>
+<li>使用stop方法强行终止线程，但是不推荐使用这个方法，因为stop和suspend及resume一样都是作废过期的方法，使用它们可能产生不可预料的结果；(已淘汰)</li>
+</ul>
+</blockquote>
+<p>问题：一，当线程终止时，很少有机会执行清理工作；二，当在某个线程上调用 stop()方法时，线程释放它当前持有的所有锁，持有这些锁必定有某种合适的理由——也许是阻止其他线程访问尚未处于一致性状态的数据，突然释放锁可能使某些对象中的数据处于不一致状态，而且不会出现数据可能崩溃的任何警告</p>
+<ul>
+<li>使用interrupt方法中断线程；（推荐）</li>
+</ul>
+<h2 id="线程阻塞-yield-，sleep"><a href="#线程阻塞-yield-，sleep" class="headerlink" title="线程阻塞 yield()，sleep()"></a>线程阻塞 yield()，sleep()</h2><blockquote>
+<p>sleep(ms)</p>
+</blockquote>
+<p>暂停一段时间</p>
+<blockquote>
+<p> yield()</p>
+</blockquote>
+<p>yield()方法的作用是放弃当前的CPU资源，将它让给其他的任务去占用CPU执行时间。但放弃时间不确定，有可能刚刚放弃，马上又获得CPU时间片。这里需要注意的是<strong>yield()方法和sleep方法一样，线程并不会让出锁</strong>，和wait不同。</p>
+<h2 id="DaemonThread守护线程"><a href="#DaemonThread守护线程" class="headerlink" title="DaemonThread守护线程"></a>DaemonThread守护线程</h2><p>只要当前JVM实例中尚存任何一个非守护线程没有结束，守护线程就全部工作；只有当最后一个非守护线程结束是，守护线程随着JVM一同结束工作，Daemon作用是为其他线程提供便利服务，守护线程最典型的应用就是GC(垃圾回收器)</p>
+<ul>
+<li>设置守护线程必须在用户线程start前设置</li>
+<li>在Daemon线程中产生的新线程也是Daemon</li>
+<li>java的线程池会将守护线程转换为用户线程，所以如果要使用后台线程就不能用java的线程池。<br>如下，线程池中将daemon线程转换为用户线程的程序片段<blockquote>
+<p>示例1</p>
+</blockquote>
+</li>
+</ul>
+<p>一个主线程(Daemon),一个用户线程，主线程结束，用户线程也结束</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">public class DaemonDemo1 &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Thread daemonThread = new Thread(new Runnable() &#123;</div><div class="line">            @Override</div><div class="line">            public void run() &#123;</div><div class="line">                Thread t = new Thread(new UserThread());</div><div class="line">                t.setDaemon(true);</div><div class="line">                t.start();</div><div class="line">                try &#123;</div><div class="line">                    TimeUnit.MILLISECONDS.sleep(1200);//</div><div class="line">                &#125; catch (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">                System.out.println(&quot;DaemonThread&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        daemonThread.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class UserThread extends  Thread&#123;</div><div class="line">    public void run()&#123;</div><div class="line">        while(true)&#123;</div><div class="line">            System.out.println(&quot;用户线程...&quot;);</div><div class="line">            try &#123;</div><div class="line">                TimeUnit.MILLISECONDS.sleep(1000);//如果参数小于0，则不sleep</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>注：若当前jvm应用实例中有其他用户线程继续执行，那么后台线程不会中断<blockquote>
+<p>示例</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">public class DaemonDemo1 &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Thread daemonThread = new Thread(new Runnable() &#123;</div><div class="line">            @Override</div><div class="line">            public void run() &#123;</div><div class="line">                Thread t = new Thread(new UserThread());</div><div class="line">                t.setDaemon(true);</div><div class="line">                t.start();</div><div class="line">                try &#123;</div><div class="line">                    TimeUnit.MILLISECONDS.sleep(1200);//</div><div class="line">                &#125; catch (InterruptedException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">                System.out.println(&quot;DaemonThread&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        daemonThread.start();</div><div class="line">        Thread daemonThread2 = new Thread(new Runnable() &#123;</div><div class="line">            public void run()&#123;</div><div class="line">                while(true)&#123;</div><div class="line">                    try &#123;</div><div class="line">                        TimeUnit.MILLISECONDS.sleep(1200);//</div><div class="line">                    &#125; catch (InterruptedException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                    System.out.println(&quot;DaemonThread2&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        daemonThread2.start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class UserThread extends  Thread&#123;</div><div class="line">    public void run()&#123;</div><div class="line">        while(true)&#123;</div><div class="line">            System.out.println(&quot;用户线程...&quot;);</div><div class="line">            try &#123;</div><div class="line">                TimeUnit.MILLISECONDS.sleep(1000);//如果参数小于0，则不sleep</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">用户线程...</div><div class="line">用户线程...</div><div class="line">DaemonThread</div><div class="line">DaemonThread2</div><div class="line">用户线程...</div><div class="line">DaemonThread2</div><div class="line">用户线程...</div><div class="line">DaemonThread2 (无限执行)</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      Java线程的基础知识笔记
+    
+    </summary>
+    
+      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
+    
+    
+      <category term="Java" scheme="http://doublesharejust.com.cn/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java并发工具包（上）</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（上）/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-07T14:46:56.741Z</updated>
+    
+    <content type="html"><![CDATA[<p>有助于创建强大的并发编程</p>
+<ul>
+<li>同步器：为每种特定的同步问题提供了解决方案</li>
+<li>执行器：用来管理线程的执行，如线程池</li>
+<li>并发集合：提供了集合框架中集合的并发版本</li>
+</ul>
+<h2 id="Semaphore"><a href="#Semaphore" class="headerlink" title="Semaphore"></a>Semaphore</h2><p>控制一定资源的消费与回收，Semaphore 可以控制某个资源被同时访问的任务数，它通过acquire()获取一个许可，release()释放一个许可。如果被同时访问的任务数已满，则其他 acquire 的任务进入等待状态，直到有一个任务被 release 掉，它才能得到许可。</p>
+<blockquote>
+<p>特点:经典的信号量，通过计数器控制对共享资源的访问<br>常用</p>
+<ul>
+<li>Semaphore(int count):创建拥有count个许可证的信号量</li>
+<li>acquire()/acquire(int num)：获取1/num个信号量</li>
+<li>release()/release(int num):释放1/num个信号量</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Semaphore;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class SemaphoreDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //创建2个信号量，有三个对象要使用</div><div class="line">        Semaphore semaphore = new Semaphore(2);</div><div class="line">        new Person(semaphore,&quot;A&quot;).start();</div><div class="line">        new Person(semaphore,&quot;B&quot;).start();</div><div class="line">        new Person(semaphore,&quot;C&quot;).start();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">&#125;</div><div class="line">class Person extends Thread&#123;</div><div class="line">    private Semaphore semaphore;</div><div class="line">    public Person(Semaphore semaphore,String name)&#123;</div><div class="line">        this.semaphore = semaphore;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        System.out.println(getName() + &quot; is waiting&quot;);</div><div class="line">        try &#123;</div><div class="line">            //获取信号量</div><div class="line">            semaphore.acquire();//默认获取一个</div><div class="line">            System.out.println(getName()+&quot; is serving&quot;);</div><div class="line">            Thread.sleep(1000);</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        System.out.println(getName()+&quot; is done.&quot;);</div><div class="line">        semaphore.release();//释放信号量</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="CountDownLatch-同步器"><a href="#CountDownLatch-同步器" class="headerlink" title="CountDownLatch 同步器"></a>CountDownLatch 同步器</h2><blockquote>
+<p>特点：需要等待几秒后才会触发</p>
+<p>常用</p>
+<ul>
+<li>必须发生指定数量的事件后才可以继续运行</li>
+<li>CountDownLatch(int count):必须发生count个数量才可以打开锁存器</li>
+<li>await()：等待锁存器</li>
+<li>countDown()：触发事件</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.CountDownLatch;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 模拟赛跑，倒数指令</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class CountDownLatchDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //3 表示有三个事件发生才会执行该线程</div><div class="line">        CountDownLatch countDownLatch = new CountDownLatch(3);</div><div class="line">        new Racer(countDownLatch, &quot;A&quot;).start();</div><div class="line">        new Racer(countDownLatch, &quot;B&quot;).start();</div><div class="line">        new Racer(countDownLatch, &quot;C&quot;).start();</div><div class="line">        for(int i=0;i&lt;3;i++)&#123;</div><div class="line">            System.out.println(&quot;计数:&quot;+(3-i));</div><div class="line">            countDownLatch.countDown();//触发事件</div><div class="line">            if(i==2)&#123;</div><div class="line">                System.out.println(&quot;start--&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Racer extends  Thread&#123;</div><div class="line">    CountDownLatch countDownLatch;</div><div class="line"></div><div class="line">    public Racer(CountDownLatch countDownLatch, String name) &#123;</div><div class="line">        this.countDownLatch = countDownLatch;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void run() &#123;</div><div class="line">        try &#123;</div><div class="line">            //等待</div><div class="line">            countDownLatch.await();</div><div class="line">            //执行操作</div><div class="line">            System.out.println(&quot;执行程序: &quot;+getName());</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="CyclicBarrier同步器"><a href="#CyclicBarrier同步器" class="headerlink" title="CyclicBarrier同步器"></a>CyclicBarrier同步器</h2><blockquote>
+<p>特点</p>
+<ul>
+<li>适用于只有多个线程都达到预定点时才可以继续执行</li>
+<li>CyclicBarrier(int num):等待线程的数量</li>
+<li>CyclicBarrier(int num,Runnable action)：等待线程的数量以及所有线程到达后的操作</li>
+<li>await()：到达临界点后暂停线程</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.BrokenBarrierException;</div><div class="line">import java.util.concurrent.CyclicBarrier;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 模拟斗地主</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class CyclicBarrierDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new Runnable() &#123;</div><div class="line">            @Override</div><div class="line">            public void run() &#123;</div><div class="line">                System.out.println(&quot;Game start&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        new Player(cyclicBarrier,&quot;A&quot;).start();</div><div class="line">        new Player(cyclicBarrier,&quot;B&quot;).start();</div><div class="line">        new Player(cyclicBarrier,&quot;C&quot;).start();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Player extends Thread&#123;</div><div class="line">    CyclicBarrier cyclicBarrier;</div><div class="line"></div><div class="line">    public Player(CyclicBarrier cyclicBarrier, String name) &#123;</div><div class="line">        this.cyclicBarrier = cyclicBarrier;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        System.out.println(getName()+&quot;等待&quot;);</div><div class="line">        try &#123;</div><div class="line">            cyclicBarrier.await();</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; catch (BrokenBarrierException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Exchanger-交换器"><a href="#Exchanger-交换器" class="headerlink" title="Exchanger 交换器"></a>Exchanger 交换器</h2><blockquote>
+<p>特点：简化两个线程间数据的交换</p>
+</blockquote>
+<p>常用方法</p>
+<ul>
+<li>Exchanger<v>:指定进行交换的数据类型</v></li>
+<li>V exchange(V object):等待线程到达，交换数据</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Exchanger;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class ExchangerDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Exchanger&lt;String&gt; ex = new Exchanger&lt;&gt;();</div><div class="line">        new A(ex).start();</div><div class="line">        new B(ex).start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class A extends Thread&#123;</div><div class="line">    Exchanger&lt;String&gt; ex;</div><div class="line">    public A(Exchanger ex)&#123;</div><div class="line">        this.ex = ex;</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        String str;</div><div class="line">        try &#123;</div><div class="line">            str = ex.exchange(&quot;hello&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is A&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+ str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is A1&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+ str);</div><div class="line"></div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class B extends Thread&#123;</div><div class="line">    Exchanger&lt;String&gt; ex;</div><div class="line">    public B(Exchanger ex)&#123;</div><div class="line">        this.ex = ex;</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        String str;</div><div class="line">        try &#123;</div><div class="line">            str = ex.exchange(&quot;hI&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is B&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+ str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is B1&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+ str);</div><div class="line"></div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Phaser"><a href="#Phaser" class="headerlink" title="Phaser"></a>Phaser</h2><blockquote>
+<p>特点：工作方式与CyclicBarrier类似，但是可以定义多个阶段<br>常用:</p>
+<ul>
+<li>Phaser()/Phaser(int num):使用指定0/num个party创建Phaser</li>
+<li>register():注册party</li>
+<li>arriveAndAdvance():到达时等待所有party到达</li>
+<li>arriveAndDeregister()：到达时注销线程自己</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Phaser;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class PhaserDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Phaser phaser = new Phaser(1);</div><div class="line">        System.out.println(&quot;starting...&quot;);</div><div class="line">        //假设每个订单有三道工序</div><div class="line">        new Worker(phaser,&quot;worker1&quot;).start();//执行等待</div><div class="line">        new Worker(phaser, &quot;worker2&quot;).start();</div><div class="line">        new Worker(phaser,&quot;worker3&quot;).start();</div><div class="line">        //处理三个订单</div><div class="line">        for(int i=0;i&lt;3;i++) &#123;</div><div class="line">            //处理完每一个订单都要等待，相当于开始执行下一个订单</div><div class="line">            phaser.arriveAndAwaitAdvance();</div><div class="line">        &#125;</div><div class="line">        //所有订单处理完毕，接触在phaser上注册的所有worker</div><div class="line">        phaser.arriveAndDeregister();</div><div class="line">        System.out.println(&quot;all done...&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Worker extends Thread&#123;</div><div class="line">    Phaser phaser;</div><div class="line">    public Worker(Phaser phaser,String name)&#123;</div><div class="line">        this.phaser = phaser;</div><div class="line">        setName(name);</div><div class="line">        phaser.register();//当当前线程注册到phaser中</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        //模拟三个订单</div><div class="line">        for(int i=1;i&lt;=3;i++)&#123;</div><div class="line">            System.out.println(&quot;current order:&quot;+i+&quot;:&quot;+getName());</div><div class="line">            if(i==3)&#123;</div><div class="line">                //如果是第三个订单，即所有订单都处理完毕，注销phaser</div><div class="line">                phaser.arriveAndDeregister();</div><div class="line">            &#125;else&#123;//否则，执行等待</div><div class="line">                phaser.arriveAndAwaitAdvance();</div><div class="line">            &#125;</div><div class="line">            try &#123;</div><div class="line">                Thread.sleep(1500);</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      Java并发操作中使用的工具类
+    
+    </summary>
+    
+      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
+    
+    
+      <category term="Java并发" scheme="http://doublesharejust.com.cn/tags/Java%E5%B9%B6%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java并发工具包(下)</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（下）/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-07T14:46:56.746Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h2><blockquote>
+<p>特点：用于启动并控制线程执行<br>常用API</p>
+<ul>
+<li>核心接口为 Executor,包含一个execute(Runnable)用于指定被执行的线程</li>
+<li>ExecutorService接口用于控制线程执行和管理线程</li>
+<li>预定义了如下执行器：</li>
+</ul>
+<ol>
+<li>ThreadPoolExecutor(线程池)</li>
+<li>ScheduledThreadPoolExecutor</li>
+<li>ForkJoinPool</li>
+</ol>
+</blockquote>
+<h3 id="Callable-与-Future"><a href="#Callable-与-Future" class="headerlink" title="Callable 与 Future"></a>Callable 与 Future</h3><ul>
+<li>Callable<v>:表示具有返回值的线程</v></li>
+<li>V：表示返回值类型</li>
+<li>call():执行任务</li>
+<li>Future<v>:表示Callable的返回值</v></li>
+<li>V：返回值类型</li>
+<li>get():获取返回值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.*;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class ExecutorDemo &#123;</div><div class="line"></div><div class="line">    public static void main(String args[]) throws ExecutionException, InterruptedException &#123;</div><div class="line">        //初始化具有两个固定线程的线程池 </div><div class="line">        ExecutorService es = Executors.newFixedThreadPool(2);</div><div class="line">        //通过submit方法调用call方法；即放入线程中执行</div><div class="line">        Future&lt;Integer&gt; f1 =es.submit(new Method(1,100));</div><div class="line">        Future&lt;Integer&gt; f2 = es.submit(new Method(100, 1000));</div><div class="line">        Future&lt;Integer&gt; f3 = es.submit(new Method(100, 1000));</div><div class="line">        System.out.println(&quot;f1:&quot;+f1.get());//获取返回值</div><div class="line">        System.out.println(&quot;f2:&quot;+f2.get());</div><div class="line">        System.out.println(&quot;f2:&quot;+f3.get());</div><div class="line">        //停止执行器</div><div class="line">        es.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Method implements Callable&lt;Integer&gt; &#123;</div><div class="line">    private int begin;</div><div class="line">    private int end;</div><div class="line"></div><div class="line">    public Method(int begin, int end) &#123;</div><div class="line">        this.begin = begin;</div><div class="line">        this.end = end;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public Integer call() throws Exception &#123;</div><div class="line">        int sum = 0;</div><div class="line">        for (int i = begin; i &lt;end; i++) &#123;</div><div class="line">            sum+=i;</div><div class="line">        &#125;</div><div class="line">        Thread.sleep(3000);</div><div class="line">        return sum;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="锁与原子操作"><a href="#锁与原子操作" class="headerlink" title="锁与原子操作"></a>锁与原子操作</h2><h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><ul>
+<li>为使用synchronized控制对资源访问提供了替代机制</li>
+<li>基本操纵模型：访问资源之前申请锁，访问完毕后释放锁</li>
+<li>lock/tryLock：申请锁</li>
+<li>unlock：释放锁</li>
+<li>具体锁实现类：ReentrantLock实现了Lock接口</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.locks.Lock;</div><div class="line">import java.util.concurrent.locks.ReentrantLock;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class LockDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">           new AddData().start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Data &#123;</div><div class="line">    static int i=0;</div><div class="line">    static  Lock lock = new ReentrantLock();</div><div class="line">    static void operate( )&#123;</div><div class="line">        lock.lock();</div><div class="line">        i++;</div><div class="line">        System.out.println(&quot;i:&quot;+i);</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class AddData extends Thread&#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">       while (true) &#123;</div><div class="line">            try &#123;</div><div class="line">                Thread.sleep(1000);</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">            Data.operate();</div><div class="line">       &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h3><p>java.util.concurrent.atom包中提供了对原子操作的支持</p>
+<ul>
+<li>提供了不需要锁以及其他同步机制就可以进行的一些不可中断操作</li>
+<li>主要操作为：获取，设置，比较</li>
+</ul>]]></content>
+    
+    <summary type="html">
+    
+      Java并发操作中使用的工具类
+    
+    </summary>
+    
+      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
+    
+    
+      <category term="Java并发" scheme="http://doublesharejust.com.cn/tags/Java%E5%B9%B6%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java设计模式-单例模式</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-单例模式/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-07T14:46:56.734Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>保证一个类仅有一个实例，并提供一个访问它的全局访问点。</p>
+<blockquote>
+<p>适用性：当类只能有一个实例而且客户可以从一个众所周知的访问点访问它时。当这个唯一实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能使用一个扩展的实例时。</p>
+</blockquote>
+<h2 id="占位符式"><a href="#占位符式" class="headerlink" title="占位符式"></a>占位符式</h2><ul>
+<li>线程安全<blockquote>
+<p>JVM内部机制保证在执行类构造器初始化的时候是线程安全的</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public class JustDemo &#123;</div><div class="line">    private  static  boolean flag = true;</div><div class="line">    public JustDemo() &#123;</div><div class="line">        synchronized (JustDemo.class)&#123;</div><div class="line">            if(flag)&#123;</div><div class="line">                flag = false;</div><div class="line">            &#125;else&#123;</div><div class="line">                throw new RuntimeException(&quot;反射入侵已阻止&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    private static class Single&#123;</div><div class="line">        private static final JustDemo INSTANCE = new JustDemo();</div><div class="line">    &#125;</div><div class="line">    public JustDemo getInstance() &#123;</div><div class="line">        return Single.INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>上面示例可防止Java反射方法调用</p>
+</blockquote>
+<h2 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class LazySingleton &#123;</div><div class="line">    private static LazySingleton instance;</div><div class="line"></div><div class="line">    private LazySingleton() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static synchronized LazySingleton getInstance() &#123;</div><div class="line">        if (instance == null)&#123;</div><div class="line">            instance = new LazySingleton();</div><div class="line">        &#125;</div><div class="line">        return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Singleton &#123;</div><div class="line">    private static Singleton instance = new Singleton();</div><div class="line"></div><div class="line">    private Singleton() &#123;</div><div class="line">    &#125;</div><div class="line">    public static Singleton getInstance() &#123;</div><div class="line">            return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      Java设计模式学习笔记
+    
+    </summary>
+    
+      <category term="单例模式" scheme="http://doublesharejust.com.cn/categories/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java设计模式-装饰者模式</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-07T14:46:56.721Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>项目：咖啡馆订单系统</p>
+<ul>
+<li>咖啡种类：Espresso,ShortBlack,LongBlack,Decaf</li>
+<li>调料：Milk,Soy,Chocolate</li>
+<li>扩展性好：有新品种咖啡，无需改动之前的，不会对原有代码有影响、改动方便、维护方便</li>
+</ul>
+<p>1 装饰者模式就像打包一个快递</p>
+<ul>
+<li>主体：陶瓷、衣服</li>
+<li>包装：报纸填充、塑料泡沫、纸板<br>2 Component:主体超类 或再添加一中间层(实现公共功能)</li>
+</ul>
+<p>3 ConcreteComponent 待包装的主体，如Decaf 和 Decorator </p>
+<p>4 装饰者模式：动态的将新功能附加到对象上。在对象功能拓展方面，它比继承更有弹性</p>
+<h2 id="Java内置装饰者"><a href="#Java内置装饰者" class="headerlink" title="Java内置装饰者"></a>Java内置装饰者</h2><p>Java的IO结构<br>InputStream是超类 FilterInputStream是中间类 BufferedInputStream属于装饰类</p>
+<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><ul>
+<li>开放、关闭原则：对添加新代码开放，对已测试好功能关闭</li>
+<li>易拓展</li>
+</ul>]]></content>
+    
+    <summary type="html">
+    
+      Java设计模式学习笔记
+    
+    </summary>
+    
+      <category term="装饰者模式" scheme="http://doublesharejust.com.cn/categories/%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   
