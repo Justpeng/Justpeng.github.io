@@ -13,16 +13,177 @@
 
 
 
-<meta name="description" content="Linux常用命令">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Linux常用命令小结">
-<meta property="og:url" content="http://doublesharejust.com.cn/2016/10/02/Linux常用命令小结/index.html">
+<meta name="description" content="环境：Centos7
+查询如何使用命令
+
+
+名称
+命令
+示例
+
+
+
+
+概述命令
+whatis
+whatis ls
+
+
+命令作用、参数
+man
+man ls
+
+
+查看文件作用
+man -k
+man -k /etc/hosts
+
+
+查看命令作用
+info
+info grep
+
+
+
+辅助命令
+
+
+名称
+命令
+示例
+
+
+
+
+列出最近使用的命令
+history
+
+
+
+清屏
+clear
+
+
+
+查看当前位置
+p">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DoubleShare">
+<meta property="og:url" content="http://doublesharejust.com.cn/back/blog/Linux常用命令小结.html">
 <meta property="og:site_name" content="DoubleShare">
-<meta property="og:description" content="Linux常用命令">
-<meta property="og:updated_time" content="2016-11-07T14:57:46.108Z">
+<meta property="og:description" content="环境：Centos7
+查询如何使用命令
+
+
+名称
+命令
+示例
+
+
+
+
+概述命令
+whatis
+whatis ls
+
+
+命令作用、参数
+man
+man ls
+
+
+查看文件作用
+man -k
+man -k /etc/hosts
+
+
+查看命令作用
+info
+info grep
+
+
+
+辅助命令
+
+
+名称
+命令
+示例
+
+
+
+
+列出最近使用的命令
+history
+
+
+
+清屏
+clear
+
+
+
+查看当前位置
+p">
+<meta property="og:image" content="http://og6e19zce.bkt.clouddn.com/linux_grep.png">
+<meta property="og:updated_time" content="2016-11-07T15:00:35.043Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux常用命令小结">
-<meta name="twitter:description" content="Linux常用命令">
+<meta name="twitter:title" content="DoubleShare">
+<meta name="twitter:description" content="环境：Centos7
+查询如何使用命令
+
+
+名称
+命令
+示例
+
+
+
+
+概述命令
+whatis
+whatis ls
+
+
+命令作用、参数
+man
+man ls
+
+
+查看文件作用
+man -k
+man -k /etc/hosts
+
+
+查看命令作用
+info
+info grep
+
+
+
+辅助命令
+
+
+名称
+命令
+示例
+
+
+
+
+列出最近使用的命令
+history
+
+
+
+清屏
+clear
+
+
+
+查看当前位置
+p">
+<meta name="twitter:image" content="http://og6e19zce.bkt.clouddn.com/linux_grep.png">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -52,7 +213,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Linux常用命令小结 | DoubleShare</title>
+<title>DoubleShare</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -62,7 +223,7 @@
         fancybox: true,
         animate: false,
         isHome: false,
-        isPost: true,
+        isPost: false,
         isArchive: false,
         isTag: false,
         isCategory: false,
@@ -264,11 +425,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我">
 </nav>
-      <div class="body-wrap"><article id="post-Linux常用命令小结" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/02/Linux常用命令小结/" class="article-date">
-      <time datetime="2016-10-02T09:58:27.000Z" itemprop="datePublished">2016-10-02</time>
+      <a href="/back/blog/Linux常用命令小结.html" class="article-date">
+      <time datetime="2016-11-07T15:00:35.049Z" itemprop="datePublished">2016-11-07</time>
 </a>
     </div>
   
@@ -277,23 +438,25 @@
       <input type="hidden" class="isFancy">
     
     
-      <header class="article-header">
-        <h1 class="article-title" itemprop="name">
-      Linux常用命令小结
-    </h1>
-      </header>
-      
-      <div class="article-info article-info-post">
-        <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-    </div>
-        
-        <div class="clearfix"></div>
-      </div>
-      
-    
     <div class="article-entry" itemprop="articleBody">
       
+          
+              <style>
+    .article-meta { display: none; }
+    #container .article .article-title { padding-right: 0; }
+    .article-header {
+        padding: 0;
+        padding-top: 26px;
+        border-left: none;
+        text-align: center;
+    }
+    .article-header:hover { border-left: none; }
+    .article-title { font-size: 1.6em }
+    .article-entry hr { margin: 0;}
+    .article-meta,
+    #container .article-info-post.article-info { display: none;}
+    #container .article .article-title { padding: 0; }
+</style>
           
         <p>环境：Centos7</p>
 <h3 id="查询如何使用命令"><a href="#查询如何使用命令" class="headerlink" title="查询如何使用命令"></a>查询如何使用命令</h3><table>
@@ -423,10 +586,9 @@
 <td>rm test.txt</td>
 </tr>
 <tr>
-<td>  模糊匹配</td>
+<td> 模糊匹配</td>
 <td>grep</td>
-<td>more test.txt</td>
-<td>grep te 查看文件test.txt中 包含’te’字符串</td>
+<td><img src="http://og6e19zce.bkt.clouddn.com/linux_grep.png" alt="image"></td>
 </tr>
 </tbody>
 </table>
@@ -785,7 +947,8 @@
 </tr>
 <tr>
 <td>Mode</td>
-<td>permissions on map 映像权限: r=read, w=write, x=execute, s=shared, p=private (copy on write)</td>
+<td>permissions on map 映像权限: r=read, w=write, x=execute, s=shared, p=private (copy on write)  Mapping</td>
+<td>file backing the map , or ‘[ anon ]’ for allocated memory, or ‘[ stack ]’ for the program stack.  映像支持文件,[anon]为已分配内存 [stack]为程序堆栈</td>
 </tr>
 <tr>
 <td>Offset</td>
@@ -924,41 +1087,7 @@
 </tr>
 </tbody>
 </table>
-<p>其他常用：</p>
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ps -ef 或ps -aux</td>
-<td>查看进程</td>
-</tr>
-<tr>
-<td>kill -9</td>
-<td>强制杀死进程</td>
-</tr>
-<tr>
-<td>jobs</td>
-<td>查看中止或后台运行的进程</td>
-</tr>
-<tr>
-<td>bg</td>
-<td>把进程放在后台运行</td>
-</tr>
-<tr>
-<td>fg</td>
-<td>把进程放在前台运行</td>
-</tr>
-<tr>
-<td>ctrl+c</td>
-<td>终止在前台运行的进程</td>
-</tr>
-</tbody>
-</table>
+<p>其他常用：<br>参数 | 含义<br>—|—<br>ps -ef 或ps -aux| 查看进程<br>kill -9  |强制杀死进程<br>jobs| 查看中止或后台运行的进程<br>bg |把进程放在后台运行<br>fg |把进程放在前台运行<br>ctrl+c| 终止在前台运行的进程</p>
 <h3 id="远程操作命令"><a href="#远程操作命令" class="headerlink" title="远程操作命令"></a>远程操作命令</h3><ul>
 <li>shh</li>
 <li>scp</li>
@@ -969,63 +1098,10 @@
     
   </div>
   
-    <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/10/02/Linux常用命令小结/">Linux常用命令小结</a></p>
-        <p><span>文章作者:</span><a href="/" title="回到主页">Just</a></p>
-        <p><span>发布时间:</span>2016-10-02, 17:58:27</p>
-        <p><span>最后更新:</span>2016-11-07, 22:57:46</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/10/02/Linux常用命令小结/" title="Linux常用命令小结">http://doublesharejust.com.cn/2016/10/02/Linux常用命令小结/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://doublesharejust.com.cn/2016/10/02/Linux常用命令小结/　　作者: Just" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
-            <script> var clipboard = new Clipboard('.copy-path'); </script>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
-        </p>
-    </div>
-
-
-
-    <nav id="article-nav">
-        
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/02/Java设计模式-装饰者模式/">
-                    Java设计模式-装饰者模式
-                </a>
-            </div>
-        
-        
-            <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/09/02/关于性能调优记录/">
-                    Web部署应用性能调优问题
-                </a>
-            </div>
-        
-    </nav>
+    
   
 </article>
-<div id="toc" class="toc-article">
-        <strong class="toc-title">文章目录</strong>
-        
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#查询如何使用命令"><span class="toc-number">1.</span> <span class="toc-text">查询如何使用命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助命令"><span class="toc-number">2.</span> <span class="toc-text">辅助命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本命令1"><span class="toc-number">3.</span> <span class="toc-text">基本命令1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本命令2"><span class="toc-number">4.</span> <span class="toc-text">基本命令2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#压缩包操作"><span class="toc-number">5.</span> <span class="toc-text">压缩包操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用户操作"><span class="toc-number">6.</span> <span class="toc-text">用户操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统监控命令简述"><span class="toc-number">7.</span> <span class="toc-text">系统监控命令简述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#top"><span class="toc-number">7.1.</span> <span class="toc-text">top</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#iostat"><span class="toc-number">7.2.</span> <span class="toc-text">iostat</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#vmstat"><span class="toc-number">7.3.</span> <span class="toc-text">vmstat</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#free"><span class="toc-number">7.4.</span> <span class="toc-text">free</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pmap"><span class="toc-number">7.5.</span> <span class="toc-text">pmap</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#netstat-anlp"><span class="toc-number">7.6.</span> <span class="toc-text">netstat -anlp</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进程命令-ps"><span class="toc-number">8.</span> <span class="toc-text">进程命令 ps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#远程操作命令"><span class="toc-number">9.</span> <span class="toc-text">远程操作命令</span></a></li></ol>
-        
-    </div>
-    <style>
-        .left-col .switch-btn,
-        .left-col .switch-area {
-            display: none;
-        }
-        .toc-level-3 i,
-        .toc-level-3 ol {
-            display: none !important;
-        }
-    </style>
 
-    <input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
-
-    <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
-    </script>
 
 
     <div class="share">
@@ -1041,7 +1117,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Linux常用命令小结　| DoubleShare　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"　| DoubleShare　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -1053,23 +1129,7 @@
     
 
 
-<div class="scroll" id="post-nav-button">
-        
-            <a href="/2016/10/02/Java设计模式-装饰者模式/" title="上一篇: Java设计模式-装饰者模式">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
 
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-
-        
-            <a href="/2016/09/02/关于性能调优记录/" title="下一篇: Web部署应用性能调优问题">
-                <i class="fa fa-angle-right"></i>
-            </a>
-        
-    </div>
-
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式本地集群搭建（二）/">Hadoop分布式集群搭建（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/">Hadoop分布式集群搭建 Centos7 环境准备</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Dom4j/">Dom4j-使用指导</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Linux常用命令小结/">Linux常用命令小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java 多线程 - Thread/">Java 多线程-Thread</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（上）/">Java并发工具包（上）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-单例模式/">Java设计模式-单例模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（下）/">Java并发工具包(下)</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-装饰者模式/">Java设计模式-装饰者模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/关于性能调优记录/">Web部署应用性能调优问题</a></li></ul>
 
 
     <script>

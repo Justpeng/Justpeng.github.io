@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://doublesharejust.com.cn/back/blog/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%B0%8F%E7%BB%93.html</loc>
+    
+    <lastmod>2016-11-07T15:00:35.043Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://doublesharejust.com.cn/2016/10/02/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%B0%8F%E7%BB%93/</loc>
+    
+    <lastmod>2016-11-07T14:57:46.108Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8B%EF%BC%89/</loc>
     
     <lastmod>2016-11-07T14:46:56.746Z</lastmod>
@@ -37,13 +51,6 @@
   </url>
   
   <url>
-    <loc>http://doublesharejust.com.cn/2016/10/02/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%B0%8F%E7%BB%93/</loc>
-    
-    <lastmod>2016-11-07T14:46:56.714Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%AC%E5%9C%B0%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
     
     <lastmod>2016-11-06T15:39:02.893Z</lastmod>
@@ -54,6 +61,20 @@
     <loc>http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%20Centos7%20%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/</loc>
     
     <lastmod>2016-11-06T15:39:02.889Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://doublesharejust.com.cn/back/blog/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%AC%E5%9C%B0%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89.html</loc>
+    
+    <lastmod>2016-11-06T15:17:07.459Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://doublesharejust.com.cn/back/blog/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%20Centos7%20%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87.html</loc>
+    
+    <lastmod>2016-11-06T15:16:09.154Z</lastmod>
     
   </url>
   
@@ -72,6 +93,20 @@
   </url>
   
   <url>
+    <loc>http://doublesharejust.com.cn/back/blog/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8A%EF%BC%89.html</loc>
+    
+    <lastmod>2016-10-10T14:55:53.210Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://doublesharejust.com.cn/back/blog/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8B%EF%BC%89.html</loc>
+    
+    <lastmod>2016-10-10T14:55:52.811Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://doublesharejust.com.cn/about/index.html</loc>
     
     <lastmod>2016-09-16T14:46:58.313Z</lastmod>
@@ -79,14 +114,14 @@
   </url>
   
   <url>
-    <loc>http://doublesharejust.com.cn/404/index.html</loc>
+    <loc>http://doublesharejust.com.cn/tags/index.html</loc>
     
     <lastmod>2016-09-03T12:15:58.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://doublesharejust.com.cn/tags/index.html</loc>
+    <loc>http://doublesharejust.com.cn/404/index.html</loc>
     
     <lastmod>2016-09-03T12:15:58.000Z</lastmod>
     

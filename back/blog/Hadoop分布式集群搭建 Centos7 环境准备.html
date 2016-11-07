@@ -13,16 +13,127 @@
 
 
 
-<meta name="description" content="本文用于记录在维护web应用过程中遇到的问题，以及可能的解决方法！">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Web部署应用性能调优问题">
-<meta property="og:url" content="http://doublesharejust.com.cn/2016/09/02/关于性能调优记录/index.html">
+<meta name="description" content="机器准备
+Centos7 
+Vmware10
+jdk
+
+安装和配置IP
+
+
+主机名称
+用户
+密码
+ip
+
+
+
+
+master
+master
+master
+192.168.1.122
+
+
+slave1
+hadoop
+hadoop
+192.168.1.123
+
+
+slave2
+hadoop
+hadoop
+192.168.1.124
+
+
+slave3
+hadoop
+hadoop
+192.168.1.12">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DoubleShare">
+<meta property="og:url" content="http://doublesharejust.com.cn/back/blog/Hadoop分布式集群搭建 Centos7 环境准备.html">
 <meta property="og:site_name" content="DoubleShare">
-<meta property="og:description" content="本文用于记录在维护web应用过程中遇到的问题，以及可能的解决方法！">
-<meta property="og:updated_time" content="2016-10-22T16:08:53.082Z">
+<meta property="og:description" content="机器准备
+Centos7 
+Vmware10
+jdk
+
+安装和配置IP
+
+
+主机名称
+用户
+密码
+ip
+
+
+
+
+master
+master
+master
+192.168.1.122
+
+
+slave1
+hadoop
+hadoop
+192.168.1.123
+
+
+slave2
+hadoop
+hadoop
+192.168.1.124
+
+
+slave3
+hadoop
+hadoop
+192.168.1.12">
+<meta property="og:updated_time" content="2016-11-06T15:16:09.154Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Web部署应用性能调优问题">
-<meta name="twitter:description" content="本文用于记录在维护web应用过程中遇到的问题，以及可能的解决方法！">
+<meta name="twitter:title" content="DoubleShare">
+<meta name="twitter:description" content="机器准备
+Centos7 
+Vmware10
+jdk
+
+安装和配置IP
+
+
+主机名称
+用户
+密码
+ip
+
+
+
+
+master
+master
+master
+192.168.1.122
+
+
+slave1
+hadoop
+hadoop
+192.168.1.123
+
+
+slave2
+hadoop
+hadoop
+192.168.1.124
+
+
+slave3
+hadoop
+hadoop
+192.168.1.12">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -52,7 +163,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Web部署应用性能调优问题 | DoubleShare</title>
+<title>DoubleShare</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -62,7 +173,7 @@
         fancybox: true,
         animate: false,
         isHome: false,
-        isPost: true,
+        isPost: false,
         isArchive: false,
         isTag: false,
         isCategory: false,
@@ -264,11 +375,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我">
 </nav>
-      <div class="body-wrap"><article id="post-关于性能调优记录" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/09/02/关于性能调优记录/" class="article-date">
-      <time datetime="2016-09-02T09:58:27.000Z" itemprop="datePublished">2016-09-02</time>
+      <a href="/back/blog/Hadoop分布式集群搭建 Centos7 环境准备.html" class="article-date">
+      <time datetime="2016-11-07T14:59:27.011Z" itemprop="datePublished">2016-11-07</time>
 </a>
     </div>
   
@@ -277,114 +388,128 @@
       <input type="hidden" class="isFancy">
     
     
-      <header class="article-header">
-        <h1 class="article-title" itemprop="name">
-      Web部署应用性能调优问题
-    </h1>
-      </header>
-      
-      <div class="article-info article-info-post">
-        <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/性能调优/">性能调优</a><a class="article-category-link" href="/categories/性能调优/Java-Web/">Java Web</a><a class="article-category-link" href="/categories/性能调优/Java-Web/Oracle/">Oracle</a>
-    </div>
-        <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-Web/">java Web</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oracle/">oracle</a></li></ul>
-    </div>
-        <div class="clearfix"></div>
-      </div>
-      
-    
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h2 id="本文目的"><a href="#本文目的" class="headerlink" title="本文目的"></a>本文目的</h2><blockquote>
-<p>记录在维护JavaWeb服务的性能问题时，一些可能的解决方法，涉及方面有局面性。（持续更新）</p>
-</blockquote>
-<h2 id="已遇到的问题"><a href="#已遇到的问题" class="headerlink" title="已遇到的问题"></a>已遇到的问题</h2><p>-系统卡住不动，一些操作无法进行</p>
-<blockquote>
-<p>原因：删除数据，涉及其他数据表，该表的主键没有索引，导致锁表情况发生。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1 是否死锁查询：</div><div class="line">select username,lockwait,status,machine,program from v<span class="variable">$session</span> <span class="built_in">where</span> sid <span class="keyword">in</span> (select session_id from    v<span class="variable">$locked_object</span>) </div><div class="line">2 锁表语句查询：</div><div class="line">select sql_text from v<span class="variable">$sql</span> <span class="built_in">where</span> hash_value <span class="keyword">in</span> ( select sql_hash_value from v<span class="variable">$session</span> <span class="built_in">where</span> sid <span class="keyword">in</span> (select   session_id from v<span class="variable">$locked_object</span>) )</div></pre></td></tr></table></figure></p>
-</blockquote>
-<p>-系统使用一段时间后，速度变慢</p>
-<blockquote>
-<p>这个最后解决的方式比较特殊，更换tomcat。现象是：可以明显看到 tomcat console后台打印速度变慢，觉得出现这种现场的原因是一些不可控的因素导致tomcat某些文件丢失。</p>
-</blockquote>
-<h2 id="在解决问题时，需要验证的一些点"><a href="#在解决问题时，需要验证的一些点" class="headerlink" title="在解决问题时，需要验证的一些点"></a>在解决问题时，需要验证的一些点</h2><h3 id="最直接，查看日志"><a href="#最直接，查看日志" class="headerlink" title="最直接，查看日志"></a>最直接，查看日志</h3><blockquote>
-<p>从日志中获取有效信息，如是有报错信息</p>
-</blockquote>
-<h3 id="oracle-连接池配置"><a href="#oracle-连接池配置" class="headerlink" title="oracle 连接池配置"></a>oracle 连接池配置</h3><ul>
-<li>prototypeCount  连接池中可用的连接数量.如果当前的连接池中的连接少于这个数值.新的连接将被建立</li>
-<li>maximumConnectionCount  最大的数据库连接数</li>
-<li>minimumConnectionCount  最小的数据库连接数</li>
-<li>maximumConnectionLifetime  一个线程的最大寿命</li>
-<li>maximumActiveTime 如果housekeeper检测到某个线程的活动时间大于这个数值.它将会杀掉这个线程. 而且与 housekeeper检测的时间间隔有关</li>
+              <style>
+    .article-meta { display: none; }
+    #container .article .article-title { padding-right: 0; }
+    .article-header {
+        padding: 0;
+        padding-top: 26px;
+        border-left: none;
+        text-align: center;
+    }
+    .article-header:hover { border-left: none; }
+    .article-title { font-size: 1.6em }
+    .article-entry hr { margin: 0;}
+    .article-meta,
+    #container .article-info-post.article-info { display: none;}
+    #container .article .article-title { padding: 0; }
+</style>
+          
+        <h2 id="机器准备"><a href="#机器准备" class="headerlink" title="机器准备"></a>机器准备</h2><ul>
+<li>Centos7 </li>
+<li>Vmware10</li>
+<li>jdk</li>
 </ul>
+<h3 id="安装和配置IP"><a href="#安装和配置IP" class="headerlink" title="安装和配置IP"></a>安装和配置IP</h3><table>
+<thead>
+<tr>
+<th>主机名称</th>
+<th>用户</th>
+<th>密码</th>
+<th>ip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>master</td>
+<td>master</td>
+<td>master</td>
+<td>192.168.1.122</td>
+</tr>
+<tr>
+<td>slave1</td>
+<td>hadoop</td>
+<td>hadoop</td>
+<td>192.168.1.123</td>
+</tr>
+<tr>
+<td>slave2</td>
+<td>hadoop</td>
+<td>hadoop</td>
+<td>192.168.1.124</td>
+</tr>
+<tr>
+<td>slave3</td>
+<td>hadoop</td>
+<td>hadoop</td>
+<td>192.168.1.125</td>
+</tr>
+</tbody>
+</table>
+<p>在每台主机添加用户 hadoop 密码 hadoop</p>
 <blockquote>
-<p>每个属性值的设置，需要与服务器的性能进行选择，如，一般maximumConnectionCount比minimumConnectionCount 多十几个数值。</p>
+<p>使用命令 useradd添加用户， passwd为用户hadoop设置密码</p>
 </blockquote>
-<h3 id="oracle-进程和会话值"><a href="#oracle-进程和会话值" class="headerlink" title="oracle 进程和会话值"></a>oracle 进程和会话值</h3><p>-查询<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">select count(*) from v<span class="variable">$process</span>; </div><div class="line">select count(*) from v<span class="variable">$session</span>; </div><div class="line">show parameter processes;</div></pre></td></tr></table></figure></p>
-<p>-修改，如根据应用服务器性能设置，sessions值为 1.1*processes+5，然后需要重启服务<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">alter system <span class="built_in">set</span> processes = 500 scope = spfile;</div><div class="line">alter system <span class="built_in">set</span> sessions = 885 scope = spfile;</div></pre></td></tr></table></figure></p>
-<h3 id="用户实例权限，至少需要三种"><a href="#用户实例权限，至少需要三种" class="headerlink" title="用户实例权限，至少需要三种"></a>用户实例权限，至少需要三种</h3><blockquote>
-<p>connect 、resource 和 recovery_catalog_ower</p>
-</blockquote>
-<h3 id="其他特殊情况"><a href="#其他特殊情况" class="headerlink" title="其他特殊情况"></a>其他特殊情况</h3><blockquote>
-<p>如jdk、tomcat丢失文件，更换即可</p>
-</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@slave1 ~]# useradd hadoop</div><div class="line">[root@slave1 ~]# passwd hadoop</div><div class="line">Changing password for user hadoop.</div><div class="line">New password: </div><div class="line">BAD PASSWORD: The password is shorter than 8 characters</div><div class="line">Retype new password: </div><div class="line">passwd: all authentication tokens updated successfully.</div><div class="line">[root@slave1 ~]#</div></pre></td></tr></table></figure>
+<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><p>关闭防火墙是必须的,centos7默认是不用iptables</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl stop firewalld.service &amp;&amp; sudo  systemctl disable firewalld.service</div></pre></td></tr></table></figure>
+<h3 id="配置hosts文件"><a href="#配置hosts文件" class="headerlink" title="配置hosts文件"></a>配置hosts文件</h3><p>注意： <strong><em>==sudo==</em></strong> 命名为使用超级管理员用户操作 相当于 root 用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@localhost ~]$ sudo vim /etc/hosts</div></pre></td></tr></table></figure>
+<p>问题：若无法使用sudo命令？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hadoop is not in the sudoers file.  This incident will be reported.</div></pre></td></tr></table></figure></p>
+<p>需要在 /etc/sudoers文件中添加配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">## Allow root to run any commands anywhere </div><div class="line">root	ALL=(ALL) 	ALL</div><div class="line">hadoop ALL=(ALL) ALL</div></pre></td></tr></table></figure>
+<p>hosts文件中添加内容为(其他主机同样添加)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">192.168.1.122 master</div><div class="line">192.168.1.123 slave1</div><div class="line">192.168.1.124 slave2</div><div class="line">192.168.1.125 slave3</div></pre></td></tr></table></figure></p>
+<h2 id="配置SSH-免登陆"><a href="#配置SSH-免登陆" class="headerlink" title="配置SSH 免登陆"></a>配置SSH 免登陆</h2><p>这里需要对 所有机器上的 ==hadoop@主机== 用户配置ssh免密码登录</p>
+<p>在Centos7中已经默认安装ssh服务，ssh-keygen命令无效，说明需要先安装ssh服务,即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo yum install openssh-server</div></pre></td></tr></table></figure></p>
+<h3 id="以-master-主机为例"><a href="#以-master-主机为例" class="headerlink" title="以==master==主机为例."></a>以==master==主机为例.</h3><ul>
+<li><p>生成无密码密钥对,在命令中一路回车即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ ssh-keygen</div></pre></td></tr></table></figure>
+</li>
+<li><h3 id="将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys"><a href="#将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys" class="headerlink" title="将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys"></a>将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys</h3></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</div></pre></td></tr></table></figure>
+<p>查看.ssh中内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd ~/.ssh</div><div class="line">[hadoop@master .ssh]$ ls</div><div class="line">authorized_keys  id_rsa  id_rsa.pub  known_hosts</div></pre></td></tr></table></figure></p>
+<ul>
+<li><p>设置公钥库权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ chmod 600 authorized_keys</div></pre></td></tr></table></figure>
+</li>
+<li><p>重启ssh服务 (root权限)</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo service sshd restart</div></pre></td></tr></table></figure>
+<p><strong>其他主机，即slave1,slave2,slave3，分别执行 ssh-keygen生成密钥对</strong></p>
+<ul>
+<li>将maser主机中的ssh分别发至 slave1,slave2,slave3主机</li>
+</ul>
+<p>其中 slave1@slave1 即 xx@yy xx代表用户名，yy代表主机名<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave1:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave2:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave3:~/.ssh/</div></pre></td></tr></table></figure></p>
+<p>重启其他主机的ssh服务</p>
+<ul>
+<li>测试</li>
+</ul>
+<p>主机之间第一次访问时，会需要接受ESDSA可以，yes接受即可，再次互相访问时，就就不在需要了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave3 ~]$ ssh master</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">Last login: Sun Nov  6 06:03:47 2016 from 192.168.1.105</div><div class="line">[hadoop@master ~]$ ssh slave1</div><div class="line">Last login: Sun Nov  6 06:05:12 2016 from 192.168.1.105</div><div class="line">[hadoop@slave1 ~]$ ssh slave2</div><div class="line">Last login: Sun Nov  6 06:11:48 2016 from 192.168.1.105</div><div class="line">[hadoop@slave2 ~]$ ssh slave3</div></pre></td></tr></table></figure>
+<p>maser,slave1,slave2,slave3 四台主机之间都可以无密码访问，即是ssh设置成功了！</p>
+<h2 id="配置JDK"><a href="#配置JDK" class="headerlink" title="配置JDK"></a>配置JDK</h2><p>这里对==master==主机进行配置 将jdk等软件上传至/opt/目录：</p>
+<ul>
+<li>使用<em>超级管理员</em>用户解压 jdk</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tar -zxvf jdk-7u67-linux-x64.tar.gz</div></pre></td></tr></table></figure>
+<p>配置jdk环境变量 /etc/profile，并查看是否成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67/</div><div class="line">export JRE_HOME=/opt/jdk1.7.0_67/jre</div><div class="line">export CLASSPATH=.:$CLASSPATH:$JAVA_HOME/lib:$JRE_HOME/lib</div><div class="line">export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin</div></pre></td></tr></table></figure></p>
+<p>注意，上面配置中，最后一行，$PATH放在前面不生效时，也可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin：$PATH</div></pre></td></tr></table></figure></p>
+<p>重新加载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">source /etc/profile</div></pre></td></tr></table></figure>
       
     </div>
     
   </div>
   
-    <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/09/02/关于性能调优记录/">Web部署应用性能调优问题</a></p>
-        <p><span>文章作者:</span><a href="/" title="回到主页">Just</a></p>
-        <p><span>发布时间:</span>2016-09-02, 17:58:27</p>
-        <p><span>最后更新:</span>2016-10-23, 00:08:53</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/09/02/关于性能调优记录/" title="Web部署应用性能调优问题">http://doublesharejust.com.cn/2016/09/02/关于性能调优记录/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://doublesharejust.com.cn/2016/09/02/关于性能调优记录/　　作者: Just" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
-            <script> var clipboard = new Clipboard('.copy-path'); </script>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
-        </p>
-    </div>
-
-
-
-    <nav id="article-nav">
-        
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/10/02/Linux常用命令小结/">
-                    Linux常用命令小结
-                </a>
-            </div>
-        
-        
-    </nav>
+    
   
 </article>
-<div id="toc" class="toc-article">
-        <strong class="toc-title">文章目录</strong>
-        
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#本文目的"><span class="toc-number">1.</span> <span class="toc-text">本文目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#已遇到的问题"><span class="toc-number">2.</span> <span class="toc-text">已遇到的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在解决问题时，需要验证的一些点"><span class="toc-number">3.</span> <span class="toc-text">在解决问题时，需要验证的一些点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#最直接，查看日志"><span class="toc-number">3.1.</span> <span class="toc-text">最直接，查看日志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#oracle-连接池配置"><span class="toc-number">3.2.</span> <span class="toc-text">oracle 连接池配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#oracle-进程和会话值"><span class="toc-number">3.3.</span> <span class="toc-text">oracle 进程和会话值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用户实例权限，至少需要三种"><span class="toc-number">3.4.</span> <span class="toc-text">用户实例权限，至少需要三种</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他特殊情况"><span class="toc-number">3.5.</span> <span class="toc-text">其他特殊情况</span></a></li></ol></li></ol>
-        
-    </div>
-    <style>
-        .left-col .switch-btn,
-        .left-col .switch-area {
-            display: none;
-        }
-        .toc-level-3 i,
-        .toc-level-3 ol {
-            display: none !important;
-        }
-    </style>
 
-    <input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
-
-    <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
-    </script>
 
 
     <div class="share">
@@ -400,7 +525,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Web部署应用性能调优问题　| DoubleShare　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"　| DoubleShare　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -412,21 +537,7 @@
     
 
 
-<div class="scroll" id="post-nav-button">
-        
-            <a href="/2016/10/02/Linux常用命令小结/" title="上一篇: Linux常用命令小结">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
 
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-
-        
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
-        
-    </div>
-
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式本地集群搭建（二）/">Hadoop分布式集群搭建（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/">Hadoop分布式集群搭建 Centos7 环境准备</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Dom4j/">Dom4j-使用指导</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Linux常用命令小结/">Linux常用命令小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java 多线程 - Thread/">Java 多线程-Thread</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（上）/">Java并发工具包（上）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-单例模式/">Java设计模式-单例模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（下）/">Java并发工具包(下)</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-装饰者模式/">Java设计模式-装饰者模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/关于性能调优记录/">Web部署应用性能调优问题</a></li></ul>
 
 
     <script>
