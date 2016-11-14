@@ -360,6 +360,151 @@
   </entry>
   
   <entry>
+    <title>Git 学习初始篇</title>
+    <link href="http://doublesharejust.com.cn/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E5%88%9D%E5%A7%8B%E7%AF%87/"/>
+    <id>http://doublesharejust.com.cn/2016/11/12/Git 学习初始篇/</id>
+    <published>2016-11-12T09:58:27.000Z</published>
+    <updated>2016-11-13T15:19:13.207Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="what-is-Git"><a href="#what-is-Git" class="headerlink" title="what is Git"></a>what is Git</h2><p>重点：强大的代码管理工具！</p>
+<h3 id="为什么使用？"><a href="#为什么使用？" class="headerlink" title="为什么使用？"></a>为什么使用？</h3><p>重点：使用github社区必备，而且确实方便高效。</p>
+<h2 id="git与svn区别"><a href="#git与svn区别" class="headerlink" title="git与svn区别"></a>git与svn区别</h2><ul>
+<li>svn将代码放于中央服务器；git属于分布式版本控制系统，每个版本库都可以是独立的<blockquote>
+<p>分布式的git，可以完成很多离线操作，svn则做不到，如果与中央服务器断开，则什么都做不了</p>
+</blockquote>
+</li>
+<li>svn保存的是当前版本与上一版本的差异,即只保存了从 A到A.1 改动的部分，而GIT保存的是完整的文件</li>
+</ul>
+<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn1.png" alt="image"></p>
+<ul>
+<li>git可以实现分支合并操作</li>
+<li>git效率更高</li>
+<li>git对版本修改更加灵活，版本之间通过命令即可实现代码切换</li>
+</ul>
+<h2 id="git的简单配置"><a href="#git的简单配置" class="headerlink" title="git的简单配置"></a>git的简单配置</h2><p>假设已安装好git</p>
+<h3 id="git操作级别"><a href="#git操作级别" class="headerlink" title="git操作级别"></a>git操作级别</h3><table>
+<thead>
+<tr>
+<th>优先级 (高到低)</th>
+<th>级别 (低到高)</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>local</td>
+<td>本地级别</td>
+</tr>
+<tr>
+<td>2</td>
+<td>global</td>
+<td>用户级别</td>
+</tr>
+<tr>
+<td>3</td>
+<td>system</td>
+<td>系统级别</td>
+</tr>
+</tbody>
+</table>
+<h3 id="git文档查看"><a href="#git文档查看" class="headerlink" title="git文档查看"></a>git文档查看</h3><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>git config –help</td>
+</tr>
+<tr>
+<td>2</td>
+<td>git help config</td>
+</tr>
+</tbody>
+</table>
+<h3 id="命令技巧"><a href="#命令技巧" class="headerlink" title="命令技巧"></a>命令技巧</h3><ul>
+<li>输入 git conf 双击 tab 键 可自动补充内容，类似于 linux中自动补充</li>
+<li>输入 git config – ，双击 tab 可显示可用参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git config --</div><div class="line">--add              --global           --rename-section</div><div class="line">--file=            --list             --replace-all</div><div class="line">--get              --local            --system</div><div class="line">--get-all          --name-only        --unset</div><div class="line">--get-regexp       --remove-section   --unset-all</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 ~/Desktop</div><div class="line">$ git config --</div></pre></td></tr></table></figure>
+<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><ul>
+<li>设置用户和邮箱:相当于身份证</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.name &apos;xx&apos;</div><div class="line">git config --global user.email &apos;xx@yy&apos;</div></pre></td></tr></table></figure>
+<ul>
+<li><ol>
+<li>查看用户<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git config --get user.name  //当前使用的,默认最新的</div><div class="line"></div><div class="line">git config --list --global  //用户所有user.name</div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol>
+<li>删除用户</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global --unset user.name 用户名</div></pre></td></tr></table></figure>
+<ul>
+<li>config命令<br>如 创建别名<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global alias.ci commit</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>查看效果，多了个ci，也就是commit命令别名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git c</div><div class="line">checkout      cherry-pick   citool        clone         config</div><div class="line">cherry        ci            clean         commit</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git config --global alias.lol &apos;log --oneline&apos;</div><div class="line">$ git lol</div><div class="line">91b757f Merge remote-tracking branch &apos;origin/master&apos;</div><div class="line">f352b6e 添加博客</div><div class="line">2c79fcb Create README.md</div><div class="line">21155b9 Initial commit</div></pre></td></tr></table></figure>
+<h2 id="Git的存储"><a href="#Git的存储" class="headerlink" title="Git的存储"></a>Git的存储</h2><p>Git存储只关系文件内容</p>
+<p>Git使用40个16进制字符的SHA-1 Hash来存储唯一标识对象</p>
+<p>Git有四种对象：</p>
+<ul>
+<li>blob 文本文件、二进制文件、链接文件</li>
+<li>tree 目录</li>
+<li>commit 历史提交</li>
+<li>tag 指向固定的历史提交</li>
+</ul>
+<p>四种对象之间关系：一个tag指向一个commit,commit指向一个tree对象，tree对象中也可包含其他tree对象和blob对象；若有像个相同内容的文件，则指向在相同blob，而文件名等信息存储在 tree对象中</p>
+<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn2.png" alt="image"></p>
+<p>Git将对象存储在仓库中</p>
+<h2 id="Git仓库"><a href="#Git仓库" class="headerlink" title="Git仓库"></a>Git仓库</h2><ul>
+<li>创建Git仓库: <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init  //新建</div><div class="line">git clone  //克隆</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>创建指定仓库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git init git_repo //创建时 git_repo下有.git目录</div><div class="line">git init --bare git_bare_repo  //git_bare_repo下没有.git目录，不包含工作区</div><div class="line">git init  //直接在当前目录下新建</div></pre></td></tr></table></figure></p>
+<p>克隆已有仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git clone git_repo git_clone  //1 本地仓库克隆，指定路径</div><div class="line"></div><div class="line">git clone https://github.com/xxx  //2 克隆github远程仓库到当前目录</div></pre></td></tr></table></figure>
+<h2 id="Git工作流程"><a href="#Git工作流程" class="headerlink" title="Git工作流程"></a>Git工作流程</h2><p>Git仓库有三个区域：</p>
+<ul>
+<li>工作区working direcoty;暂存区staging area,历史仓库history respository</li>
+</ul>
+<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn3.png" alt="image"></p>
+<ul>
+<li>区域间文件传递：</li>
+</ul>
+<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn4.png" alt="image"><br>涉及的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git add  //将工作区文件添加到暂存区</div><div class="line">git add -A //将工作区所有文件添加早暂存区</div><div class="line">git commit //将暂存区添加到历史区</div><div class="line">git status //查看工作区与暂存区文件区别</div><div class="line">git rm  //删除暂存区文件</div><div class="line">git mv //移动/重命名 暂存区文件，一系列操作的组合(先删除后添加)</div><div class="line">gitingnore  //忽略工作区中某些不希望被加入暂存区和历史区的文件</div></pre></td></tr></table></figure>
+<p>而，如果只是 mv 命令(没有git)，则操作的只是本地文件</p>
+<p>For Example：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ touch test.txt a.java  //创建文件</div><div class="line">$ git add test.txt a.java  //添加至缓存</div><div class="line">$ git status  //查看文件状态</div><div class="line"></div><div class="line">On branch master</div><div class="line">Initial commit</div><div class="line"></div><div class="line">Changes to be committed:</div><div class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">        new file:   a.java</div><div class="line">        new file:   test.txt</div><div class="line"></div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git commit -m &quot;add files first time&quot;  //提交至历史区</div><div class="line"></div><div class="line">[master (root-commit) 02463dd] add files first time</div><div class="line"> 2 files changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 a.java</div><div class="line"> create mode 100644 test.txt</div></pre></td></tr></table></figure>
+<p>如果需要忽略某些文件，而不需要被跟踪？可以在需要的目录位置创建 <strong>.gitignore</strong> 文件</p>
+<p>通配符匹配规则：<br>匹配符 | 规则 | 举例<br>—|—|—<br>a.txt | 过滤具体的 a.txt文件 |<br>*~ |中间类型文件| 如vim~ 匹配vim操作产生的文件</p>
+<ul>
+<li>| 匹配多个字符| <em>.txt 所有txt文件都被忽略<br>[]| 包含单个字符的匹配列表| </em>.[ab] 过滤以a或b结尾的文件<br>/ | 匹配目录| /demo 过滤当前目录demo文件夹及文件夹下所有文件<br>**/| 匹配任何目录下的某文件夹|  两个星号/demo，过滤任何目录(以.gitignore文件所在目录为根目录）下包含demo文件夹及其文件夹下的文件<br>! | 不过滤 | !a.txt 不过滤a.txt文件，若文件本身以 !开始，则需要加”\“ 转义，如”\!a.txt” 不过滤 !a.txt文件</li>
+</ul>
+<p>For Example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ vim .gitignore  // 添加规则 *.css，忽略.css文件</div><div class="line">$ touch table.css</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git status   //已忽略 table.css</div><div class="line">On branch master</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure></p>]]></content>
+    
+    <summary type="html">
+    
+      介绍版本控制工具git的使用
+    
+    </summary>
+    
+      <category term="Git" scheme="http://doublesharejust.com.cn/categories/Git/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>Git 学习进阶篇-分支与合并</title>
     <link href="http://doublesharejust.com.cn/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87%20-%20%E5%88%86%E6%94%AF%E4%B8%8E%E5%90%88%E5%B9%B6/"/>
     <id>http://doublesharejust.com.cn/2016/11/12/Git 学习进阶篇 - 分支与合并/</id>
@@ -553,151 +698,6 @@
     
     
       <category term="分支，合并" scheme="http://doublesharejust.com.cn/tags/%E5%88%86%E6%94%AF%EF%BC%8C%E5%90%88%E5%B9%B6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git 学习初始篇</title>
-    <link href="http://doublesharejust.com.cn/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E5%88%9D%E5%A7%8B%E7%AF%87/"/>
-    <id>http://doublesharejust.com.cn/2016/11/12/Git 学习初始篇/</id>
-    <published>2016-11-12T09:58:27.000Z</published>
-    <updated>2016-11-13T15:19:13.207Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="what-is-Git"><a href="#what-is-Git" class="headerlink" title="what is Git"></a>what is Git</h2><p>重点：强大的代码管理工具！</p>
-<h3 id="为什么使用？"><a href="#为什么使用？" class="headerlink" title="为什么使用？"></a>为什么使用？</h3><p>重点：使用github社区必备，而且确实方便高效。</p>
-<h2 id="git与svn区别"><a href="#git与svn区别" class="headerlink" title="git与svn区别"></a>git与svn区别</h2><ul>
-<li>svn将代码放于中央服务器；git属于分布式版本控制系统，每个版本库都可以是独立的<blockquote>
-<p>分布式的git，可以完成很多离线操作，svn则做不到，如果与中央服务器断开，则什么都做不了</p>
-</blockquote>
-</li>
-<li>svn保存的是当前版本与上一版本的差异,即只保存了从 A到A.1 改动的部分，而GIT保存的是完整的文件</li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn1.png" alt="image"></p>
-<ul>
-<li>git可以实现分支合并操作</li>
-<li>git效率更高</li>
-<li>git对版本修改更加灵活，版本之间通过命令即可实现代码切换</li>
-</ul>
-<h2 id="git的简单配置"><a href="#git的简单配置" class="headerlink" title="git的简单配置"></a>git的简单配置</h2><p>假设已安装好git</p>
-<h3 id="git操作级别"><a href="#git操作级别" class="headerlink" title="git操作级别"></a>git操作级别</h3><table>
-<thead>
-<tr>
-<th>优先级 (高到低)</th>
-<th>级别 (低到高)</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>local</td>
-<td>本地级别</td>
-</tr>
-<tr>
-<td>2</td>
-<td>global</td>
-<td>用户级别</td>
-</tr>
-<tr>
-<td>3</td>
-<td>system</td>
-<td>系统级别</td>
-</tr>
-</tbody>
-</table>
-<h3 id="git文档查看"><a href="#git文档查看" class="headerlink" title="git文档查看"></a>git文档查看</h3><table>
-<thead>
-<tr>
-<th>方式</th>
-<th>示例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>git config –help</td>
-</tr>
-<tr>
-<td>2</td>
-<td>git help config</td>
-</tr>
-</tbody>
-</table>
-<h3 id="命令技巧"><a href="#命令技巧" class="headerlink" title="命令技巧"></a>命令技巧</h3><ul>
-<li>输入 git conf 双击 tab 键 可自动补充内容，类似于 linux中自动补充</li>
-<li>输入 git config – ，双击 tab 可显示可用参数</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git config --</div><div class="line">--add              --global           --rename-section</div><div class="line">--file=            --list             --replace-all</div><div class="line">--get              --local            --system</div><div class="line">--get-all          --name-only        --unset</div><div class="line">--get-regexp       --remove-section   --unset-all</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 ~/Desktop</div><div class="line">$ git config --</div></pre></td></tr></table></figure>
-<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><ul>
-<li>设置用户和邮箱:相当于身份证</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.name &apos;xx&apos;</div><div class="line">git config --global user.email &apos;xx@yy&apos;</div></pre></td></tr></table></figure>
-<ul>
-<li><ol>
-<li>查看用户<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git config --get user.name  //当前使用的,默认最新的</div><div class="line"></div><div class="line">git config --list --global  //用户所有user.name</div></pre></td></tr></table></figure>
-</li>
-</ol>
-</li>
-<li><ol>
-<li>删除用户</li>
-</ol>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global --unset user.name 用户名</div></pre></td></tr></table></figure>
-<ul>
-<li>config命令<br>如 创建别名<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global alias.ci commit</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>查看效果，多了个ci，也就是commit命令别名</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git c</div><div class="line">checkout      cherry-pick   citool        clone         config</div><div class="line">cherry        ci            clean         commit</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git config --global alias.lol &apos;log --oneline&apos;</div><div class="line">$ git lol</div><div class="line">91b757f Merge remote-tracking branch &apos;origin/master&apos;</div><div class="line">f352b6e 添加博客</div><div class="line">2c79fcb Create README.md</div><div class="line">21155b9 Initial commit</div></pre></td></tr></table></figure>
-<h2 id="Git的存储"><a href="#Git的存储" class="headerlink" title="Git的存储"></a>Git的存储</h2><p>Git存储只关系文件内容</p>
-<p>Git使用40个16进制字符的SHA-1 Hash来存储唯一标识对象</p>
-<p>Git有四种对象：</p>
-<ul>
-<li>blob 文本文件、二进制文件、链接文件</li>
-<li>tree 目录</li>
-<li>commit 历史提交</li>
-<li>tag 指向固定的历史提交</li>
-</ul>
-<p>四种对象之间关系：一个tag指向一个commit,commit指向一个tree对象，tree对象中也可包含其他tree对象和blob对象；若有像个相同内容的文件，则指向在相同blob，而文件名等信息存储在 tree对象中</p>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn2.png" alt="image"></p>
-<p>Git将对象存储在仓库中</p>
-<h2 id="Git仓库"><a href="#Git仓库" class="headerlink" title="Git仓库"></a>Git仓库</h2><ul>
-<li>创建Git仓库: <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init  //新建</div><div class="line">git clone  //克隆</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>创建指定仓库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git init git_repo //创建时 git_repo下有.git目录</div><div class="line">git init --bare git_bare_repo  //git_bare_repo下没有.git目录，不包含工作区</div><div class="line">git init  //直接在当前目录下新建</div></pre></td></tr></table></figure></p>
-<p>克隆已有仓库</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git clone git_repo git_clone  //1 本地仓库克隆，指定路径</div><div class="line"></div><div class="line">git clone https://github.com/xxx  //2 克隆github远程仓库到当前目录</div></pre></td></tr></table></figure>
-<h2 id="Git工作流程"><a href="#Git工作流程" class="headerlink" title="Git工作流程"></a>Git工作流程</h2><p>Git仓库有三个区域：</p>
-<ul>
-<li>工作区working direcoty;暂存区staging area,历史仓库history respository</li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn3.png" alt="image"></p>
-<ul>
-<li>区域间文件传递：</li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn4.png" alt="image"><br>涉及的命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git add  //将工作区文件添加到暂存区</div><div class="line">git add -A //将工作区所有文件添加早暂存区</div><div class="line">git commit //将暂存区添加到历史区</div><div class="line">git status //查看工作区与暂存区文件区别</div><div class="line">git rm  //删除暂存区文件</div><div class="line">git mv //移动/重命名 暂存区文件，一系列操作的组合(先删除后添加)</div><div class="line">gitingnore  //忽略工作区中某些不希望被加入暂存区和历史区的文件</div></pre></td></tr></table></figure>
-<p>而，如果只是 mv 命令(没有git)，则操作的只是本地文件</p>
-<p>For Example：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ touch test.txt a.java  //创建文件</div><div class="line">$ git add test.txt a.java  //添加至缓存</div><div class="line">$ git status  //查看文件状态</div><div class="line"></div><div class="line">On branch master</div><div class="line">Initial commit</div><div class="line"></div><div class="line">Changes to be committed:</div><div class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">        new file:   a.java</div><div class="line">        new file:   test.txt</div><div class="line"></div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git commit -m &quot;add files first time&quot;  //提交至历史区</div><div class="line"></div><div class="line">[master (root-commit) 02463dd] add files first time</div><div class="line"> 2 files changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 a.java</div><div class="line"> create mode 100644 test.txt</div></pre></td></tr></table></figure>
-<p>如果需要忽略某些文件，而不需要被跟踪？可以在需要的目录位置创建 <strong>.gitignore</strong> 文件</p>
-<p>通配符匹配规则：<br>匹配符 | 规则 | 举例<br>—|—|—<br>a.txt | 过滤具体的 a.txt文件 |<br>*~ |中间类型文件| 如vim~ 匹配vim操作产生的文件</p>
-<ul>
-<li>| 匹配多个字符| <em>.txt 所有txt文件都被忽略<br>[]| 包含单个字符的匹配列表| </em>.[ab] 过滤以a或b结尾的文件<br>/ | 匹配目录| /demo 过滤当前目录demo文件夹及文件夹下所有文件<br>**/| 匹配任何目录下的某文件夹|  两个星号/demo，过滤任何目录(以.gitignore文件所在目录为根目录）下包含demo文件夹及其文件夹下的文件<br>! | 不过滤 | !a.txt 不过滤a.txt文件，若文件本身以 !开始，则需要加”\“ 转义，如”\!a.txt” 不过滤 !a.txt文件</li>
-</ul>
-<p>For Example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ vim .gitignore  // 添加规则 *.css，忽略.css文件</div><div class="line">$ touch table.css</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git status   //已忽略 table.css</div><div class="line">On branch master</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure></p>]]></content>
-    
-    <summary type="html">
-    
-      介绍版本控制工具git的使用
-    
-    </summary>
-    
-      <category term="Git" scheme="http://doublesharejust.com.cn/categories/Git/"/>
-    
     
   </entry>
   
@@ -1389,113 +1389,6 @@
   </entry>
   
   <entry>
-    <title>Dom4j-使用指导</title>
-    <link href="http://doublesharejust.com.cn/2016/10/22/Dom4j/"/>
-    <id>http://doublesharejust.com.cn/2016/10/22/Dom4j/</id>
-    <published>2016-10-22T09:58:27.000Z</published>
-    <updated>2016-10-22T16:08:53.098Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="what-is-dom4j"><a href="#what-is-dom4j" class="headerlink" title="what is dom4j?"></a>what is dom4j?</h2><p>dom4j 是一个为Java服务的开源的XML框架，可以对xml文档进行读写,操作,创建和修改，集成了DOM和SAX，同样支持xPath</p>
-<p>接下来我们开始了解dom4j的基本用法</p>
-<h2 id="解析xml文档"><a href="#解析xml文档" class="headerlink" title="解析xml文档"></a>解析xml文档</h2><h3 id="获得Document对象"><a href="#获得Document对象" class="headerlink" title="获得Document对象"></a>获得Document对象</h3><p>解析xml文档，首先需要通过 SAXReader 创建一个 document对象</p>
-<blockquote>
-<p>SAXReader.read() 方法可以通过多种方式进行读取，例如：URL、InputStream、File、Reader等</p>
-</blockquote>
-<ul>
-<li>URL路径方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public Document parse(URL url) throws DocumentException &#123;</div><div class="line">       SAXReader reader = new SAXReader();</div><div class="line">       Document document = reader.read(url);</div><div class="line">       return document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>InputStream方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SAXReader reader = new SAXReader();</div><div class="line">//获取类加载器</div><div class="line">ClassLoader loader = Thread.currentThread().getContextClassLoader();</div><div class="line">//获取文件流</div><div class="line">java.io.InputStream inputStream = loader.getResourceAsStream(&quot;out.xml&quot;);</div><div class="line">//创建document对象</div><div class="line">Document doc = reader.read(inputStream);</div></pre></td></tr></table></figure>
-<ul>
-<li>File方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div></pre></td></tr></table></figure>
-<p>那么，接下来就是对xml中的Element(Node)，进行获取了。</p>
-<h3 id="获取root元素"><a href="#获取root元素" class="headerlink" title="获取root元素"></a>获取root元素</h3><p>方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Element root = document.getRootElement();</div></pre></td></tr></table></figure>
-<h3 id="使用Iterator获取元素"><a href="#使用Iterator获取元素" class="headerlink" title="使用Iterator获取元素"></a>使用Iterator获取元素</h3><p>dom4j通过内置的方法，可以返回标准的java迭代，方便我们获取元素</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void bar(Document document)&#123;</div><div class="line">     Element element = document.getRootElement();</div><div class="line"></div><div class="line">     //root 元素的子元素进行迭代</div><div class="line">     for(Iterator i = element.elementIterator();i.hasNext();) &#123;</div><div class="line">        Element element1 = (Element) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line">     //iterate through child elements of root with element name &quot;foo&quot;</div><div class="line">     //获取子元素name为 foo的迭代</div><div class="line">     for(Iterator i=element.elementIterator(&quot;foo&quot;);i.hasNext();) &#123;</div><div class="line">         Element foo = (Element) i.next();</div><div class="line">         //do something</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     // iterate through attribute of root</div><div class="line">     // 节点属性</div><div class="line">     for(Iterator i = element.attributeIterator();i.hasNext();) &#123;</div><div class="line">         Attribute attribute = (Attribute) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<p>例如，模拟SpringIOC 依赖注入机制(通过反射实现)，有如下spring_core.xml配置，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"></div><div class="line">&lt;beans&gt;</div><div class="line">  &lt;bean id=&quot;testBean&quot; class=&quot;com.just.Test&quot;/&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
-<p>我们需要根据spring_core.xml配置来获取bean id为 “testBean” 的 class,即类的全路径，获取类的全路径后，就可以随心所欲的进行反射调用了~</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> for (Iterator i = root.elementIterator(&quot;bean&quot;); i.hasNext();)&#123;</div><div class="line">      foo = (Element) i.next();</div><div class="line">      //针对每一个bean实例获取id和name属性</div><div class="line">      Attribute id = foo.attribute(&quot;id&quot;);</div><div class="line">      Attribute clazz = foo.attribute(&quot;class&quot;);</div><div class="line"></div><div class="line">      //利用反射，通过class名称获取class对象</div><div class="line">      Class bean = Class.forName(clazz.getText());</div><div class="line">      // other 省略无关的反射操作</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如果需要处理的XML文件非常大，每次循环都使用Iterator，那么性能会降低，于是dom4j还提供了更加快速的获取元素的方法 element.nodeCount</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public class ReadXml &#123;</div><div class="line">    public static void init()&#123;</div><div class="line">        try &#123;</div><div class="line">            SAXReader saxReader = new SAXReader();</div><div class="line">            File file = new File(&quot;spring_core.xml&quot;);</div><div class="line">            Document document = saxReader.read(file);</div><div class="line">            Element rootElement = document.getRootElement();</div><div class="line">            treeWalk(rootElement);</div><div class="line">        &#125; catch (DocumentException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static  void treeWalk(Element element) &#123;</div><div class="line">        for ( int i = 0, size = element.nodeCount(); i &lt; size; i++ ) &#123;</div><div class="line">            Node node = element.node(i);</div><div class="line">            if(node instanceof  Element)&#123;</div><div class="line">                Element e = (Element) node;</div><div class="line">                System.out.println(e.attribute(&quot;id&quot;).getText());</div><div class="line">                System.out.println(e.attribute(&quot;class&quot;).getText());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="创建一个document"><a href="#创建一个document" class="headerlink" title="创建一个document"></a>创建一个document</h2><p>使用对象 DocumentHelper对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public Document createDocument() &#123;</div><div class="line">       Document document = DocumentHelper.createDocument();</div><div class="line">       Element root = document.addElement(&quot;root&quot;);</div><div class="line">       Element author1 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lip&quot;)</div><div class="line">               .addText(&quot;1323&quot;);</div><div class="line">       Element author2 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lin&quot;)</div><div class="line">               .addText(&quot;4444&quot;);</div><div class="line">       return  document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><p>通过创建XMLWriter对象进行写操作</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public class WriteXml &#123;</div><div class="line">    public static void init() throws IOException &#123;</div><div class="line">        Document document = DocumentHelper.createDocument();</div><div class="line">        Element root = document.addElement(&quot;beans&quot;);</div><div class="line">        Element bean = root.addElement(&quot;bean&quot;)</div><div class="line">                .addAttribute(&quot;id&quot;, &quot;testBean&quot;)</div><div class="line">                .addAttribute(&quot;class&quot;,&quot;com.just.Test&quot;);</div><div class="line">        write(document);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void write(Document document) throws IOException &#123;</div><div class="line">        //输出到文件 out.xml</div><div class="line">        XMLWriter writer = new XMLWriter(new FileWriter(&quot;out.xml&quot;));</div><div class="line">        writer.write(document);</div><div class="line">        writer.flush();</div><div class="line">        writer.close();</div><div class="line">        System.out.println(&quot;------------&quot;);</div><div class="line">        /**</div><div class="line">         * 通过 createPrettyPrint美化输出到控制台</div><div class="line">         */</div><div class="line">        OutputFormat outputFormat = OutputFormat.createPrettyPrint();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line">        System.out.println(&quot;----------------------------------&quot;);</div><div class="line">        /**</div><div class="line">         * 实现压缩</div><div class="line">         */</div><div class="line">        outputFormat = OutputFormat.createCompactFormat();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    public static void main(String args[]) throws IOException &#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="String与Xml转换"><a href="#String与Xml转换" class="headerlink" title="String与Xml转换"></a>String与Xml转换</h2><ul>
-<li>String 转为document对象或其他Node，使用 DocumentHelper.parseText()</li>
-<li>document或其他node节点，转为String，直接调用 .asXML()<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">  * convert from string</div><div class="line">  */</div><div class="line"> public Document convert(String xml) throws DocumentException &#123;</div><div class="line">     Document document = DocumentHelper.parseText(xml);</div><div class="line">     return  document;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * convert to string</div><div class="line">  */</div><div class="line"> public String convert(Document document) throws DocumentException &#123;</div><div class="line">     String str = document.asXML();</div><div class="line">     return str;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="xPath路径处理"><a href="#xPath路径处理" class="headerlink" title="xPath路径处理"></a>xPath路径处理</h2><p>对于xPath,在浏览器debug模式中，查看元素，对于元素进行复制时可以保存为xPath，那么可以理解为一种路径表示方式，在自动化测试中，xPath是一种非常重要的获取页面元素的手段。</p>
-<p>使用xPath需要引入依赖包，顺便贴上maven依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;dom4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;dom4j&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;jaxen&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jaxen&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.1.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>xPath的基本语法</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>expression</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>nodename</td>
-<td>当前节点的所有子节点</td>
-</tr>
-<tr>
-<td>/</td>
-<td>根节点选取</td>
-</tr>
-<tr>
-<td>//</td>
-<td>匹配文档中节点，不考虑位置</td>
-</tr>
-<tr>
-<td>.</td>
-<td>当前节点</td>
-</tr>
-<tr>
-<td>..</td>
-<td>当前节点的父节点</td>
-</tr>
-<tr>
-<td>@</td>
-<td>选取属性</td>
-</tr>
-</tbody>
-</table>
-<p>for Example：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div><div class="line">Element rootElement = document.getRootElement();</div><div class="line">List&lt;Object&gt; list = document.selectNodes(&quot;//bean&quot;);</div><div class="line">for (Object n : list) &#123;</div><div class="line">    if(n instanceof Element)&#123;</div><div class="line">        Element e = (Element) n;</div><div class="line">        System.out.println(e.getName());</div><div class="line">        List&lt;Object&gt; aList  = e.selectNodes(&quot;@class&quot;);</div><div class="line">        for(Object a :aList)</div><div class="line">            if(a instanceof Attribute)&#123;</div><div class="line">                Attribute attribute = (Attribute) a;</div><div class="line">                System.out.println(attribute.getText());</div><div class="line"></div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bean</div><div class="line">com.just.Test</div></pre></td></tr></table></figure>
-<h2 id="处理XSLT"><a href="#处理XSLT" class="headerlink" title="处理XSLT"></a>处理XSLT</h2><p>对于XSLT，不甚了解，贴上官方例子</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class Foo &#123;</div><div class="line"></div><div class="line">    public Document styleDocument(</div><div class="line">        Document document,</div><div class="line">        String stylesheet</div><div class="line">    ) throws Exception &#123;</div><div class="line"></div><div class="line">        // load the transformer using JAXP</div><div class="line">        TransformerFactory factory = TransformerFactory.newInstance();</div><div class="line">        Transformer transformer = factory.newTransformer(</div><div class="line">            new StreamSource( stylesheet )</div><div class="line">        );</div><div class="line"></div><div class="line">        // now lets style the given document</div><div class="line">        DocumentSource source = new DocumentSource( document );</div><div class="line">        DocumentResult result = new DocumentResult();</div><div class="line">        transformer.transform( source, result );</div><div class="line"></div><div class="line">        // return the transformed document</div><div class="line">        Document transformedDoc = result.getDocument();</div><div class="line">        return transformedDoc;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>以上只是基于官方guide文档学习时所记录，更多移步<a href="http://www.dom4j.org//" target="_blank" rel="external">http://www.dom4j.org/</a></p>
-<p>.END</p>]]></content>
-    
-    <summary type="html">
-    
-      Dom4j的基础读写处理
-    
-    </summary>
-    
-      <category term="Dom4j" scheme="http://doublesharejust.com.cn/categories/Dom4j/"/>
-    
-      <category term="XML" scheme="http://doublesharejust.com.cn/categories/Dom4j/XML/"/>
-    
-    
-      <category term="Dom4j" scheme="http://doublesharejust.com.cn/tags/Dom4j/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Hadoop分布式集群搭建（二）</title>
     <link href="http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%AC%E5%9C%B0%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
     <id>http://doublesharejust.com.cn/2016/10/22/Hadoop分布式本地集群搭建（二）/</id>
@@ -1736,6 +1629,113 @@
     
     
       <category term="Hadoop" scheme="http://doublesharejust.com.cn/tags/Hadoop/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Dom4j-使用指导</title>
+    <link href="http://doublesharejust.com.cn/2016/10/22/Dom4j/"/>
+    <id>http://doublesharejust.com.cn/2016/10/22/Dom4j/</id>
+    <published>2016-10-22T09:58:27.000Z</published>
+    <updated>2016-10-22T16:08:53.098Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="what-is-dom4j"><a href="#what-is-dom4j" class="headerlink" title="what is dom4j?"></a>what is dom4j?</h2><p>dom4j 是一个为Java服务的开源的XML框架，可以对xml文档进行读写,操作,创建和修改，集成了DOM和SAX，同样支持xPath</p>
+<p>接下来我们开始了解dom4j的基本用法</p>
+<h2 id="解析xml文档"><a href="#解析xml文档" class="headerlink" title="解析xml文档"></a>解析xml文档</h2><h3 id="获得Document对象"><a href="#获得Document对象" class="headerlink" title="获得Document对象"></a>获得Document对象</h3><p>解析xml文档，首先需要通过 SAXReader 创建一个 document对象</p>
+<blockquote>
+<p>SAXReader.read() 方法可以通过多种方式进行读取，例如：URL、InputStream、File、Reader等</p>
+</blockquote>
+<ul>
+<li>URL路径方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public Document parse(URL url) throws DocumentException &#123;</div><div class="line">       SAXReader reader = new SAXReader();</div><div class="line">       Document document = reader.read(url);</div><div class="line">       return document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>InputStream方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SAXReader reader = new SAXReader();</div><div class="line">//获取类加载器</div><div class="line">ClassLoader loader = Thread.currentThread().getContextClassLoader();</div><div class="line">//获取文件流</div><div class="line">java.io.InputStream inputStream = loader.getResourceAsStream(&quot;out.xml&quot;);</div><div class="line">//创建document对象</div><div class="line">Document doc = reader.read(inputStream);</div></pre></td></tr></table></figure>
+<ul>
+<li>File方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div></pre></td></tr></table></figure>
+<p>那么，接下来就是对xml中的Element(Node)，进行获取了。</p>
+<h3 id="获取root元素"><a href="#获取root元素" class="headerlink" title="获取root元素"></a>获取root元素</h3><p>方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Element root = document.getRootElement();</div></pre></td></tr></table></figure>
+<h3 id="使用Iterator获取元素"><a href="#使用Iterator获取元素" class="headerlink" title="使用Iterator获取元素"></a>使用Iterator获取元素</h3><p>dom4j通过内置的方法，可以返回标准的java迭代，方便我们获取元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void bar(Document document)&#123;</div><div class="line">     Element element = document.getRootElement();</div><div class="line"></div><div class="line">     //root 元素的子元素进行迭代</div><div class="line">     for(Iterator i = element.elementIterator();i.hasNext();) &#123;</div><div class="line">        Element element1 = (Element) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line">     //iterate through child elements of root with element name &quot;foo&quot;</div><div class="line">     //获取子元素name为 foo的迭代</div><div class="line">     for(Iterator i=element.elementIterator(&quot;foo&quot;);i.hasNext();) &#123;</div><div class="line">         Element foo = (Element) i.next();</div><div class="line">         //do something</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     // iterate through attribute of root</div><div class="line">     // 节点属性</div><div class="line">     for(Iterator i = element.attributeIterator();i.hasNext();) &#123;</div><div class="line">         Attribute attribute = (Attribute) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>例如，模拟SpringIOC 依赖注入机制(通过反射实现)，有如下spring_core.xml配置，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"></div><div class="line">&lt;beans&gt;</div><div class="line">  &lt;bean id=&quot;testBean&quot; class=&quot;com.just.Test&quot;/&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<p>我们需要根据spring_core.xml配置来获取bean id为 “testBean” 的 class,即类的全路径，获取类的全路径后，就可以随心所欲的进行反射调用了~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> for (Iterator i = root.elementIterator(&quot;bean&quot;); i.hasNext();)&#123;</div><div class="line">      foo = (Element) i.next();</div><div class="line">      //针对每一个bean实例获取id和name属性</div><div class="line">      Attribute id = foo.attribute(&quot;id&quot;);</div><div class="line">      Attribute clazz = foo.attribute(&quot;class&quot;);</div><div class="line"></div><div class="line">      //利用反射，通过class名称获取class对象</div><div class="line">      Class bean = Class.forName(clazz.getText());</div><div class="line">      // other 省略无关的反射操作</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果需要处理的XML文件非常大，每次循环都使用Iterator，那么性能会降低，于是dom4j还提供了更加快速的获取元素的方法 element.nodeCount</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public class ReadXml &#123;</div><div class="line">    public static void init()&#123;</div><div class="line">        try &#123;</div><div class="line">            SAXReader saxReader = new SAXReader();</div><div class="line">            File file = new File(&quot;spring_core.xml&quot;);</div><div class="line">            Document document = saxReader.read(file);</div><div class="line">            Element rootElement = document.getRootElement();</div><div class="line">            treeWalk(rootElement);</div><div class="line">        &#125; catch (DocumentException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static  void treeWalk(Element element) &#123;</div><div class="line">        for ( int i = 0, size = element.nodeCount(); i &lt; size; i++ ) &#123;</div><div class="line">            Node node = element.node(i);</div><div class="line">            if(node instanceof  Element)&#123;</div><div class="line">                Element e = (Element) node;</div><div class="line">                System.out.println(e.attribute(&quot;id&quot;).getText());</div><div class="line">                System.out.println(e.attribute(&quot;class&quot;).getText());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="创建一个document"><a href="#创建一个document" class="headerlink" title="创建一个document"></a>创建一个document</h2><p>使用对象 DocumentHelper对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public Document createDocument() &#123;</div><div class="line">       Document document = DocumentHelper.createDocument();</div><div class="line">       Element root = document.addElement(&quot;root&quot;);</div><div class="line">       Element author1 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lip&quot;)</div><div class="line">               .addText(&quot;1323&quot;);</div><div class="line">       Element author2 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lin&quot;)</div><div class="line">               .addText(&quot;4444&quot;);</div><div class="line">       return  document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><p>通过创建XMLWriter对象进行写操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public class WriteXml &#123;</div><div class="line">    public static void init() throws IOException &#123;</div><div class="line">        Document document = DocumentHelper.createDocument();</div><div class="line">        Element root = document.addElement(&quot;beans&quot;);</div><div class="line">        Element bean = root.addElement(&quot;bean&quot;)</div><div class="line">                .addAttribute(&quot;id&quot;, &quot;testBean&quot;)</div><div class="line">                .addAttribute(&quot;class&quot;,&quot;com.just.Test&quot;);</div><div class="line">        write(document);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void write(Document document) throws IOException &#123;</div><div class="line">        //输出到文件 out.xml</div><div class="line">        XMLWriter writer = new XMLWriter(new FileWriter(&quot;out.xml&quot;));</div><div class="line">        writer.write(document);</div><div class="line">        writer.flush();</div><div class="line">        writer.close();</div><div class="line">        System.out.println(&quot;------------&quot;);</div><div class="line">        /**</div><div class="line">         * 通过 createPrettyPrint美化输出到控制台</div><div class="line">         */</div><div class="line">        OutputFormat outputFormat = OutputFormat.createPrettyPrint();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line">        System.out.println(&quot;----------------------------------&quot;);</div><div class="line">        /**</div><div class="line">         * 实现压缩</div><div class="line">         */</div><div class="line">        outputFormat = OutputFormat.createCompactFormat();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    public static void main(String args[]) throws IOException &#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="String与Xml转换"><a href="#String与Xml转换" class="headerlink" title="String与Xml转换"></a>String与Xml转换</h2><ul>
+<li>String 转为document对象或其他Node，使用 DocumentHelper.parseText()</li>
+<li>document或其他node节点，转为String，直接调用 .asXML()<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">  * convert from string</div><div class="line">  */</div><div class="line"> public Document convert(String xml) throws DocumentException &#123;</div><div class="line">     Document document = DocumentHelper.parseText(xml);</div><div class="line">     return  document;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * convert to string</div><div class="line">  */</div><div class="line"> public String convert(Document document) throws DocumentException &#123;</div><div class="line">     String str = document.asXML();</div><div class="line">     return str;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="xPath路径处理"><a href="#xPath路径处理" class="headerlink" title="xPath路径处理"></a>xPath路径处理</h2><p>对于xPath,在浏览器debug模式中，查看元素，对于元素进行复制时可以保存为xPath，那么可以理解为一种路径表示方式，在自动化测试中，xPath是一种非常重要的获取页面元素的手段。</p>
+<p>使用xPath需要引入依赖包，顺便贴上maven依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;dom4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;dom4j&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;jaxen&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jaxen&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.1.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>xPath的基本语法</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>expression</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodename</td>
+<td>当前节点的所有子节点</td>
+</tr>
+<tr>
+<td>/</td>
+<td>根节点选取</td>
+</tr>
+<tr>
+<td>//</td>
+<td>匹配文档中节点，不考虑位置</td>
+</tr>
+<tr>
+<td>.</td>
+<td>当前节点</td>
+</tr>
+<tr>
+<td>..</td>
+<td>当前节点的父节点</td>
+</tr>
+<tr>
+<td>@</td>
+<td>选取属性</td>
+</tr>
+</tbody>
+</table>
+<p>for Example：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div><div class="line">Element rootElement = document.getRootElement();</div><div class="line">List&lt;Object&gt; list = document.selectNodes(&quot;//bean&quot;);</div><div class="line">for (Object n : list) &#123;</div><div class="line">    if(n instanceof Element)&#123;</div><div class="line">        Element e = (Element) n;</div><div class="line">        System.out.println(e.getName());</div><div class="line">        List&lt;Object&gt; aList  = e.selectNodes(&quot;@class&quot;);</div><div class="line">        for(Object a :aList)</div><div class="line">            if(a instanceof Attribute)&#123;</div><div class="line">                Attribute attribute = (Attribute) a;</div><div class="line">                System.out.println(attribute.getText());</div><div class="line"></div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bean</div><div class="line">com.just.Test</div></pre></td></tr></table></figure>
+<h2 id="处理XSLT"><a href="#处理XSLT" class="headerlink" title="处理XSLT"></a>处理XSLT</h2><p>对于XSLT，不甚了解，贴上官方例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class Foo &#123;</div><div class="line"></div><div class="line">    public Document styleDocument(</div><div class="line">        Document document,</div><div class="line">        String stylesheet</div><div class="line">    ) throws Exception &#123;</div><div class="line"></div><div class="line">        // load the transformer using JAXP</div><div class="line">        TransformerFactory factory = TransformerFactory.newInstance();</div><div class="line">        Transformer transformer = factory.newTransformer(</div><div class="line">            new StreamSource( stylesheet )</div><div class="line">        );</div><div class="line"></div><div class="line">        // now lets style the given document</div><div class="line">        DocumentSource source = new DocumentSource( document );</div><div class="line">        DocumentResult result = new DocumentResult();</div><div class="line">        transformer.transform( source, result );</div><div class="line"></div><div class="line">        // return the transformed document</div><div class="line">        Document transformedDoc = result.getDocument();</div><div class="line">        return transformedDoc;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>以上只是基于官方guide文档学习时所记录，更多移步<a href="http://www.dom4j.org//" target="_blank" rel="external">http://www.dom4j.org/</a></p>
+<p>.END</p>]]></content>
+    
+    <summary type="html">
+    
+      Dom4j的基础读写处理
+    
+    </summary>
+    
+      <category term="Dom4j" scheme="http://doublesharejust.com.cn/categories/Dom4j/"/>
+    
+      <category term="XML" scheme="http://doublesharejust.com.cn/categories/Dom4j/XML/"/>
+    
+    
+      <category term="Dom4j" scheme="http://doublesharejust.com.cn/tags/Dom4j/"/>
     
   </entry>
   
