@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://doublesharejust.com.cn/"/>
-  <updated>2016-11-14T16:30:50.812Z</updated>
+  <updated>2016-11-17T15:49:10.508Z</updated>
   <id>http://doublesharejust.com.cn/</id>
   
   <author>
@@ -14,6 +14,92 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://doublesharejust.com.cn/2016/11/17/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87-%20%E6%92%A4%E9%94%80%E6%93%8D%E4%BD%9C/"/>
+    <id>http://doublesharejust.com.cn/2016/11/17/Git 学习进阶篇- 撤销操作/</id>
+    <published>2016-11-17T15:53:52.571Z</published>
+    <updated>2016-11-17T15:49:10.508Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Git的撤销操作"><a href="#Git的撤销操作" class="headerlink" title="Git的撤销操作"></a>Git的撤销操作</h2><p>这里介绍一些基本的撤消操作相关的命令。当然，有些撤销操作是不可逆的</p>
+<p>涉及命令：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>git checkout</td>
+<td>还原工作区内容，即暂存区内容覆盖工作区内容,</td>
+</tr>
+<tr>
+<td>git reset</td>
+<td>还原暂存区内容，即撤销 git add操作</td>
+</tr>
+<tr>
+<td>git clean</td>
+<td>删除工作区中没有被git跟踪的文件</td>
+</tr>
+<tr>
+<td>git revert</td>
+<td>删除一些已提交的历史文件，当然会用新的覆盖旧的</td>
+</tr>
+</tbody>
+</table>
+<h2 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h2><p>git chekcout 既有切换分支功能，也可以还原工作区文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git checkout --help</div><div class="line">#NAME</div><div class="line">git-checkout - Switch branches or restore working tree files</div></pre></td></tr></table></figure>
+<ul>
+<li>以当前最新历史记录还原：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">$ vim master.d               //修改master.d文件</div><div class="line">$ git diff                   //本地与暂存区差异</div><div class="line">diff --git a/master.d b/master.d</div><div class="line">index e7bd13e..3077768 100644</div><div class="line">--- a/master.d</div><div class="line">+++ b/master.d</div><div class="line">@@ -4,4 +4,6 @@ modify on branch branch_marge</div><div class="line"> modify on branch</div><div class="line"></div><div class="line"> ef223eabc</div><div class="line">+test gitcheckout</div><div class="line">+</div><div class="line"></div><div class="line">$ git checkout -- master.d      //使用git checkout撤销修改</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git diff</div></pre></td></tr></table></figure>
+<ul>
+<li>同样命令： git checkout SHA-1/TAG –master.d  可以使用某一历史来还原，不过这时需要进行git add,和git commit来确认提交</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$ git lol -- master.d</div><div class="line">* fb78979 1</div><div class="line">* 257f3a2 modify master.d</div><div class="line">*   d8e6e7d Merge branch &apos;branch_V0&apos;</div><div class="line">|\</div><div class="line">| * 3b9ceaa (branch_V0) commit on branch_V0</div><div class="line">* | 872942d (branch_merge) commit on branch_merge</div><div class="line">* | 629aa7f second commit on master</div><div class="line">|/</div><div class="line">* 5154992 (tag: V0, tag: MASTER_FIRST) master.d first time commit</div><div class="line"></div><div class="line">$ git checkout d8e6e7d -- master.d    //还原 SHA-1值为 d8e6e7d 的提交</div></pre></td></tr></table></figure>
+<h2 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h2><p>将当前暂存区内容还原至某一历史的暂存区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># NAME</div><div class="line">git-reset - Reset current HEAD to the specified state</div></pre></td></tr></table></figure>
+<ul>
+<li><p>使用当前最新历史记录的暂存区还原：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ vim master.d</div><div class="line">$ git add .                     //添加进暂存区</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git diff --cached             //查看暂存区与历史区差异</div><div class="line">diff --git a/master.d b/master.d</div><div class="line">index e7bd13e..e3bfabc 100644</div><div class="line">--- a/master.d</div><div class="line">+++ b/master.d</div><div class="line">@@ -1,7 +1,7 @@</div><div class="line">-111111111</div><div class="line">+te111111111</div><div class="line"> ef223eabc</div><div class="line">-</div><div class="line">+fef</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git reset -- master.d             //reset对master.d的操作</div><div class="line">Unstaged changes after reset:</div><div class="line">M       master.d</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用某一历史提交的暂存区的内容还原当前暂存区的内容</p>
+</li>
+</ul>
+<p>如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">$ git lol -- stage.txt  //文件准备，每次添加一行提交     </div><div class="line">* 20373f0 (HEAD -&gt; master) third commit</div><div class="line">* 02ab411 second commit</div><div class="line">* e99b96a first commit stage.txt</div><div class="line"></div><div class="line">$ cat stage.txt        //当前文件中内容</div><div class="line">first commit</div><div class="line">second commit</div><div class="line">third commit</div><div class="line"></div><div class="line">$ vim stage.txt         //编辑，添加内容 &apos;forth commit&apos;</div><div class="line">$ git add .             //添加进暂存区</div><div class="line">$ git diff --cached     </div><div class="line">diff --git a/stage.txt b/stage.txt</div><div class="line">index 90dc5cb..e6d3e64 100644</div><div class="line">--- a/stage.txt</div><div class="line">+++ b/stage.txt</div><div class="line">@@ -1,3 +1,4 @@</div><div class="line"> first commit</div><div class="line"> second commit</div><div class="line"> third commit</div><div class="line">+forth commit           //可以看到暂存区比历史区多了一行</div></pre></td></tr></table></figure></p>
+<p>执行 reset 操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">$ git reset 02ab411 -- stage.txt   //还原到某一时刻的stage，该时刻因该有两次add，即两行</div><div class="line">Unstaged changes after reset:</div><div class="line">M       stage.txt</div><div class="line">$ git diff                         //工作区与暂存区区别</div><div class="line">diff --git a/stage.txt b/stage.txt</div><div class="line">index 56301e2..e6d3e64 100644</div><div class="line">--- a/stage.txt</div><div class="line">+++ b/stage.txt</div><div class="line">@@ -1,2 +1,4 @@</div><div class="line"> first commit</div><div class="line"> second commit                    //当前工作区比 reset的暂存区多了两行 #与预期相同</div><div class="line">+third commit</div><div class="line">+forth commit</div><div class="line"></div><div class="line">$ git diff --cached -- stage.txt    //暂存区与历史区区别</div><div class="line">diff --git a/stage.txt b/stage.txt</div><div class="line">index 90dc5cb..56301e2 100644</div><div class="line">--- a/stage.txt</div><div class="line">+++ b/stage.txt</div><div class="line">@@ -1,3 +1,2 @@</div><div class="line"> first commit</div><div class="line"> second commit </div><div class="line">-third commit                    // 当前reset的暂存区比历史区少了一行 # 与预期相同</div></pre></td></tr></table></figure>
+<h2 id="git-clean"><a href="#git-clean" class="headerlink" title="git clean"></a>git clean</h2><p>git clean 会删除工作区中没有被git跟踪的文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ git clean --help</div><div class="line"></div><div class="line">##from git-clean Manual Page：</div><div class="line">#name </div><div class="line">git-clean - Remove untracked files from the working tree</div><div class="line">#synopsis 概要</div><div class="line">git clean [-d] [-f] [-i] [-n] [-q] [-e &lt;pattern&gt;] [-x | -X] [--] &lt;path&gt;…​</div><div class="line"></div><div class="line">#DESCRIPTION </div><div class="line">Cleans the working tree by recursively removing files that are not under version control, starting from the current directory.</div><div class="line">...</div></pre></td></tr></table></figure>
+<blockquote>
+<p>默认，git clean会清除当前目录下的未跟踪文件；如果有 -x 参数，被忽略的文件也会被删除；<br>如果指定 <path></path>，则会删除指定目录下的未跟踪文件</p>
+</blockquote>
+<p>常用参数命令 ：<br>命令| 说明<br>—|—<br>git -n| 显示将要做什么，而不真正删除，可以确认将要删除的文件<br>git -f| 强制删除，如文件夹<br>git -X| 大写的X，仅删除被git忽略的文件<br>git -x| 表示，git忽略的文件也会被删除，注意与 -X区别</p>
+<p>For Example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ cat .gitignore         //查看忽略规则</div><div class="line">*.[ab]</div><div class="line">$ touch test.a test.b test.c test.d  //创建测试文件</div><div class="line">$ git add test.d            //将test.d添加进 暂存区</div></pre></td></tr></table></figure></p>
+<p>根据以上操作，则 test.a 和 test.b文件是git忽略文件，test.c是未跟踪文件，test.d是 已跟踪文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ git clean -n                 //默认，仅删除未被跟踪的文件</div><div class="line">Would remove test.c</div><div class="line"></div><div class="line">$ git clean -x -n              //-x 小写，未被跟踪和忽略文件都会被删除</div><div class="line">Would remove test.a</div><div class="line">Would remove test.b</div><div class="line">Would remove test.c</div><div class="line"></div><div class="line">$ git clean -X -n              //-X 大写，仅删除被忽略文件</div><div class="line">Would remove test.a</div><div class="line">Would remove test.b</div></pre></td></tr></table></figure>
+<h2 id="git-revert"><a href="#git-revert" class="headerlink" title="git revert"></a>git revert</h2><p>git revert 删除一些已提交的历史文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git clean --help</div><div class="line">#NAME</div><div class="line">git-revert - Revert some existing commits</div><div class="line"></div><div class="line">#DESCRIPTION</div><div class="line">Given one or more existing commits, revert the changes that the related patches introduce, and record some new commits that record them. This requires your working tree to be clean (no modifications from the HEAD commit).</div></pre></td></tr></table></figure>
+<blockquote>
+<p>git revert 使用新的提交来覆盖已有的提交，当然要求将被覆盖的文件不要处于修改状态</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">$ git lol</div><div class="line">* 54d2ffa (HEAD -&gt; master) xxxcommit</div><div class="line">* 074afd6 xxcommit</div><div class="line">$ git revert 074afd6   //revert 074afd6提交</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo/cleandir (master|REVERTING)</div><div class="line">$ git status</div><div class="line">On branch master</div><div class="line">You are currently reverting commit 074afd6.</div><div class="line">  (fix conflicts and run &quot;git revert --continue&quot;)</div><div class="line">  (use &quot;git revert --abort&quot; to cancel the revert operation)</div><div class="line"></div><div class="line">Unmerged paths:</div><div class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line">  (use &quot;git add &lt;file&gt;...&quot; to mark resolution)</div><div class="line"></div><div class="line">        both modified:   test.d</div><div class="line"></div><div class="line">no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>提示使用 git revert –abort来撤销 revert操作或者 提交本次操作</p>
+</blockquote>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Git的撤销操作&quot;&gt;&lt;a href=&quot;#Git的撤销操作&quot; class=&quot;headerlink&quot; title=&quot;Git的撤销操作&quot;&gt;&lt;/a&gt;Git的撤销操作&lt;/h2&gt;&lt;p&gt;这里介绍一些基本的撤消操作相关的命令。当然，有些撤销操作是不可逆的&lt;/p&gt;
+&lt;p&gt;涉及命令：
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Git 学习进阶篇-历史查看</title>
@@ -360,28 +446,46 @@
   </entry>
   
   <entry>
-    <title>Git 学习初始篇</title>
-    <link href="http://doublesharejust.com.cn/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E5%88%9D%E5%A7%8B%E7%AF%87/"/>
-    <id>http://doublesharejust.com.cn/2016/11/12/Git 学习初始篇/</id>
-    <published>2016-11-12T09:58:27.000Z</published>
-    <updated>2016-11-13T15:19:13.207Z</updated>
+    <title></title>
+    <link href="http://doublesharejust.com.cn/2016/11/13/Git%20%E5%AD%A6%E4%B9%A0%E5%88%9D%E5%A7%8B%E7%AF%87/"/>
+    <id>http://doublesharejust.com.cn/2016/11/13/Git 学习初始篇/</id>
+    <published>2016-11-13T15:16:51.958Z</published>
+    <updated>2016-11-17T11:40:16.789Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="what-is-Git"><a href="#what-is-Git" class="headerlink" title="what is Git"></a>what is Git</h2><p>重点：强大的代码管理工具！</p>
+    <content type="html"><![CDATA[<h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="what-is-Git"><a href="#what-is-Git" class="headerlink" title="what is Git"></a>what is Git</h2><p>重点：强大的分布式、高效代码管理工具！</p>
 <h3 id="为什么使用？"><a href="#为什么使用？" class="headerlink" title="为什么使用？"></a>为什么使用？</h3><p>重点：使用github社区必备，而且确实方便高效。</p>
-<h2 id="git与svn区别"><a href="#git与svn区别" class="headerlink" title="git与svn区别"></a>git与svn区别</h2><ul>
-<li>svn将代码放于中央服务器；git属于分布式版本控制系统，每个版本库都可以是独立的<blockquote>
-<p>分布式的git，可以完成很多离线操作，svn则做不到，如果与中央服务器断开，则什么都做不了</p>
+<h2 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h2><p><strong>Subversion </strong> : 集中化的版本控制系统,有一个单一的集中管理的服务器，保存所有文件的修订版本，而协同工作的人们都通过客户端连到这台服务器，取出最新的文件或者提交更新</p>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/svn_1.png" alt="image"></p>
+<ul>
+<li><p>优点：每个人都可以在一定程度上看到项目中的其他人正在做些什么。 而管理员也可以轻松掌控每个开发者的权限，并且管理一个 CVCS 要远比在各个客户端上维护本地数据库来得轻松容易。</p>
+</li>
+<li><p>缺点：是中央服务器的单点故障。发生故障谁都无法提交更新，也就无法协同工作。</p>
+</li>
+</ul>
+<p><strong>Git</strong>:客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来。 </p>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_1.png" alt="image"></p>
+<h2 id="git与svn区别"><a href="#git与svn区别" class="headerlink" title="git与svn区别"></a>git与svn区别</h2><p>主要区别：对数据的处理方法</p>
+<ul>
+<li>Git直接记录完整文件，SVN则是记录基本文件和每个文件随时间逐步累积的差异</li>
+</ul>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_2.png" alt="image"></p>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/svn_2.png" alt="image"></p>
+<ul>
+<li>Git 所有操作几乎都是本地执行，不用连网，处理速度飞快。<blockquote>
+<p>在没有网络的情况也可以访问历史，进行本地修改、提交等操作，只需要在有网络时push到远程仓库</p>
 </blockquote>
 </li>
-<li>svn保存的是当前版本与上一版本的差异,即只保存了从 A到A.1 改动的部分，而GIT保存的是完整的文件</li>
+<li>Git 时刻保持数据完整性 <blockquote>
+<p>在commit前，git会对数据进校验和（checksum）计算，并将此结果作为数据的唯一标识和索引。检查数据是否修改、缺失。</p>
+</blockquote>
+</li>
 </ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn1.png" alt="image"></p>
-<ul>
-<li>git可以实现分支合并操作</li>
-<li>git效率更高</li>
-<li>git对版本修改更加灵活，版本之间通过命令即可实现代码切换</li>
-</ul>
-<h2 id="git的简单配置"><a href="#git的简单配置" class="headerlink" title="git的简单配置"></a>git的简单配置</h2><p>假设已安装好git</p>
+<blockquote>
+<p>Git 使用 SHA-1 算法计算数据的校验和，通过对文件的内容或目录的结构计算出一个 SHA-1 哈希值，作为指纹字符串。该字串由 40 个十六进制字符（0-9 及 a-f）组成，看起来就像是：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">24b9da6552252987aa493b52f8696cd6d3b00373</div></pre></td></tr></table></figure>
+<p>Git 的工作完全依赖于这类指纹字串，所以你会经常看到这样的哈希值。实际上，所有保存在 Git 数据库中的东西都是用此哈希值来作索引的，而不是靠文件名。 </p>
+<h2 id="git的简单配置"><a href="#git的简单配置" class="headerlink" title="git的简单配置"></a>git的简单配置</h2><p>假设你已安装好git</p>
 <h3 id="git操作级别"><a href="#git操作级别" class="headerlink" title="git操作级别"></a>git操作级别</h3><table>
 <thead>
 <tr>
@@ -431,7 +535,7 @@
 <li>输入 git config – ，双击 tab 可显示可用参数</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git config --</div><div class="line">--add              --global           --rename-section</div><div class="line">--file=            --list             --replace-all</div><div class="line">--get              --local            --system</div><div class="line">--get-all          --name-only        --unset</div><div class="line">--get-regexp       --remove-section   --unset-all</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 ~/Desktop</div><div class="line">$ git config --</div></pre></td></tr></table></figure>
-<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><ul>
+<h3 id="使用前配置"><a href="#使用前配置" class="headerlink" title="使用前配置"></a>使用前配置</h3><ul>
 <li>设置用户和邮箱:相当于身份证</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.name &apos;xx&apos;</div><div class="line">git config --global user.email &apos;xx@yy&apos;</div></pre></td></tr></table></figure>
@@ -486,7 +590,14 @@
 <p>而，如果只是 mv 命令(没有git)，则操作的只是本地文件</p>
 <p>For Example：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ touch test.txt a.java  //创建文件</div><div class="line">$ git add test.txt a.java  //添加至缓存</div><div class="line">$ git status  //查看文件状态</div><div class="line"></div><div class="line">On branch master</div><div class="line">Initial commit</div><div class="line"></div><div class="line">Changes to be committed:</div><div class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">        new file:   a.java</div><div class="line">        new file:   test.txt</div><div class="line"></div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git commit -m &quot;add files first time&quot;  //提交至历史区</div><div class="line"></div><div class="line">[master (root-commit) 02463dd] add files first time</div><div class="line"> 2 files changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 a.java</div><div class="line"> create mode 100644 test.txt</div></pre></td></tr></table></figure>
-<p>如果需要忽略某些文件，而不需要被跟踪？可以在需要的目录位置创建 <strong>.gitignore</strong> 文件</p>
+<p>这里说下<strong>Git中文件的状态</strong> ：未跟踪和已跟踪，通过<strong>git status</strong>命令查看</p>
+<blockquote>
+<p>请记住，工作目录下面的所有文件都不外乎这两种状态：已跟踪或未跟踪。已跟踪的文件是指本来就被纳入版本控制管理的文件，在上次快照中有它们的记录，工作一段时间后，它们的状态可能是未更新，已修改或者已放入暂存区。而所有其他文件都属于未跟踪文件。它们既没有上次更新时的快照，也不在当前的暂存区域。初次克隆某个仓库时，工作目录中的所有文件都属于已跟踪文件，且状态为未修改。</p>
+</blockquote>
+<p>简单理解的话，只要是已经<strong>被Git命令操作过的，纳入Git管理</strong>的文件都是已跟踪文件，没有被Git命令操作的文件都是未跟踪。比如在工作区touch新文件，则状态是未跟踪，使用git add 添加进缓存区是，就是已跟踪了。</p>
+<p>其中，Git中文件状态变化周期如下图：</p>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_3_filestatus.png" alt="image"></p>
+<p>如果需要<strong>忽略某些文件</strong>，而不需要被跟踪？可以在需要的目录位置创建 <strong>.gitignore</strong> 文件</p>
 <p>通配符匹配规则：<br>匹配符 | 规则 | 举例<br>—|—|—<br>a.txt | 过滤具体的 a.txt文件 |<br>*~ |中间类型文件| 如vim~ 匹配vim操作产生的文件</p>
 <ul>
 <li>| 匹配多个字符| <em>.txt 所有txt文件都被忽略<br>[]| 包含单个字符的匹配列表| </em>.[ab] 过滤以a或b结尾的文件<br>/ | 匹配目录| /demo 过滤当前目录demo文件夹及文件夹下所有文件<br>**/| 匹配任何目录下的某文件夹|  两个星号/demo，过滤任何目录(以.gitignore文件所在目录为根目录）下包含demo文件夹及其文件夹下的文件<br>! | 不过滤 | !a.txt 不过滤a.txt文件，若文件本身以 !开始，则需要加”\“ 转义，如”\!a.txt” 不过滤 !a.txt文件</li>
@@ -495,11 +606,9 @@
     
     <summary type="html">
     
-      介绍版本控制工具git的使用
+      &lt;h1 id=&quot;Git&quot;&gt;&lt;a href=&quot;#Git&quot; class=&quot;headerlink&quot; title=&quot;Git&quot;&gt;&lt;/a&gt;Git&lt;/h1&gt;&lt;h2 id=&quot;what-is-Git&quot;&gt;&lt;a href=&quot;#what-is-Git&quot; class=&quot;headerlink&quot; title=
     
     </summary>
-    
-      <category term="Git" scheme="http://doublesharejust.com.cn/categories/Git/"/>
     
     
   </entry>
@@ -1389,136 +1498,6 @@
   </entry>
   
   <entry>
-    <title>Hadoop分布式集群搭建（二）</title>
-    <link href="http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%AC%E5%9C%B0%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
-    <id>http://doublesharejust.com.cn/2016/10/22/Hadoop分布式本地集群搭建（二）/</id>
-    <published>2016-10-22T09:58:27.000Z</published>
-    <updated>2016-11-06T15:39:02.893Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Hadoop"><a href="#Hadoop" class="headerlink" title="Hadoop"></a>Hadoop</h1><h2 id="基础环境"><a href="#基础环境" class="headerlink" title="基础环境"></a>基础环境</h2><ul>
-<li>centOS 64(已配置ssh,jdk,hosts,防火墙关闭) </li>
-<li>hadoop 1.2.1 (推荐)</li>
-</ul>
-<p>所有主机都需要配置，其中个别端口号和地址需要按照主机进行修改，已知/etc/hosts配置</p>
-<table>
-<thead>
-<tr>
-<th>主机</th>
-<th>ip</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>master</td>
-<td>192.168.1.122</td>
-</tr>
-<tr>
-<td>slave1</td>
-<td>192.168.1.123</td>
-</tr>
-<tr>
-<td>slave2</td>
-<td>192.168.1.124</td>
-</tr>
-<tr>
-<td>slave3</td>
-<td>192.168.1.125</td>
-</tr>
-</tbody>
-</table>
-<h2 id="安装hadoop"><a href="#安装hadoop" class="headerlink" title="安装hadoop"></a>安装hadoop</h2><p>在目录/home/hadoop/ 下，这里统一使用hadoop用户安装，在安装过程中必须保证使用hadoop用户安装，否则在后面可能会出现无权限的情况，增加工作量，当然，若都使用root用户操作也可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf hadoop-1.2.1.tar.gz</div></pre></td></tr></table></figure></p>
-<ul>
-<li>环境变量配置(/etc/profile)<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">export HADOOP_HOME=/home/hadoop/hadoop-1.2.1</div><div class="line">export PATH=$PATH:$HADOOP_HOME/bin</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>source /etc/profile 重启加载生效</p>
-<h2 id="hadoop配置文件"><a href="#hadoop配置文件" class="headerlink" title="hadoop配置文件"></a>hadoop配置文件</h2><h3 id="修改hadoop配置文件-hadoop-env-sh"><a href="#修改hadoop配置文件-hadoop-env-sh" class="headerlink" title="修改hadoop配置文件 hadoop-env.sh"></a>修改hadoop配置文件 hadoop-env.sh</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master conf]$ vim hadoop-env.sh</div></pre></td></tr></table></figure>
-<p>添加jdk目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67</div></pre></td></tr></table></figure></p>
-<h3 id="配置core-site-xml"><a href="#配置core-site-xml" class="headerlink" title="配置core-site.xml"></a>配置core-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;fs.default.name&lt;/name&gt;</div><div class="line">        &lt;value&gt;hdfs://master:9000&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</div><div class="line">        &lt;value&gt;/home/hadoop/hadoop-data/tmp&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
-<p>属性：</p>
-<ul>
-<li>fs.default.name：是NameNode的URI：hdfs://主机名:端口</li>
-<li>hadoop.tmp.dir ：目录可自己创建，Hadoop的默认临时路径，如进程文件存储，这个最好配置，如果在新增节点或者其他情况下莫名其妙的DataNode启动不了，就删除此文件中的tmp目录即可。不过如果删除了NameNode机器的此目录，那么就需要重新执行NameNode格式化的命令。</li>
-</ul>
-<p>注意：此处的/home/hadoop/hadoop-data/tmp 可先进行创建</p>
-<ul>
-<li>配置 hdfs-site.xml</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.replication&lt;/name&gt;</div><div class="line">    &lt;value&gt;3&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.name.dir&lt;/name&gt;</div><div class="line">    &lt;value&gt;/home/hadoop/hadoop-data/hdfs/name&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.data.dir&lt;/name&gt;</div><div class="line">    &lt;value&gt;/home/hadoop/hadoop-data/hdfs/data&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.permissions&lt;/name&gt;</div><div class="line">    &lt;value&gt;false&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
-<p>属性：</p>
-<ul>
-<li>dfs.replication ：几个从节点，有slave1,slave2,slave3三个</li>
-<li>dfs.name.dir: NameNode元数据存储位置，持久存储名字空间及事务日志的本地文件系统路径。 当这个值是一个逗号分割的目录列表时，nametable数据将会被复制到所有目录中做冗余备份</li>
-<li>dfs.data.dir: DataNode元数据存储本地文件系统路径，存储所有用户数据，逗号分割的列表。 当这个值是逗号分割的目录列表时，数据将被存储在所有目录下，通常分布在不同设备上</li>
-<li>dfs.permissions: 为false不考虑权限</li>
-</ul>
-<p>注意：此处的/home/hadoop/hadoop-data/hdfs/name 与 /home/hadoop/hadoop-data/hdfs/data目录不能预先创建，hadoop格式化时会自动创建</p>
-<h3 id="配置-mapred-site-xml"><a href="#配置-mapred-site-xml" class="headerlink" title="配置 mapred-site.xml"></a>配置 mapred-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">   &lt;property&gt;</div><div class="line">         &lt;name&gt;mapred.job.tracker&lt;/name&gt;</div><div class="line">        &lt;!--&lt;value&gt;192.168.1.122:9001&lt;/value&gt;--&gt;</div><div class="line">        &lt;value&gt;master:9001&lt;/value&gt;</div><div class="line">   &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.local.dir&lt;/name&gt;</div><div class="line">        &lt;value&gt;/home/hadoop/hadoop-data/tmp&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.tasktracker.map.tasks.maximum&lt;/name&gt;</div><div class="line">        &lt;value&gt;3&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.tasktracker.reduce.tasks.maximum&lt;/name&gt;</div><div class="line">        &lt;value&gt;3&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
-<p>属性：</p>
-<ul>
-<li>mapred.job.tracker 为jobtracker 的主机名和端口</li>
-<li>mapred.tasktracker.map.tasks.maximum 为最大map的任务个数</li>
-<li>mapred.tasktracker.reduce.tasks.maximum 为最大reduce任务的个数</li>
-</ul>
-<h3 id="配置-slaves、masters文件"><a href="#配置-slaves、masters文件" class="headerlink" title="配置 slaves、masters文件"></a>配置 slaves、masters文件</h3><p>使用ip或者主机名，做好使用主机名</p>
-<ul>
-<li><p>slaves</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">slave1</div><div class="line">slave2</div><div class="line">slave3</div></pre></td></tr></table></figure>
-</li>
-<li><p>masters</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">master</div></pre></td></tr></table></figure>
-<p>注意: </p>
-<ul>
-<li>其他三台主机也需要进行jdk等基础环境的配置</li>
-<li>从机中的hadoop配置是相同的，如 core-site.xml的配置是相同的<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">scp -r  hadoop-1.2.1 hadoop@slave1:/home/hadoop/</div><div class="line">scp -r  hadoop-1.2.1 hadoop@slave2:/home/hadoop/</div><div class="line">scp -r  hadoop-1.2.1 hadoop@slave3:/home/hadoop/</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="格式化文件系统"><a href="#格式化文件系统" class="headerlink" title="格式化文件系统"></a>格式化文件系统</h2><p>在 /安装目录/bin目录下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master bin]$ hadoop namenode -format</div></pre></td></tr></table></figure>
-<p>可在之前配置的数据目录中，看到生成的文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd /home/hadoop/hadoop-data/</div><div class="line">[hadoop@master hadoop-data]$ ls</div><div class="line">hdfs  tmp</div><div class="line">[hadoop@master hadoop-data]$ cd hdfs/</div><div class="line">[hadoop@master hdfs]$ ls</div><div class="line">name</div></pre></td></tr></table></figure></p>
-<h2 id="启动Hadoop"><a href="#启动Hadoop" class="headerlink" title="启动Hadoop"></a>启动Hadoop</h2><p>终于到了启动的时刻了！</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master hadoop-1.2.1]$ bin/start-all.sh</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">Warning: $HADOOP_HOME is deprecated.</div><div class="line"></div><div class="line">starting namenode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-namenode-master.out</div><div class="line">slave3: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave3.out</div><div class="line">slave2: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave2.out</div><div class="line">slave1: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave1.out</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">master: Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">master: starting secondarynamenode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-secondarynamenode-master.out</div><div class="line">starting jobtracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-jobtracker-master.out</div><div class="line">slave1: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave1.out</div><div class="line">slave3: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave3.out</div><div class="line">slave2: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave2.out</div></pre></td></tr></table></figure>
-<p>查看是不是配置成功了!!!</p>
-<ul>
-<li><p>[x] - 在master中，显示四个进程!</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ jps</div><div class="line">15575 SecondaryNameNode</div><div class="line">15723 JobTracker</div><div class="line">15924 Jps</div><div class="line">15361 NameNode</div></pre></td></tr></table></figure>
-</li>
-<li><p>[x] 在三个从节点中显示三个进程!</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave1 ~]$ jps</div><div class="line">10195 TaskTracker</div><div class="line">10549 Jps</div><div class="line">9935 DataNode</div></pre></td></tr></table></figure>
-<p>心里感觉很舒畅，但是还没有完，要验证是否每个datanode都是正常与master链接，如果防火墙不关闭的话，会有问题的！</p>
-<ul>
-<li><a href="http://master:50070" target="_blank" rel="external">http://master:50070</a><br>如下图所示，可以看到 容量、LiveNodes=3</li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/hadoop_done.png" alt="image"></p>
-<ul>
-<li><a href="http://master:50030" target="_blank" rel="external">http://master:50030</a></li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/hadoop_node.jpg" alt="image"></p>
-<p>以上两个地址正常出现，则表示集群正式搭建成功了！ Congratulation!</p>
-<p>此外，如果从机节点不是全部启用的话，可以单独在从机节点，启动hdfs和mpared<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">start-dfs.sh</div><div class="line">start-mapred.sh</div></pre></td></tr></table></figure></p>
-<h3 id="关闭Hadoop"><a href="#关闭Hadoop" class="headerlink" title="关闭Hadoop"></a>关闭Hadoop</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ hadoop-1.2.1/bin/stop-all.sh</div></pre></td></tr></table></figure>
-<h3 id="END"><a href="#END" class="headerlink" title="END"></a>END</h3><p>接下来，就是对集群的使用了 ~ </p>]]></content>
-    
-    <summary type="html">
-    
-      Hadoop分布式集群搭建
-    
-    </summary>
-    
-      <category term="Hadoop" scheme="http://doublesharejust.com.cn/categories/Hadoop/"/>
-    
-    
-      <category term="Hadoop" scheme="http://doublesharejust.com.cn/tags/Hadoop/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Hadoop分布式集群搭建 Centos7 环境准备</title>
     <link href="http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%20Centos7%20%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/"/>
     <id>http://doublesharejust.com.cn/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/</id>
@@ -1740,6 +1719,345 @@
   </entry>
   
   <entry>
+    <title>Hadoop分布式集群搭建（二）</title>
+    <link href="http://doublesharejust.com.cn/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%AC%E5%9C%B0%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
+    <id>http://doublesharejust.com.cn/2016/10/22/Hadoop分布式本地集群搭建（二）/</id>
+    <published>2016-10-22T09:58:27.000Z</published>
+    <updated>2016-11-06T15:39:02.893Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Hadoop"><a href="#Hadoop" class="headerlink" title="Hadoop"></a>Hadoop</h1><h2 id="基础环境"><a href="#基础环境" class="headerlink" title="基础环境"></a>基础环境</h2><ul>
+<li>centOS 64(已配置ssh,jdk,hosts,防火墙关闭) </li>
+<li>hadoop 1.2.1 (推荐)</li>
+</ul>
+<p>所有主机都需要配置，其中个别端口号和地址需要按照主机进行修改，已知/etc/hosts配置</p>
+<table>
+<thead>
+<tr>
+<th>主机</th>
+<th>ip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>master</td>
+<td>192.168.1.122</td>
+</tr>
+<tr>
+<td>slave1</td>
+<td>192.168.1.123</td>
+</tr>
+<tr>
+<td>slave2</td>
+<td>192.168.1.124</td>
+</tr>
+<tr>
+<td>slave3</td>
+<td>192.168.1.125</td>
+</tr>
+</tbody>
+</table>
+<h2 id="安装hadoop"><a href="#安装hadoop" class="headerlink" title="安装hadoop"></a>安装hadoop</h2><p>在目录/home/hadoop/ 下，这里统一使用hadoop用户安装，在安装过程中必须保证使用hadoop用户安装，否则在后面可能会出现无权限的情况，增加工作量，当然，若都使用root用户操作也可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tar -zxvf hadoop-1.2.1.tar.gz</div></pre></td></tr></table></figure></p>
+<ul>
+<li>环境变量配置(/etc/profile)<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">export HADOOP_HOME=/home/hadoop/hadoop-1.2.1</div><div class="line">export PATH=$PATH:$HADOOP_HOME/bin</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>source /etc/profile 重启加载生效</p>
+<h2 id="hadoop配置文件"><a href="#hadoop配置文件" class="headerlink" title="hadoop配置文件"></a>hadoop配置文件</h2><h3 id="修改hadoop配置文件-hadoop-env-sh"><a href="#修改hadoop配置文件-hadoop-env-sh" class="headerlink" title="修改hadoop配置文件 hadoop-env.sh"></a>修改hadoop配置文件 hadoop-env.sh</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master conf]$ vim hadoop-env.sh</div></pre></td></tr></table></figure>
+<p>添加jdk目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67</div></pre></td></tr></table></figure></p>
+<h3 id="配置core-site-xml"><a href="#配置core-site-xml" class="headerlink" title="配置core-site.xml"></a>配置core-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;fs.default.name&lt;/name&gt;</div><div class="line">        &lt;value&gt;hdfs://master:9000&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</div><div class="line">        &lt;value&gt;/home/hadoop/hadoop-data/tmp&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p>属性：</p>
+<ul>
+<li>fs.default.name：是NameNode的URI：hdfs://主机名:端口</li>
+<li>hadoop.tmp.dir ：目录可自己创建，Hadoop的默认临时路径，如进程文件存储，这个最好配置，如果在新增节点或者其他情况下莫名其妙的DataNode启动不了，就删除此文件中的tmp目录即可。不过如果删除了NameNode机器的此目录，那么就需要重新执行NameNode格式化的命令。</li>
+</ul>
+<p>注意：此处的/home/hadoop/hadoop-data/tmp 可先进行创建</p>
+<ul>
+<li>配置 hdfs-site.xml</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.replication&lt;/name&gt;</div><div class="line">    &lt;value&gt;3&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.name.dir&lt;/name&gt;</div><div class="line">    &lt;value&gt;/home/hadoop/hadoop-data/hdfs/name&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.data.dir&lt;/name&gt;</div><div class="line">    &lt;value&gt;/home/hadoop/hadoop-data/hdfs/data&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;property&gt;</div><div class="line">    &lt;name&gt;dfs.permissions&lt;/name&gt;</div><div class="line">    &lt;value&gt;false&lt;/value&gt;</div><div class="line">&lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p>属性：</p>
+<ul>
+<li>dfs.replication ：几个从节点，有slave1,slave2,slave3三个</li>
+<li>dfs.name.dir: NameNode元数据存储位置，持久存储名字空间及事务日志的本地文件系统路径。 当这个值是一个逗号分割的目录列表时，nametable数据将会被复制到所有目录中做冗余备份</li>
+<li>dfs.data.dir: DataNode元数据存储本地文件系统路径，存储所有用户数据，逗号分割的列表。 当这个值是逗号分割的目录列表时，数据将被存储在所有目录下，通常分布在不同设备上</li>
+<li>dfs.permissions: 为false不考虑权限</li>
+</ul>
+<p>注意：此处的/home/hadoop/hadoop-data/hdfs/name 与 /home/hadoop/hadoop-data/hdfs/data目录不能预先创建，hadoop格式化时会自动创建</p>
+<h3 id="配置-mapred-site-xml"><a href="#配置-mapred-site-xml" class="headerlink" title="配置 mapred-site.xml"></a>配置 mapred-site.xml</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;</div><div class="line">   &lt;property&gt;</div><div class="line">         &lt;name&gt;mapred.job.tracker&lt;/name&gt;</div><div class="line">        &lt;!--&lt;value&gt;192.168.1.122:9001&lt;/value&gt;--&gt;</div><div class="line">        &lt;value&gt;master:9001&lt;/value&gt;</div><div class="line">   &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.local.dir&lt;/name&gt;</div><div class="line">        &lt;value&gt;/home/hadoop/hadoop-data/tmp&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.tasktracker.map.tasks.maximum&lt;/name&gt;</div><div class="line">        &lt;value&gt;3&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property&gt;</div><div class="line">        &lt;name&gt;mapred.tasktracker.reduce.tasks.maximum&lt;/name&gt;</div><div class="line">        &lt;value&gt;3&lt;/value&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/configuration&gt;</div></pre></td></tr></table></figure>
+<p>属性：</p>
+<ul>
+<li>mapred.job.tracker 为jobtracker 的主机名和端口</li>
+<li>mapred.tasktracker.map.tasks.maximum 为最大map的任务个数</li>
+<li>mapred.tasktracker.reduce.tasks.maximum 为最大reduce任务的个数</li>
+</ul>
+<h3 id="配置-slaves、masters文件"><a href="#配置-slaves、masters文件" class="headerlink" title="配置 slaves、masters文件"></a>配置 slaves、masters文件</h3><p>使用ip或者主机名，做好使用主机名</p>
+<ul>
+<li><p>slaves</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">slave1</div><div class="line">slave2</div><div class="line">slave3</div></pre></td></tr></table></figure>
+</li>
+<li><p>masters</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">master</div></pre></td></tr></table></figure>
+<p>注意: </p>
+<ul>
+<li>其他三台主机也需要进行jdk等基础环境的配置</li>
+<li>从机中的hadoop配置是相同的，如 core-site.xml的配置是相同的<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">scp -r  hadoop-1.2.1 hadoop@slave1:/home/hadoop/</div><div class="line">scp -r  hadoop-1.2.1 hadoop@slave2:/home/hadoop/</div><div class="line">scp -r  hadoop-1.2.1 hadoop@slave3:/home/hadoop/</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="格式化文件系统"><a href="#格式化文件系统" class="headerlink" title="格式化文件系统"></a>格式化文件系统</h2><p>在 /安装目录/bin目录下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master bin]$ hadoop namenode -format</div></pre></td></tr></table></figure>
+<p>可在之前配置的数据目录中，看到生成的文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd /home/hadoop/hadoop-data/</div><div class="line">[hadoop@master hadoop-data]$ ls</div><div class="line">hdfs  tmp</div><div class="line">[hadoop@master hadoop-data]$ cd hdfs/</div><div class="line">[hadoop@master hdfs]$ ls</div><div class="line">name</div></pre></td></tr></table></figure></p>
+<h2 id="启动Hadoop"><a href="#启动Hadoop" class="headerlink" title="启动Hadoop"></a>启动Hadoop</h2><p>终于到了启动的时刻了！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master hadoop-1.2.1]$ bin/start-all.sh</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">Warning: $HADOOP_HOME is deprecated.</div><div class="line"></div><div class="line">starting namenode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-namenode-master.out</div><div class="line">slave3: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave3.out</div><div class="line">slave2: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave2.out</div><div class="line">slave1: starting datanode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-datanode-slave1.out</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">master: Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">master: starting secondarynamenode, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-secondarynamenode-master.out</div><div class="line">starting jobtracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-jobtracker-master.out</div><div class="line">slave1: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave1.out</div><div class="line">slave3: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave3.out</div><div class="line">slave2: starting tasktracker, logging to /home/hadoop/hadoop-1.2.1/libexec/../logs/hadoop-hadoop-tasktracker-slave2.out</div></pre></td></tr></table></figure>
+<p>查看是不是配置成功了!!!</p>
+<ul>
+<li><p>[x] - 在master中，显示四个进程!</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ jps</div><div class="line">15575 SecondaryNameNode</div><div class="line">15723 JobTracker</div><div class="line">15924 Jps</div><div class="line">15361 NameNode</div></pre></td></tr></table></figure>
+</li>
+<li><p>[x] 在三个从节点中显示三个进程!</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave1 ~]$ jps</div><div class="line">10195 TaskTracker</div><div class="line">10549 Jps</div><div class="line">9935 DataNode</div></pre></td></tr></table></figure>
+<p>心里感觉很舒畅，但是还没有完，要验证是否每个datanode都是正常与master链接，如果防火墙不关闭的话，会有问题的！</p>
+<ul>
+<li><a href="http://master:50070" target="_blank" rel="external">http://master:50070</a><br>如下图所示，可以看到 容量、LiveNodes=3</li>
+</ul>
+<p><img src="http://og6e19zce.bkt.clouddn.com/hadoop_done.png" alt="image"></p>
+<ul>
+<li><a href="http://master:50030" target="_blank" rel="external">http://master:50030</a></li>
+</ul>
+<p><img src="http://og6e19zce.bkt.clouddn.com/hadoop_node.jpg" alt="image"></p>
+<p>以上两个地址正常出现，则表示集群正式搭建成功了！ Congratulation!</p>
+<p>此外，如果从机节点不是全部启用的话，可以单独在从机节点，启动hdfs和mpared<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">start-dfs.sh</div><div class="line">start-mapred.sh</div></pre></td></tr></table></figure></p>
+<h3 id="关闭Hadoop"><a href="#关闭Hadoop" class="headerlink" title="关闭Hadoop"></a>关闭Hadoop</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ hadoop-1.2.1/bin/stop-all.sh</div></pre></td></tr></table></figure>
+<h3 id="END"><a href="#END" class="headerlink" title="END"></a>END</h3><p>接下来，就是对集群的使用了 ~ </p>]]></content>
+    
+    <summary type="html">
+    
+      Hadoop分布式集群搭建
+    
+    </summary>
+    
+      <category term="Hadoop" scheme="http://doublesharejust.com.cn/categories/Hadoop/"/>
+    
+    
+      <category term="Hadoop" scheme="http://doublesharejust.com.cn/tags/Hadoop/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java并发工具包（上）</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（上）/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-07T14:46:56.741Z</updated>
+    
+    <content type="html"><![CDATA[<p>有助于创建强大的并发编程</p>
+<ul>
+<li>同步器：为每种特定的同步问题提供了解决方案</li>
+<li>执行器：用来管理线程的执行，如线程池</li>
+<li>并发集合：提供了集合框架中集合的并发版本</li>
+</ul>
+<h2 id="Semaphore"><a href="#Semaphore" class="headerlink" title="Semaphore"></a>Semaphore</h2><p>控制一定资源的消费与回收，Semaphore 可以控制某个资源被同时访问的任务数，它通过acquire()获取一个许可，release()释放一个许可。如果被同时访问的任务数已满，则其他 acquire 的任务进入等待状态，直到有一个任务被 release 掉，它才能得到许可。</p>
+<blockquote>
+<p>特点:经典的信号量，通过计数器控制对共享资源的访问<br>常用</p>
+<ul>
+<li>Semaphore(int count):创建拥有count个许可证的信号量</li>
+<li>acquire()/acquire(int num)：获取1/num个信号量</li>
+<li>release()/release(int num):释放1/num个信号量</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Semaphore;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class SemaphoreDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //创建2个信号量，有三个对象要使用</div><div class="line">        Semaphore semaphore = new Semaphore(2);</div><div class="line">        new Person(semaphore,&quot;A&quot;).start();</div><div class="line">        new Person(semaphore,&quot;B&quot;).start();</div><div class="line">        new Person(semaphore,&quot;C&quot;).start();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">&#125;</div><div class="line">class Person extends Thread&#123;</div><div class="line">    private Semaphore semaphore;</div><div class="line">    public Person(Semaphore semaphore,String name)&#123;</div><div class="line">        this.semaphore = semaphore;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        System.out.println(getName() + &quot; is waiting&quot;);</div><div class="line">        try &#123;</div><div class="line">            //获取信号量</div><div class="line">            semaphore.acquire();//默认获取一个</div><div class="line">            System.out.println(getName()+&quot; is serving&quot;);</div><div class="line">            Thread.sleep(1000);</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        System.out.println(getName()+&quot; is done.&quot;);</div><div class="line">        semaphore.release();//释放信号量</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="CountDownLatch-同步器"><a href="#CountDownLatch-同步器" class="headerlink" title="CountDownLatch 同步器"></a>CountDownLatch 同步器</h2><blockquote>
+<p>特点：需要等待几秒后才会触发</p>
+<p>常用</p>
+<ul>
+<li>必须发生指定数量的事件后才可以继续运行</li>
+<li>CountDownLatch(int count):必须发生count个数量才可以打开锁存器</li>
+<li>await()：等待锁存器</li>
+<li>countDown()：触发事件</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.CountDownLatch;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 模拟赛跑，倒数指令</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class CountDownLatchDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //3 表示有三个事件发生才会执行该线程</div><div class="line">        CountDownLatch countDownLatch = new CountDownLatch(3);</div><div class="line">        new Racer(countDownLatch, &quot;A&quot;).start();</div><div class="line">        new Racer(countDownLatch, &quot;B&quot;).start();</div><div class="line">        new Racer(countDownLatch, &quot;C&quot;).start();</div><div class="line">        for(int i=0;i&lt;3;i++)&#123;</div><div class="line">            System.out.println(&quot;计数:&quot;+(3-i));</div><div class="line">            countDownLatch.countDown();//触发事件</div><div class="line">            if(i==2)&#123;</div><div class="line">                System.out.println(&quot;start--&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Racer extends  Thread&#123;</div><div class="line">    CountDownLatch countDownLatch;</div><div class="line"></div><div class="line">    public Racer(CountDownLatch countDownLatch, String name) &#123;</div><div class="line">        this.countDownLatch = countDownLatch;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void run() &#123;</div><div class="line">        try &#123;</div><div class="line">            //等待</div><div class="line">            countDownLatch.await();</div><div class="line">            //执行操作</div><div class="line">            System.out.println(&quot;执行程序: &quot;+getName());</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="CyclicBarrier同步器"><a href="#CyclicBarrier同步器" class="headerlink" title="CyclicBarrier同步器"></a>CyclicBarrier同步器</h2><blockquote>
+<p>特点</p>
+<ul>
+<li>适用于只有多个线程都达到预定点时才可以继续执行</li>
+<li>CyclicBarrier(int num):等待线程的数量</li>
+<li>CyclicBarrier(int num,Runnable action)：等待线程的数量以及所有线程到达后的操作</li>
+<li>await()：到达临界点后暂停线程</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.BrokenBarrierException;</div><div class="line">import java.util.concurrent.CyclicBarrier;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 模拟斗地主</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class CyclicBarrierDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new Runnable() &#123;</div><div class="line">            @Override</div><div class="line">            public void run() &#123;</div><div class="line">                System.out.println(&quot;Game start&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        new Player(cyclicBarrier,&quot;A&quot;).start();</div><div class="line">        new Player(cyclicBarrier,&quot;B&quot;).start();</div><div class="line">        new Player(cyclicBarrier,&quot;C&quot;).start();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Player extends Thread&#123;</div><div class="line">    CyclicBarrier cyclicBarrier;</div><div class="line"></div><div class="line">    public Player(CyclicBarrier cyclicBarrier, String name) &#123;</div><div class="line">        this.cyclicBarrier = cyclicBarrier;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        System.out.println(getName()+&quot;等待&quot;);</div><div class="line">        try &#123;</div><div class="line">            cyclicBarrier.await();</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; catch (BrokenBarrierException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Exchanger-交换器"><a href="#Exchanger-交换器" class="headerlink" title="Exchanger 交换器"></a>Exchanger 交换器</h2><blockquote>
+<p>特点：简化两个线程间数据的交换</p>
+</blockquote>
+<p>常用方法</p>
+<ul>
+<li>Exchanger<v>:指定进行交换的数据类型</v></li>
+<li>V exchange(V object):等待线程到达，交换数据</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Exchanger;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class ExchangerDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Exchanger&lt;String&gt; ex = new Exchanger&lt;&gt;();</div><div class="line">        new A(ex).start();</div><div class="line">        new B(ex).start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class A extends Thread&#123;</div><div class="line">    Exchanger&lt;String&gt; ex;</div><div class="line">    public A(Exchanger ex)&#123;</div><div class="line">        this.ex = ex;</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        String str;</div><div class="line">        try &#123;</div><div class="line">            str = ex.exchange(&quot;hello&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is A&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+ str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is A1&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+ str);</div><div class="line"></div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class B extends Thread&#123;</div><div class="line">    Exchanger&lt;String&gt; ex;</div><div class="line">    public B(Exchanger ex)&#123;</div><div class="line">        this.ex = ex;</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        String str;</div><div class="line">        try &#123;</div><div class="line">            str = ex.exchange(&quot;hI&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is B&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+ str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is B1&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+ str);</div><div class="line"></div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Phaser"><a href="#Phaser" class="headerlink" title="Phaser"></a>Phaser</h2><blockquote>
+<p>特点：工作方式与CyclicBarrier类似，但是可以定义多个阶段<br>常用:</p>
+<ul>
+<li>Phaser()/Phaser(int num):使用指定0/num个party创建Phaser</li>
+<li>register():注册party</li>
+<li>arriveAndAdvance():到达时等待所有party到达</li>
+<li>arriveAndDeregister()：到达时注销线程自己</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Phaser;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class PhaserDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Phaser phaser = new Phaser(1);</div><div class="line">        System.out.println(&quot;starting...&quot;);</div><div class="line">        //假设每个订单有三道工序</div><div class="line">        new Worker(phaser,&quot;worker1&quot;).start();//执行等待</div><div class="line">        new Worker(phaser, &quot;worker2&quot;).start();</div><div class="line">        new Worker(phaser,&quot;worker3&quot;).start();</div><div class="line">        //处理三个订单</div><div class="line">        for(int i=0;i&lt;3;i++) &#123;</div><div class="line">            //处理完每一个订单都要等待，相当于开始执行下一个订单</div><div class="line">            phaser.arriveAndAwaitAdvance();</div><div class="line">        &#125;</div><div class="line">        //所有订单处理完毕，接触在phaser上注册的所有worker</div><div class="line">        phaser.arriveAndDeregister();</div><div class="line">        System.out.println(&quot;all done...&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Worker extends Thread&#123;</div><div class="line">    Phaser phaser;</div><div class="line">    public Worker(Phaser phaser,String name)&#123;</div><div class="line">        this.phaser = phaser;</div><div class="line">        setName(name);</div><div class="line">        phaser.register();//当当前线程注册到phaser中</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        //模拟三个订单</div><div class="line">        for(int i=1;i&lt;=3;i++)&#123;</div><div class="line">            System.out.println(&quot;current order:&quot;+i+&quot;:&quot;+getName());</div><div class="line">            if(i==3)&#123;</div><div class="line">                //如果是第三个订单，即所有订单都处理完毕，注销phaser</div><div class="line">                phaser.arriveAndDeregister();</div><div class="line">            &#125;else&#123;//否则，执行等待</div><div class="line">                phaser.arriveAndAwaitAdvance();</div><div class="line">            &#125;</div><div class="line">            try &#123;</div><div class="line">                Thread.sleep(1500);</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      Java并发操作中使用的工具类
+    
+    </summary>
+    
+      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
+    
+    
+      <category term="Java并发" scheme="http://doublesharejust.com.cn/tags/Java%E5%B9%B6%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java设计模式-单例模式</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-单例模式/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-07T14:46:56.734Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>保证一个类仅有一个实例，并提供一个访问它的全局访问点。</p>
+<blockquote>
+<p>适用性：当类只能有一个实例而且客户可以从一个众所周知的访问点访问它时。当这个唯一实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能使用一个扩展的实例时。</p>
+</blockquote>
+<h2 id="占位符式"><a href="#占位符式" class="headerlink" title="占位符式"></a>占位符式</h2><ul>
+<li>线程安全<blockquote>
+<p>JVM内部机制保证在执行类构造器初始化的时候是线程安全的</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public class JustDemo &#123;</div><div class="line">    private  static  boolean flag = true;</div><div class="line">    public JustDemo() &#123;</div><div class="line">        synchronized (JustDemo.class)&#123;</div><div class="line">            if(flag)&#123;</div><div class="line">                flag = false;</div><div class="line">            &#125;else&#123;</div><div class="line">                throw new RuntimeException(&quot;反射入侵已阻止&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    private static class Single&#123;</div><div class="line">        private static final JustDemo INSTANCE = new JustDemo();</div><div class="line">    &#125;</div><div class="line">    public JustDemo getInstance() &#123;</div><div class="line">        return Single.INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>上面示例可防止Java反射方法调用</p>
+</blockquote>
+<h2 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class LazySingleton &#123;</div><div class="line">    private static LazySingleton instance;</div><div class="line"></div><div class="line">    private LazySingleton() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static synchronized LazySingleton getInstance() &#123;</div><div class="line">        if (instance == null)&#123;</div><div class="line">            instance = new LazySingleton();</div><div class="line">        &#125;</div><div class="line">        return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Singleton &#123;</div><div class="line">    private static Singleton instance = new Singleton();</div><div class="line"></div><div class="line">    private Singleton() &#123;</div><div class="line">    &#125;</div><div class="line">    public static Singleton getInstance() &#123;</div><div class="line">            return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      Java设计模式学习笔记
+    
+    </summary>
+    
+      <category term="单例模式" scheme="http://doublesharejust.com.cn/categories/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java并发工具包(下)</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（下）/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-07T14:46:56.746Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h2><blockquote>
+<p>特点：用于启动并控制线程执行<br>常用API</p>
+<ul>
+<li>核心接口为 Executor,包含一个execute(Runnable)用于指定被执行的线程</li>
+<li>ExecutorService接口用于控制线程执行和管理线程</li>
+<li>预定义了如下执行器：</li>
+</ul>
+<ol>
+<li>ThreadPoolExecutor(线程池)</li>
+<li>ScheduledThreadPoolExecutor</li>
+<li>ForkJoinPool</li>
+</ol>
+</blockquote>
+<h3 id="Callable-与-Future"><a href="#Callable-与-Future" class="headerlink" title="Callable 与 Future"></a>Callable 与 Future</h3><ul>
+<li>Callable<v>:表示具有返回值的线程</v></li>
+<li>V：表示返回值类型</li>
+<li>call():执行任务</li>
+<li>Future<v>:表示Callable的返回值</v></li>
+<li>V：返回值类型</li>
+<li>get():获取返回值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.*;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class ExecutorDemo &#123;</div><div class="line"></div><div class="line">    public static void main(String args[]) throws ExecutionException, InterruptedException &#123;</div><div class="line">        //初始化具有两个固定线程的线程池 </div><div class="line">        ExecutorService es = Executors.newFixedThreadPool(2);</div><div class="line">        //通过submit方法调用call方法；即放入线程中执行</div><div class="line">        Future&lt;Integer&gt; f1 =es.submit(new Method(1,100));</div><div class="line">        Future&lt;Integer&gt; f2 = es.submit(new Method(100, 1000));</div><div class="line">        Future&lt;Integer&gt; f3 = es.submit(new Method(100, 1000));</div><div class="line">        System.out.println(&quot;f1:&quot;+f1.get());//获取返回值</div><div class="line">        System.out.println(&quot;f2:&quot;+f2.get());</div><div class="line">        System.out.println(&quot;f2:&quot;+f3.get());</div><div class="line">        //停止执行器</div><div class="line">        es.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Method implements Callable&lt;Integer&gt; &#123;</div><div class="line">    private int begin;</div><div class="line">    private int end;</div><div class="line"></div><div class="line">    public Method(int begin, int end) &#123;</div><div class="line">        this.begin = begin;</div><div class="line">        this.end = end;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public Integer call() throws Exception &#123;</div><div class="line">        int sum = 0;</div><div class="line">        for (int i = begin; i &lt;end; i++) &#123;</div><div class="line">            sum+=i;</div><div class="line">        &#125;</div><div class="line">        Thread.sleep(3000);</div><div class="line">        return sum;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="锁与原子操作"><a href="#锁与原子操作" class="headerlink" title="锁与原子操作"></a>锁与原子操作</h2><h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><ul>
+<li>为使用synchronized控制对资源访问提供了替代机制</li>
+<li>基本操纵模型：访问资源之前申请锁，访问完毕后释放锁</li>
+<li>lock/tryLock：申请锁</li>
+<li>unlock：释放锁</li>
+<li>具体锁实现类：ReentrantLock实现了Lock接口</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.locks.Lock;</div><div class="line">import java.util.concurrent.locks.ReentrantLock;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class LockDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">           new AddData().start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Data &#123;</div><div class="line">    static int i=0;</div><div class="line">    static  Lock lock = new ReentrantLock();</div><div class="line">    static void operate( )&#123;</div><div class="line">        lock.lock();</div><div class="line">        i++;</div><div class="line">        System.out.println(&quot;i:&quot;+i);</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class AddData extends Thread&#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">       while (true) &#123;</div><div class="line">            try &#123;</div><div class="line">                Thread.sleep(1000);</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">            Data.operate();</div><div class="line">       &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h3><p>java.util.concurrent.atom包中提供了对原子操作的支持</p>
+<ul>
+<li>提供了不需要锁以及其他同步机制就可以进行的一些不可中断操作</li>
+<li>主要操作为：获取，设置，比较</li>
+</ul>]]></content>
+    
+    <summary type="html">
+    
+      Java并发操作中使用的工具类
+    
+    </summary>
+    
+      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
+    
+    
+      <category term="Java并发" scheme="http://doublesharejust.com.cn/tags/Java%E5%B9%B6%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java设计模式-装饰者模式</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-07T14:46:56.721Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>项目：咖啡馆订单系统</p>
+<ul>
+<li>咖啡种类：Espresso,ShortBlack,LongBlack,Decaf</li>
+<li>调料：Milk,Soy,Chocolate</li>
+<li>扩展性好：有新品种咖啡，无需改动之前的，不会对原有代码有影响、改动方便、维护方便</li>
+</ul>
+<p>1 装饰者模式就像打包一个快递</p>
+<ul>
+<li>主体：陶瓷、衣服</li>
+<li>包装：报纸填充、塑料泡沫、纸板<br>2 Component:主体超类 或再添加一中间层(实现公共功能)</li>
+</ul>
+<p>3 ConcreteComponent 待包装的主体，如Decaf 和 Decorator </p>
+<p>4 装饰者模式：动态的将新功能附加到对象上。在对象功能拓展方面，它比继承更有弹性</p>
+<h2 id="Java内置装饰者"><a href="#Java内置装饰者" class="headerlink" title="Java内置装饰者"></a>Java内置装饰者</h2><p>Java的IO结构<br>InputStream是超类 FilterInputStream是中间类 BufferedInputStream属于装饰类</p>
+<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><ul>
+<li>开放、关闭原则：对添加新代码开放，对已测试好功能关闭</li>
+<li>易拓展</li>
+</ul>]]></content>
+    
+    <summary type="html">
+    
+      Java设计模式学习笔记
+    
+    </summary>
+    
+      <category term="装饰者模式" scheme="http://doublesharejust.com.cn/categories/%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java 多线程-Thread</title>
     <link href="http://doublesharejust.com.cn/2016/10/02/Java%20%E5%A4%9A%E7%BA%BF%E7%A8%8B%20-%20Thread/"/>
     <id>http://doublesharejust.com.cn/2016/10/02/Java 多线程 - Thread/</id>
@@ -1818,215 +2136,6 @@
     
     
       <category term="Java" scheme="http://doublesharejust.com.cn/tags/Java/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java并发工具包(下)</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（下）/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.746Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h2><blockquote>
-<p>特点：用于启动并控制线程执行<br>常用API</p>
-<ul>
-<li>核心接口为 Executor,包含一个execute(Runnable)用于指定被执行的线程</li>
-<li>ExecutorService接口用于控制线程执行和管理线程</li>
-<li>预定义了如下执行器：</li>
-</ul>
-<ol>
-<li>ThreadPoolExecutor(线程池)</li>
-<li>ScheduledThreadPoolExecutor</li>
-<li>ForkJoinPool</li>
-</ol>
-</blockquote>
-<h3 id="Callable-与-Future"><a href="#Callable-与-Future" class="headerlink" title="Callable 与 Future"></a>Callable 与 Future</h3><ul>
-<li>Callable<v>:表示具有返回值的线程</v></li>
-<li>V：表示返回值类型</li>
-<li>call():执行任务</li>
-<li>Future<v>:表示Callable的返回值</v></li>
-<li>V：返回值类型</li>
-<li>get():获取返回值</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.*;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class ExecutorDemo &#123;</div><div class="line"></div><div class="line">    public static void main(String args[]) throws ExecutionException, InterruptedException &#123;</div><div class="line">        //初始化具有两个固定线程的线程池 </div><div class="line">        ExecutorService es = Executors.newFixedThreadPool(2);</div><div class="line">        //通过submit方法调用call方法；即放入线程中执行</div><div class="line">        Future&lt;Integer&gt; f1 =es.submit(new Method(1,100));</div><div class="line">        Future&lt;Integer&gt; f2 = es.submit(new Method(100, 1000));</div><div class="line">        Future&lt;Integer&gt; f3 = es.submit(new Method(100, 1000));</div><div class="line">        System.out.println(&quot;f1:&quot;+f1.get());//获取返回值</div><div class="line">        System.out.println(&quot;f2:&quot;+f2.get());</div><div class="line">        System.out.println(&quot;f2:&quot;+f3.get());</div><div class="line">        //停止执行器</div><div class="line">        es.shutdown();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Method implements Callable&lt;Integer&gt; &#123;</div><div class="line">    private int begin;</div><div class="line">    private int end;</div><div class="line"></div><div class="line">    public Method(int begin, int end) &#123;</div><div class="line">        this.begin = begin;</div><div class="line">        this.end = end;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @Override</div><div class="line">    public Integer call() throws Exception &#123;</div><div class="line">        int sum = 0;</div><div class="line">        for (int i = begin; i &lt;end; i++) &#123;</div><div class="line">            sum+=i;</div><div class="line">        &#125;</div><div class="line">        Thread.sleep(3000);</div><div class="line">        return sum;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="锁与原子操作"><a href="#锁与原子操作" class="headerlink" title="锁与原子操作"></a>锁与原子操作</h2><h3 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h3><ul>
-<li>为使用synchronized控制对资源访问提供了替代机制</li>
-<li>基本操纵模型：访问资源之前申请锁，访问完毕后释放锁</li>
-<li>lock/tryLock：申请锁</li>
-<li>unlock：释放锁</li>
-<li>具体锁实现类：ReentrantLock实现了Lock接口</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.locks.Lock;</div><div class="line">import java.util.concurrent.locks.ReentrantLock;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class LockDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">           new AddData().start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">class Data &#123;</div><div class="line">    static int i=0;</div><div class="line">    static  Lock lock = new ReentrantLock();</div><div class="line">    static void operate( )&#123;</div><div class="line">        lock.lock();</div><div class="line">        i++;</div><div class="line">        System.out.println(&quot;i:&quot;+i);</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class AddData extends Thread&#123;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">       while (true) &#123;</div><div class="line">            try &#123;</div><div class="line">                Thread.sleep(1000);</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">            Data.operate();</div><div class="line">       &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h3><p>java.util.concurrent.atom包中提供了对原子操作的支持</p>
-<ul>
-<li>提供了不需要锁以及其他同步机制就可以进行的一些不可中断操作</li>
-<li>主要操作为：获取，设置，比较</li>
-</ul>]]></content>
-    
-    <summary type="html">
-    
-      Java并发操作中使用的工具类
-    
-    </summary>
-    
-      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
-    
-    
-      <category term="Java并发" scheme="http://doublesharejust.com.cn/tags/Java%E5%B9%B6%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java设计模式-单例模式</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-单例模式/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.734Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>保证一个类仅有一个实例，并提供一个访问它的全局访问点。</p>
-<blockquote>
-<p>适用性：当类只能有一个实例而且客户可以从一个众所周知的访问点访问它时。当这个唯一实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能使用一个扩展的实例时。</p>
-</blockquote>
-<h2 id="占位符式"><a href="#占位符式" class="headerlink" title="占位符式"></a>占位符式</h2><ul>
-<li>线程安全<blockquote>
-<p>JVM内部机制保证在执行类构造器初始化的时候是线程安全的</p>
-</blockquote>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public class JustDemo &#123;</div><div class="line">    private  static  boolean flag = true;</div><div class="line">    public JustDemo() &#123;</div><div class="line">        synchronized (JustDemo.class)&#123;</div><div class="line">            if(flag)&#123;</div><div class="line">                flag = false;</div><div class="line">            &#125;else&#123;</div><div class="line">                throw new RuntimeException(&quot;反射入侵已阻止&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    private static class Single&#123;</div><div class="line">        private static final JustDemo INSTANCE = new JustDemo();</div><div class="line">    &#125;</div><div class="line">    public JustDemo getInstance() &#123;</div><div class="line">        return Single.INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>上面示例可防止Java反射方法调用</p>
-</blockquote>
-<h2 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class LazySingleton &#123;</div><div class="line">    private static LazySingleton instance;</div><div class="line"></div><div class="line">    private LazySingleton() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static synchronized LazySingleton getInstance() &#123;</div><div class="line">        if (instance == null)&#123;</div><div class="line">            instance = new LazySingleton();</div><div class="line">        &#125;</div><div class="line">        return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Singleton &#123;</div><div class="line">    private static Singleton instance = new Singleton();</div><div class="line"></div><div class="line">    private Singleton() &#123;</div><div class="line">    &#125;</div><div class="line">    public static Singleton getInstance() &#123;</div><div class="line">            return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      Java设计模式学习笔记
-    
-    </summary>
-    
-      <category term="单例模式" scheme="http://doublesharejust.com.cn/categories/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java设计模式-装饰者模式</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.721Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>项目：咖啡馆订单系统</p>
-<ul>
-<li>咖啡种类：Espresso,ShortBlack,LongBlack,Decaf</li>
-<li>调料：Milk,Soy,Chocolate</li>
-<li>扩展性好：有新品种咖啡，无需改动之前的，不会对原有代码有影响、改动方便、维护方便</li>
-</ul>
-<p>1 装饰者模式就像打包一个快递</p>
-<ul>
-<li>主体：陶瓷、衣服</li>
-<li>包装：报纸填充、塑料泡沫、纸板<br>2 Component:主体超类 或再添加一中间层(实现公共功能)</li>
-</ul>
-<p>3 ConcreteComponent 待包装的主体，如Decaf 和 Decorator </p>
-<p>4 装饰者模式：动态的将新功能附加到对象上。在对象功能拓展方面，它比继承更有弹性</p>
-<h2 id="Java内置装饰者"><a href="#Java内置装饰者" class="headerlink" title="Java内置装饰者"></a>Java内置装饰者</h2><p>Java的IO结构<br>InputStream是超类 FilterInputStream是中间类 BufferedInputStream属于装饰类</p>
-<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><ul>
-<li>开放、关闭原则：对添加新代码开放，对已测试好功能关闭</li>
-<li>易拓展</li>
-</ul>]]></content>
-    
-    <summary type="html">
-    
-      Java设计模式学习笔记
-    
-    </summary>
-    
-      <category term="装饰者模式" scheme="http://doublesharejust.com.cn/categories/%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java并发工具包（上）</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（上）/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.741Z</updated>
-    
-    <content type="html"><![CDATA[<p>有助于创建强大的并发编程</p>
-<ul>
-<li>同步器：为每种特定的同步问题提供了解决方案</li>
-<li>执行器：用来管理线程的执行，如线程池</li>
-<li>并发集合：提供了集合框架中集合的并发版本</li>
-</ul>
-<h2 id="Semaphore"><a href="#Semaphore" class="headerlink" title="Semaphore"></a>Semaphore</h2><p>控制一定资源的消费与回收，Semaphore 可以控制某个资源被同时访问的任务数，它通过acquire()获取一个许可，release()释放一个许可。如果被同时访问的任务数已满，则其他 acquire 的任务进入等待状态，直到有一个任务被 release 掉，它才能得到许可。</p>
-<blockquote>
-<p>特点:经典的信号量，通过计数器控制对共享资源的访问<br>常用</p>
-<ul>
-<li>Semaphore(int count):创建拥有count个许可证的信号量</li>
-<li>acquire()/acquire(int num)：获取1/num个信号量</li>
-<li>release()/release(int num):释放1/num个信号量</li>
-</ul>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Semaphore;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class SemaphoreDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //创建2个信号量，有三个对象要使用</div><div class="line">        Semaphore semaphore = new Semaphore(2);</div><div class="line">        new Person(semaphore,&quot;A&quot;).start();</div><div class="line">        new Person(semaphore,&quot;B&quot;).start();</div><div class="line">        new Person(semaphore,&quot;C&quot;).start();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">&#125;</div><div class="line">class Person extends Thread&#123;</div><div class="line">    private Semaphore semaphore;</div><div class="line">    public Person(Semaphore semaphore,String name)&#123;</div><div class="line">        this.semaphore = semaphore;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        System.out.println(getName() + &quot; is waiting&quot;);</div><div class="line">        try &#123;</div><div class="line">            //获取信号量</div><div class="line">            semaphore.acquire();//默认获取一个</div><div class="line">            System.out.println(getName()+&quot; is serving&quot;);</div><div class="line">            Thread.sleep(1000);</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        System.out.println(getName()+&quot; is done.&quot;);</div><div class="line">        semaphore.release();//释放信号量</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="CountDownLatch-同步器"><a href="#CountDownLatch-同步器" class="headerlink" title="CountDownLatch 同步器"></a>CountDownLatch 同步器</h2><blockquote>
-<p>特点：需要等待几秒后才会触发</p>
-<p>常用</p>
-<ul>
-<li>必须发生指定数量的事件后才可以继续运行</li>
-<li>CountDownLatch(int count):必须发生count个数量才可以打开锁存器</li>
-<li>await()：等待锁存器</li>
-<li>countDown()：触发事件</li>
-</ul>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.CountDownLatch;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 模拟赛跑，倒数指令</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class CountDownLatchDemo &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //3 表示有三个事件发生才会执行该线程</div><div class="line">        CountDownLatch countDownLatch = new CountDownLatch(3);</div><div class="line">        new Racer(countDownLatch, &quot;A&quot;).start();</div><div class="line">        new Racer(countDownLatch, &quot;B&quot;).start();</div><div class="line">        new Racer(countDownLatch, &quot;C&quot;).start();</div><div class="line">        for(int i=0;i&lt;3;i++)&#123;</div><div class="line">            System.out.println(&quot;计数:&quot;+(3-i));</div><div class="line">            countDownLatch.countDown();//触发事件</div><div class="line">            if(i==2)&#123;</div><div class="line">                System.out.println(&quot;start--&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Racer extends  Thread&#123;</div><div class="line">    CountDownLatch countDownLatch;</div><div class="line"></div><div class="line">    public Racer(CountDownLatch countDownLatch, String name) &#123;</div><div class="line">        this.countDownLatch = countDownLatch;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void run() &#123;</div><div class="line">        try &#123;</div><div class="line">            //等待</div><div class="line">            countDownLatch.await();</div><div class="line">            //执行操作</div><div class="line">            System.out.println(&quot;执行程序: &quot;+getName());</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="CyclicBarrier同步器"><a href="#CyclicBarrier同步器" class="headerlink" title="CyclicBarrier同步器"></a>CyclicBarrier同步器</h2><blockquote>
-<p>特点</p>
-<ul>
-<li>适用于只有多个线程都达到预定点时才可以继续执行</li>
-<li>CyclicBarrier(int num):等待线程的数量</li>
-<li>CyclicBarrier(int num,Runnable action)：等待线程的数量以及所有线程到达后的操作</li>
-<li>await()：到达临界点后暂停线程</li>
-</ul>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.BrokenBarrierException;</div><div class="line">import java.util.concurrent.CyclicBarrier;</div><div class="line"></div><div class="line">/**</div><div class="line"> * 模拟斗地主</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class CyclicBarrierDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new Runnable() &#123;</div><div class="line">            @Override</div><div class="line">            public void run() &#123;</div><div class="line">                System.out.println(&quot;Game start&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        new Player(cyclicBarrier,&quot;A&quot;).start();</div><div class="line">        new Player(cyclicBarrier,&quot;B&quot;).start();</div><div class="line">        new Player(cyclicBarrier,&quot;C&quot;).start();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Player extends Thread&#123;</div><div class="line">    CyclicBarrier cyclicBarrier;</div><div class="line"></div><div class="line">    public Player(CyclicBarrier cyclicBarrier, String name) &#123;</div><div class="line">        this.cyclicBarrier = cyclicBarrier;</div><div class="line">        setName(name);</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        System.out.println(getName()+&quot;等待&quot;);</div><div class="line">        try &#123;</div><div class="line">            cyclicBarrier.await();</div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; catch (BrokenBarrierException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Exchanger-交换器"><a href="#Exchanger-交换器" class="headerlink" title="Exchanger 交换器"></a>Exchanger 交换器</h2><blockquote>
-<p>特点：简化两个线程间数据的交换</p>
-</blockquote>
-<p>常用方法</p>
-<ul>
-<li>Exchanger<v>:指定进行交换的数据类型</v></li>
-<li>V exchange(V object):等待线程到达，交换数据</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Exchanger;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class ExchangerDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Exchanger&lt;String&gt; ex = new Exchanger&lt;&gt;();</div><div class="line">        new A(ex).start();</div><div class="line">        new B(ex).start();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class A extends Thread&#123;</div><div class="line">    Exchanger&lt;String&gt; ex;</div><div class="line">    public A(Exchanger ex)&#123;</div><div class="line">        this.ex = ex;</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        String str;</div><div class="line">        try &#123;</div><div class="line">            str = ex.exchange(&quot;hello&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is A&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+ str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is A1&quot;);</div><div class="line">            System.out.println(&quot;A ex:&quot;+ str);</div><div class="line"></div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class B extends Thread&#123;</div><div class="line">    Exchanger&lt;String&gt; ex;</div><div class="line">    public B(Exchanger ex)&#123;</div><div class="line">        this.ex = ex;</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        String str;</div><div class="line">        try &#123;</div><div class="line">            str = ex.exchange(&quot;hI&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is B&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+ str);</div><div class="line"></div><div class="line">            str = ex.exchange(&quot;this is B1&quot;);</div><div class="line">            System.out.println(&quot;B ex:&quot;+ str);</div><div class="line"></div><div class="line">        &#125; catch (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Phaser"><a href="#Phaser" class="headerlink" title="Phaser"></a>Phaser</h2><blockquote>
-<p>特点：工作方式与CyclicBarrier类似，但是可以定义多个阶段<br>常用:</p>
-<ul>
-<li>Phaser()/Phaser(int num):使用指定0/num个party创建Phaser</li>
-<li>register():注册party</li>
-<li>arriveAndAdvance():到达时等待所有party到达</li>
-<li>arriveAndDeregister()：到达时注销线程自己</li>
-</ul>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line">package chapter.concurrent;</div><div class="line"></div><div class="line">import java.util.concurrent.Phaser;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Created by @Just on 2016/10/5.</div><div class="line"> */</div><div class="line">public class PhaserDemo &#123;</div><div class="line">    public static void main(String args[]) &#123;</div><div class="line">        Phaser phaser = new Phaser(1);</div><div class="line">        System.out.println(&quot;starting...&quot;);</div><div class="line">        //假设每个订单有三道工序</div><div class="line">        new Worker(phaser,&quot;worker1&quot;).start();//执行等待</div><div class="line">        new Worker(phaser, &quot;worker2&quot;).start();</div><div class="line">        new Worker(phaser,&quot;worker3&quot;).start();</div><div class="line">        //处理三个订单</div><div class="line">        for(int i=0;i&lt;3;i++) &#123;</div><div class="line">            //处理完每一个订单都要等待，相当于开始执行下一个订单</div><div class="line">            phaser.arriveAndAwaitAdvance();</div><div class="line">        &#125;</div><div class="line">        //所有订单处理完毕，接触在phaser上注册的所有worker</div><div class="line">        phaser.arriveAndDeregister();</div><div class="line">        System.out.println(&quot;all done...&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">class Worker extends Thread&#123;</div><div class="line">    Phaser phaser;</div><div class="line">    public Worker(Phaser phaser,String name)&#123;</div><div class="line">        this.phaser = phaser;</div><div class="line">        setName(name);</div><div class="line">        phaser.register();//当当前线程注册到phaser中</div><div class="line">    &#125;</div><div class="line">    public void run()&#123;</div><div class="line">        //模拟三个订单</div><div class="line">        for(int i=1;i&lt;=3;i++)&#123;</div><div class="line">            System.out.println(&quot;current order:&quot;+i+&quot;:&quot;+getName());</div><div class="line">            if(i==3)&#123;</div><div class="line">                //如果是第三个订单，即所有订单都处理完毕，注销phaser</div><div class="line">                phaser.arriveAndDeregister();</div><div class="line">            &#125;else&#123;//否则，执行等待</div><div class="line">                phaser.arriveAndAwaitAdvance();</div><div class="line">            &#125;</div><div class="line">            try &#123;</div><div class="line">                Thread.sleep(1500);</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      Java并发操作中使用的工具类
-    
-    </summary>
-    
-      <category term="Thread" scheme="http://doublesharejust.com.cn/categories/Thread/"/>
-    
-    
-      <category term="Java并发" scheme="http://doublesharejust.com.cn/tags/Java%E5%B9%B6%E5%8F%91/"/>
     
   </entry>
   

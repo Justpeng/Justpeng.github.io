@@ -12,19 +12,89 @@
 <meta name="author" content="Just">
 
 
-    
-    
+
+<meta name="description" content="Git的撤销操作这里介绍一些基本的撤消操作相关的命令。当然，有些撤销操作是不可逆的
+涉及命令：
 
 
-<meta name="description" content="一切刚刚开始...">
-<meta property="og:type" content="website">
+
+命令
+说明
+
+
+
+
+git checkout
+还原工作区内容，即暂存区内容覆盖工作区内容,
+
+
+git reset
+还原暂存区内容，即撤销 git add操作
+
+
+git clean
+删除工作区中没有被git跟踪的文件
+
+
+git revert
+删除一些已提交的历史文件，当然会用新的覆盖旧的">
+<meta property="og:type" content="article">
 <meta property="og:title" content="DoubleShare">
-<meta property="og:url" content="http://doublesharejust.com.cn/index.html">
+<meta property="og:url" content="http://doublesharejust.com.cn/2016/11/17/Git 学习进阶篇- 撤销操作/index.html">
 <meta property="og:site_name" content="DoubleShare">
-<meta property="og:description" content="一切刚刚开始...">
+<meta property="og:description" content="Git的撤销操作这里介绍一些基本的撤消操作相关的命令。当然，有些撤销操作是不可逆的
+涉及命令：
+
+
+
+命令
+说明
+
+
+
+
+git checkout
+还原工作区内容，即暂存区内容覆盖工作区内容,
+
+
+git reset
+还原暂存区内容，即撤销 git add操作
+
+
+git clean
+删除工作区中没有被git跟踪的文件
+
+
+git revert
+删除一些已提交的历史文件，当然会用新的覆盖旧的">
+<meta property="og:updated_time" content="2016-11-17T15:49:10.508Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DoubleShare">
-<meta name="twitter:description" content="一切刚刚开始...">
+<meta name="twitter:description" content="Git的撤销操作这里介绍一些基本的撤消操作相关的命令。当然，有些撤销操作是不可逆的
+涉及命令：
+
+
+
+命令
+说明
+
+
+
+
+git checkout
+还原工作区内容，即暂存区内容覆盖工作区内容,
+
+
+git reset
+还原暂存区内容，即撤销 git add操作
+
+
+git clean
+删除工作区中没有被git跟踪的文件
+
+
+git revert
+删除一些已提交的历史文件，当然会用新的覆盖旧的">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -63,8 +133,8 @@
     var yiliaConfig = {
         fancybox: true,
         animate: false,
-        isHome: true,
-        isPost: false,
+        isHome: false,
+        isPost: true,
         isArchive: false,
         isTag: false,
         isCategory: false,
@@ -266,317 +336,7 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我">
 </nav>
-      <div class="body-wrap"><article id="post-Git 学习进阶篇 -历史查看" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/11/13/Git 学习进阶篇 -历史查看/" class="article-date">
-      <time datetime="2016-11-13T15:58:27.000Z" itemprop="datePublished">2016-11-13</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/13/Git 学习进阶篇 -历史查看/">Git 学习进阶篇-历史查看</a>
-    </h1>
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              学习如何查看git的历史
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-        <div class="article-pop-out tagcloud">
-          <a class="">置顶</a>
-        </div>
-      
-      <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Git/">Git</a>
-    </div>
-      <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git历史/">git历史</a></li></ul>
-    </div>
-      
-        <p class="article-more-link">
-          <a href="/2016/11/13/Git 学习进阶篇 -历史查看/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-  
-    <article id="post-Git 学习进阶篇 - 分支与合并" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/11/12/Git 学习进阶篇 - 分支与合并/" class="article-date">
-      <time datetime="2016-11-12T09:58:27.000Z" itemprop="datePublished">2016-11-12</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/12/Git 学习进阶篇 - 分支与合并/">Git 学习进阶篇-分支与合并</a>
-    </h1>
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              更深入介绍版本控制工具git的使用
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-        <div class="article-pop-out tagcloud">
-          <a class="">置顶</a>
-        </div>
-      
-      <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Git/">Git</a>
-    </div>
-      <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分支，合并/">分支，合并</a></li></ul>
-    </div>
-      
-        <p class="article-more-link">
-          <a href="/2016/11/12/Git 学习进阶篇 - 分支与合并/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-  
-    <article id="post-Linux常用命令小结" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/11/07/Linux常用命令小结/" class="article-date">
-      <time datetime="2016-11-07T11:58:27.000Z" itemprop="datePublished">2016-11-07</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/07/Linux常用命令小结/">Linux常用命令小结</a>
-    </h1>
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              Linux常用命令
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-        <div class="article-pop-out tagcloud">
-          <a class="">置顶</a>
-        </div>
-      
-      <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>
-    </div>
-      
-      
-        <p class="article-more-link">
-          <a href="/2016/11/07/Linux常用命令小结/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-  
-    <article id="post-Hadoop分布式本地集群搭建（二）" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/10/22/Hadoop分布式本地集群搭建（二）/" class="article-date">
-      <time datetime="2016-10-22T09:58:27.000Z" itemprop="datePublished">2016-10-22</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/22/Hadoop分布式本地集群搭建（二）/">Hadoop分布式集群搭建（二）</a>
-    </h1>
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              Hadoop分布式集群搭建
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-        <div class="article-pop-out tagcloud">
-          <a class="">置顶</a>
-        </div>
-      
-      <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Hadoop/">Hadoop</a>
-    </div>
-      <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop/">Hadoop</a></li></ul>
-    </div>
-      
-        <p class="article-more-link">
-          <a href="/2016/10/22/Hadoop分布式本地集群搭建（二）/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-  
-    <article id="post-Hadoop分布式集群搭建 Centos7 环境准备" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/" class="article-date">
-      <time datetime="2016-10-22T09:58:27.000Z" itemprop="datePublished">2016-10-22</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/">Hadoop分布式集群搭建 Centos7 环境准备</a>
-    </h1>
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              Hadoop分布式集群搭建
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-        <div class="article-pop-out tagcloud">
-          <a class="">置顶</a>
-        </div>
-      
-      <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Hadoop/">Hadoop</a>
-    </div>
-      <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop/">Hadoop</a></li></ul>
-    </div>
-      
-        <p class="article-more-link">
-          <a href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-  
-    <article id="post-Dom4j" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/10/22/Dom4j/" class="article-date">
-      <time datetime="2016-10-22T09:58:27.000Z" itemprop="datePublished">2016-10-22</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/22/Dom4j/">Dom4j-使用指导</a>
-    </h1>
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              Dom4j的基础读写处理
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-        <div class="article-pop-out tagcloud">
-          <a class="">置顶</a>
-        </div>
-      
-      <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Dom4j/">Dom4j</a><a class="article-category-link" href="/categories/Dom4j/XML/">XML</a>
-    </div>
-      <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dom4j/">Dom4j</a></li></ul>
-    </div>
-      
-        <p class="article-more-link">
-          <a href="/2016/10/22/Dom4j/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-  
-    <article id="post-Git 学习进阶篇- 撤销操作" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Git 学习进阶篇- 撤销操作" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2016/11/17/Git 学习进阶篇- 撤销操作/" class="article-date">
@@ -663,300 +423,106 @@
       
     </div>
     
-    <div class="article-info article-info-index">
-      
-      
-      
-      
-      <div class="clearfix"></div>
-    </div>
-    
   </div>
   
-</article>
-  
-    <article id="post-Git 学习初始篇" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/11/13/Git 学习初始篇/" class="article-date">
-      <time datetime="2016-11-13T15:16:51.958Z" itemprop="datePublished">2016-11-13</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-        <h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="what-is-Git"><a href="#what-is-Git" class="headerlink" title="what is Git"></a>what is Git</h2><p>重点：强大的分布式、高效代码管理工具！</p>
-<h3 id="为什么使用？"><a href="#为什么使用？" class="headerlink" title="为什么使用？"></a>为什么使用？</h3><p>重点：使用github社区必备，而且确实方便高效。</p>
-<h2 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h2><p><strong>Subversion </strong> : 集中化的版本控制系统,有一个单一的集中管理的服务器，保存所有文件的修订版本，而协同工作的人们都通过客户端连到这台服务器，取出最新的文件或者提交更新</p>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/svn_1.png" alt="image"></p>
-<ul>
-<li><p>优点：每个人都可以在一定程度上看到项目中的其他人正在做些什么。 而管理员也可以轻松掌控每个开发者的权限，并且管理一个 CVCS 要远比在各个客户端上维护本地数据库来得轻松容易。</p>
-</li>
-<li><p>缺点：是中央服务器的单点故障。发生故障谁都无法提交更新，也就无法协同工作。</p>
-</li>
-</ul>
-<p><strong>Git</strong>:客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来。 </p>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_1.png" alt="image"></p>
-<h2 id="git与svn区别"><a href="#git与svn区别" class="headerlink" title="git与svn区别"></a>git与svn区别</h2><p>主要区别：对数据的处理方法</p>
-<ul>
-<li>Git直接记录完整文件，SVN则是记录基本文件和每个文件随时间逐步累积的差异</li>
-</ul>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_2.png" alt="image"></p>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/svn_2.png" alt="image"></p>
-<ul>
-<li>Git 所有操作几乎都是本地执行，不用连网，处理速度飞快。<blockquote>
-<p>在没有网络的情况也可以访问历史，进行本地修改、提交等操作，只需要在有网络时push到远程仓库</p>
-</blockquote>
-</li>
-<li>Git 时刻保持数据完整性 <blockquote>
-<p>在commit前，git会对数据进校验和（checksum）计算，并将此结果作为数据的唯一标识和索引。检查数据是否修改、缺失。</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
-<p>Git 使用 SHA-1 算法计算数据的校验和，通过对文件的内容或目录的结构计算出一个 SHA-1 哈希值，作为指纹字符串。该字串由 40 个十六进制字符（0-9 及 a-f）组成，看起来就像是：</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">24b9da6552252987aa493b52f8696cd6d3b00373</div></pre></td></tr></table></figure>
-<p>Git 的工作完全依赖于这类指纹字串，所以你会经常看到这样的哈希值。实际上，所有保存在 Git 数据库中的东西都是用此哈希值来作索引的，而不是靠文件名。 </p>
-<h2 id="git的简单配置"><a href="#git的简单配置" class="headerlink" title="git的简单配置"></a>git的简单配置</h2><p>假设你已安装好git</p>
-<h3 id="git操作级别"><a href="#git操作级别" class="headerlink" title="git操作级别"></a>git操作级别</h3><table>
-<thead>
-<tr>
-<th>优先级 (高到低)</th>
-<th>级别 (低到高)</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>local</td>
-<td>本地级别</td>
-</tr>
-<tr>
-<td>2</td>
-<td>global</td>
-<td>用户级别</td>
-</tr>
-<tr>
-<td>3</td>
-<td>system</td>
-<td>系统级别</td>
-</tr>
-</tbody>
-</table>
-<h3 id="git文档查看"><a href="#git文档查看" class="headerlink" title="git文档查看"></a>git文档查看</h3><table>
-<thead>
-<tr>
-<th>方式</th>
-<th>示例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>git config –help</td>
-</tr>
-<tr>
-<td>2</td>
-<td>git help config</td>
-</tr>
-</tbody>
-</table>
-<h3 id="命令技巧"><a href="#命令技巧" class="headerlink" title="命令技巧"></a>命令技巧</h3><ul>
-<li>输入 git conf 双击 tab 键 可自动补充内容，类似于 linux中自动补充</li>
-<li>输入 git config – ，双击 tab 可显示可用参数</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git config --</div><div class="line">--add              --global           --rename-section</div><div class="line">--file=            --list             --replace-all</div><div class="line">--get              --local            --system</div><div class="line">--get-all          --name-only        --unset</div><div class="line">--get-regexp       --remove-section   --unset-all</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 ~/Desktop</div><div class="line">$ git config --</div></pre></td></tr></table></figure>
-<h3 id="使用前配置"><a href="#使用前配置" class="headerlink" title="使用前配置"></a>使用前配置</h3><ul>
-<li>设置用户和邮箱:相当于身份证</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.name &apos;xx&apos;</div><div class="line">git config --global user.email &apos;xx@yy&apos;</div></pre></td></tr></table></figure>
-<ul>
-<li><ol>
-<li>查看用户<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git config --get user.name  //当前使用的,默认最新的</div><div class="line"></div><div class="line">git config --list --global  //用户所有user.name</div></pre></td></tr></table></figure>
-</li>
-</ol>
-</li>
-<li><ol>
-<li>删除用户</li>
-</ol>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global --unset user.name 用户名</div></pre></td></tr></table></figure>
-<ul>
-<li>config命令<br>如 创建别名<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global alias.ci commit</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>查看效果，多了个ci，也就是commit命令别名</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git c</div><div class="line">checkout      cherry-pick   citool        clone         config</div><div class="line">cherry        ci            clean         commit</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git config --global alias.lol &apos;log --oneline&apos;</div><div class="line">$ git lol</div><div class="line">91b757f Merge remote-tracking branch &apos;origin/master&apos;</div><div class="line">f352b6e 添加博客</div><div class="line">2c79fcb Create README.md</div><div class="line">21155b9 Initial commit</div></pre></td></tr></table></figure>
-<h2 id="Git的存储"><a href="#Git的存储" class="headerlink" title="Git的存储"></a>Git的存储</h2><p>Git存储只关系文件内容</p>
-<p>Git使用40个16进制字符的SHA-1 Hash来存储唯一标识对象</p>
-<p>Git有四种对象：</p>
-<ul>
-<li>blob 文本文件、二进制文件、链接文件</li>
-<li>tree 目录</li>
-<li>commit 历史提交</li>
-<li>tag 指向固定的历史提交</li>
-</ul>
-<p>四种对象之间关系：一个tag指向一个commit,commit指向一个tree对象，tree对象中也可包含其他tree对象和blob对象；若有像个相同内容的文件，则指向在相同blob，而文件名等信息存储在 tree对象中</p>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn2.png" alt="image"></p>
-<p>Git将对象存储在仓库中</p>
-<h2 id="Git仓库"><a href="#Git仓库" class="headerlink" title="Git仓库"></a>Git仓库</h2><ul>
-<li>创建Git仓库: <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init  //新建</div><div class="line">git clone  //克隆</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>创建指定仓库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git init git_repo //创建时 git_repo下有.git目录</div><div class="line">git init --bare git_bare_repo  //git_bare_repo下没有.git目录，不包含工作区</div><div class="line">git init  //直接在当前目录下新建</div></pre></td></tr></table></figure></p>
-<p>克隆已有仓库</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git clone git_repo git_clone  //1 本地仓库克隆，指定路径</div><div class="line"></div><div class="line">git clone https://github.com/xxx  //2 克隆github远程仓库到当前目录</div></pre></td></tr></table></figure>
-<h2 id="Git工作流程"><a href="#Git工作流程" class="headerlink" title="Git工作流程"></a>Git工作流程</h2><p>Git仓库有三个区域：</p>
-<ul>
-<li>工作区working direcoty;暂存区staging area,历史仓库history respository</li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn3.png" alt="image"></p>
-<ul>
-<li>区域间文件传递：</li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn4.png" alt="image"><br>涉及的命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git add  //将工作区文件添加到暂存区</div><div class="line">git add -A //将工作区所有文件添加早暂存区</div><div class="line">git commit //将暂存区添加到历史区</div><div class="line">git status //查看工作区与暂存区文件区别</div><div class="line">git rm  //删除暂存区文件</div><div class="line">git mv //移动/重命名 暂存区文件，一系列操作的组合(先删除后添加)</div><div class="line">gitingnore  //忽略工作区中某些不希望被加入暂存区和历史区的文件</div></pre></td></tr></table></figure>
-<p>而，如果只是 mv 命令(没有git)，则操作的只是本地文件</p>
-<p>For Example：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ touch test.txt a.java  //创建文件</div><div class="line">$ git add test.txt a.java  //添加至缓存</div><div class="line">$ git status  //查看文件状态</div><div class="line"></div><div class="line">On branch master</div><div class="line">Initial commit</div><div class="line"></div><div class="line">Changes to be committed:</div><div class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">        new file:   a.java</div><div class="line">        new file:   test.txt</div><div class="line"></div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git commit -m &quot;add files first time&quot;  //提交至历史区</div><div class="line"></div><div class="line">[master (root-commit) 02463dd] add files first time</div><div class="line"> 2 files changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 a.java</div><div class="line"> create mode 100644 test.txt</div></pre></td></tr></table></figure>
-<p>这里说下<strong>Git中文件的状态</strong> ：未跟踪和已跟踪，通过<strong>git status</strong>命令查看</p>
-<blockquote>
-<p>请记住，工作目录下面的所有文件都不外乎这两种状态：已跟踪或未跟踪。已跟踪的文件是指本来就被纳入版本控制管理的文件，在上次快照中有它们的记录，工作一段时间后，它们的状态可能是未更新，已修改或者已放入暂存区。而所有其他文件都属于未跟踪文件。它们既没有上次更新时的快照，也不在当前的暂存区域。初次克隆某个仓库时，工作目录中的所有文件都属于已跟踪文件，且状态为未修改。</p>
-</blockquote>
-<p>简单理解的话，只要是已经<strong>被Git命令操作过的，纳入Git管理</strong>的文件都是已跟踪文件，没有被Git命令操作的文件都是未跟踪。比如在工作区touch新文件，则状态是未跟踪，使用git add 添加进缓存区是，就是已跟踪了。</p>
-<p>其中，Git中文件状态变化周期如下图：</p>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_3_filestatus.png" alt="image"></p>
-<p>如果需要<strong>忽略某些文件</strong>，而不需要被跟踪？可以在需要的目录位置创建 <strong>.gitignore</strong> 文件</p>
-<p>通配符匹配规则：<br>匹配符 | 规则 | 举例<br>—|—|—<br>a.txt | 过滤具体的 a.txt文件 |<br>*~ |中间类型文件| 如vim~ 匹配vim操作产生的文件</p>
-<ul>
-<li>| 匹配多个字符| <em>.txt 所有txt文件都被忽略<br>[]| 包含单个字符的匹配列表| </em>.[ab] 过滤以a或b结尾的文件<br>/ | 匹配目录| /demo 过滤当前目录demo文件夹及文件夹下所有文件<br>**/| 匹配任何目录下的某文件夹|  两个星号/demo，过滤任何目录(以.gitignore文件所在目录为根目录）下包含demo文件夹及其文件夹下的文件<br>! | 不过滤 | !a.txt 不过滤a.txt文件，若文件本身以 !开始，则需要加”\“ 转义，如”\!a.txt” 不过滤 !a.txt文件</li>
-</ul>
-<p>For Example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ vim .gitignore  // 添加规则 *.css，忽略.css文件</div><div class="line">$ touch table.css</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git status   //已忽略 table.css</div><div class="line">On branch master</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure></p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-  
-    <article id="post-Java 多线程 - Thread" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/10/02/Java 多线程 - Thread/" class="article-date">
-      <time datetime="2016-10-02T09:58:27.000Z" itemprop="datePublished">2016-10-02</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/02/Java 多线程 - Thread/">Java 多线程-Thread</a>
-    </h1>
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              Java线程的基础知识笔记
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Thread/">Thread</a>
-    </div>
-      <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
-    </div>
-      
-        <p class="article-more-link">
-          <a href="/2016/10/02/Java 多线程 - Thread/#more">more >></a>
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/11/17/Git 学习进阶篇- 撤销操作/"></a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Just</a></p>
+        <p><span>发布时间:</span>2016-11-17, 23:53:52</p>
+        <p><span>最后更新:</span>2016-11-17, 23:49:10</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/17/Git 学习进阶篇- 撤销操作/" title="">http://doublesharejust.com.cn/2016/11/17/Git 学习进阶篇- 撤销操作/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://doublesharejust.com.cn/2016/11/17/Git 学习进阶篇- 撤销操作/　　作者: Just" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-  
-    <article id="post-Java并发工具包（上）" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/10/02/Java并发工具包（上）/" class="article-date">
-      <time datetime="2016-10-02T09:58:27.000Z" itemprop="datePublished">2016-10-02</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy">
-    
-    
-      <header class="article-header">
-        <h1 itemprop="name">
-      <a class="article-title" href="/2016/10/02/Java并发工具包（上）/">Java并发工具包（上）</a>
-    </h1>
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              Java并发操作中使用的工具类
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Thread/">Thread</a>
-    </div>
-      <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java并发/">Java并发</a></li></ul>
-    </div>
-      
-        <p class="article-more-link">
-          <a href="/2016/10/02/Java并发工具包（上）/#more">more >></a>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
         </p>
-      
-      <div class="clearfix"></div>
     </div>
-    
-  </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/11/13/Git 学习进阶篇 -历史查看/">
+                    Git 学习进阶篇-历史查看
+                </a>
+            </div>
+        
+    </nav>
   
 </article>
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav></div>
+<div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git的撤销操作"><span class="toc-number">1.</span> <span class="toc-text">Git的撤销操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-checkout"><span class="toc-number">2.</span> <span class="toc-text">git checkout</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-reset"><span class="toc-number">3.</span> <span class="toc-text">git reset</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-clean"><span class="toc-number">4.</span> <span class="toc-text">git clean</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-revert"><span class="toc-number">5.</span> <span class="toc-text">git revert</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+    <div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"　| DoubleShare　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+    
+
+
+<div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/11/13/Git 学习进阶篇 -历史查看/" title="下一篇: Git 学习进阶篇-历史查看">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/Git 学习进阶篇- 撤销操作/">Git 学习进阶篇- 撤销操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/13/Git 学习进阶篇 -历史查看/">Git 学习进阶篇-历史查看</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/13/Git 学习初始篇/">Git 学习初始篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/12/Git 学习进阶篇 - 分支与合并/">Git 学习进阶篇-分支与合并</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/07/Linux常用命令小结/">Linux常用命令小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式本地集群搭建（二）/">Hadoop分布式集群搭建（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Dom4j/">Dom4j-使用指导</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/">Hadoop分布式集群搭建 Centos7 环境准备</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java 多线程 - Thread/">Java 多线程-Thread</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（上）/">Java并发工具包（上）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-单例模式/">Java设计模式-单例模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java并发工具包（下）/">Java并发工具包(下)</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java设计模式-装饰者模式/">Java设计模式-装饰者模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/02/关于性能调优记录/">Web部署应用性能调优问题</a></li></ul>
+
+
+    <script>
+        
+    </script></div>
       <footer id="footer">
     <div class="outer">
         <div id="footer-info">
