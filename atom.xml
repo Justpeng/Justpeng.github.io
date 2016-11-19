@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://doublesharejust.com.cn/"/>
-  <updated>2016-11-17T15:49:10.508Z</updated>
+  <updated>2016-11-14T16:30:50.812Z</updated>
   <id>http://doublesharejust.com.cn/</id>
   
   <author>
@@ -14,92 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title></title>
-    <link href="http://doublesharejust.com.cn/2016/11/17/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87-%20%E6%92%A4%E9%94%80%E6%93%8D%E4%BD%9C/"/>
-    <id>http://doublesharejust.com.cn/2016/11/17/Git 学习进阶篇- 撤销操作/</id>
-    <published>2016-11-17T15:53:52.571Z</published>
-    <updated>2016-11-17T15:49:10.508Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Git的撤销操作"><a href="#Git的撤销操作" class="headerlink" title="Git的撤销操作"></a>Git的撤销操作</h2><p>这里介绍一些基本的撤消操作相关的命令。当然，有些撤销操作是不可逆的</p>
-<p>涉及命令：</p>
-<table>
-<thead>
-<tr>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>git checkout</td>
-<td>还原工作区内容，即暂存区内容覆盖工作区内容,</td>
-</tr>
-<tr>
-<td>git reset</td>
-<td>还原暂存区内容，即撤销 git add操作</td>
-</tr>
-<tr>
-<td>git clean</td>
-<td>删除工作区中没有被git跟踪的文件</td>
-</tr>
-<tr>
-<td>git revert</td>
-<td>删除一些已提交的历史文件，当然会用新的覆盖旧的</td>
-</tr>
-</tbody>
-</table>
-<h2 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h2><p>git chekcout 既有切换分支功能，也可以还原工作区文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git checkout --help</div><div class="line">#NAME</div><div class="line">git-checkout - Switch branches or restore working tree files</div></pre></td></tr></table></figure>
-<ul>
-<li>以当前最新历史记录还原：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">$ vim master.d               //修改master.d文件</div><div class="line">$ git diff                   //本地与暂存区差异</div><div class="line">diff --git a/master.d b/master.d</div><div class="line">index e7bd13e..3077768 100644</div><div class="line">--- a/master.d</div><div class="line">+++ b/master.d</div><div class="line">@@ -4,4 +4,6 @@ modify on branch branch_marge</div><div class="line"> modify on branch</div><div class="line"></div><div class="line"> ef223eabc</div><div class="line">+test gitcheckout</div><div class="line">+</div><div class="line"></div><div class="line">$ git checkout -- master.d      //使用git checkout撤销修改</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git diff</div></pre></td></tr></table></figure>
-<ul>
-<li>同样命令： git checkout SHA-1/TAG –master.d  可以使用某一历史来还原，不过这时需要进行git add,和git commit来确认提交</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$ git lol -- master.d</div><div class="line">* fb78979 1</div><div class="line">* 257f3a2 modify master.d</div><div class="line">*   d8e6e7d Merge branch &apos;branch_V0&apos;</div><div class="line">|\</div><div class="line">| * 3b9ceaa (branch_V0) commit on branch_V0</div><div class="line">* | 872942d (branch_merge) commit on branch_merge</div><div class="line">* | 629aa7f second commit on master</div><div class="line">|/</div><div class="line">* 5154992 (tag: V0, tag: MASTER_FIRST) master.d first time commit</div><div class="line"></div><div class="line">$ git checkout d8e6e7d -- master.d    //还原 SHA-1值为 d8e6e7d 的提交</div></pre></td></tr></table></figure>
-<h2 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h2><p>将当前暂存区内容还原至某一历史的暂存区</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># NAME</div><div class="line">git-reset - Reset current HEAD to the specified state</div></pre></td></tr></table></figure>
-<ul>
-<li><p>使用当前最新历史记录的暂存区还原：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ vim master.d</div><div class="line">$ git add .                     //添加进暂存区</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git diff --cached             //查看暂存区与历史区差异</div><div class="line">diff --git a/master.d b/master.d</div><div class="line">index e7bd13e..e3bfabc 100644</div><div class="line">--- a/master.d</div><div class="line">+++ b/master.d</div><div class="line">@@ -1,7 +1,7 @@</div><div class="line">-111111111</div><div class="line">+te111111111</div><div class="line"> ef223eabc</div><div class="line">-</div><div class="line">+fef</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git reset -- master.d             //reset对master.d的操作</div><div class="line">Unstaged changes after reset:</div><div class="line">M       master.d</div></pre></td></tr></table></figure>
-</li>
-<li><p>使用某一历史提交的暂存区的内容还原当前暂存区的内容</p>
-</li>
-</ul>
-<p>如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">$ git lol -- stage.txt  //文件准备，每次添加一行提交     </div><div class="line">* 20373f0 (HEAD -&gt; master) third commit</div><div class="line">* 02ab411 second commit</div><div class="line">* e99b96a first commit stage.txt</div><div class="line"></div><div class="line">$ cat stage.txt        //当前文件中内容</div><div class="line">first commit</div><div class="line">second commit</div><div class="line">third commit</div><div class="line"></div><div class="line">$ vim stage.txt         //编辑，添加内容 &apos;forth commit&apos;</div><div class="line">$ git add .             //添加进暂存区</div><div class="line">$ git diff --cached     </div><div class="line">diff --git a/stage.txt b/stage.txt</div><div class="line">index 90dc5cb..e6d3e64 100644</div><div class="line">--- a/stage.txt</div><div class="line">+++ b/stage.txt</div><div class="line">@@ -1,3 +1,4 @@</div><div class="line"> first commit</div><div class="line"> second commit</div><div class="line"> third commit</div><div class="line">+forth commit           //可以看到暂存区比历史区多了一行</div></pre></td></tr></table></figure></p>
-<p>执行 reset 操作</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">$ git reset 02ab411 -- stage.txt   //还原到某一时刻的stage，该时刻因该有两次add，即两行</div><div class="line">Unstaged changes after reset:</div><div class="line">M       stage.txt</div><div class="line">$ git diff                         //工作区与暂存区区别</div><div class="line">diff --git a/stage.txt b/stage.txt</div><div class="line">index 56301e2..e6d3e64 100644</div><div class="line">--- a/stage.txt</div><div class="line">+++ b/stage.txt</div><div class="line">@@ -1,2 +1,4 @@</div><div class="line"> first commit</div><div class="line"> second commit                    //当前工作区比 reset的暂存区多了两行 #与预期相同</div><div class="line">+third commit</div><div class="line">+forth commit</div><div class="line"></div><div class="line">$ git diff --cached -- stage.txt    //暂存区与历史区区别</div><div class="line">diff --git a/stage.txt b/stage.txt</div><div class="line">index 90dc5cb..56301e2 100644</div><div class="line">--- a/stage.txt</div><div class="line">+++ b/stage.txt</div><div class="line">@@ -1,3 +1,2 @@</div><div class="line"> first commit</div><div class="line"> second commit </div><div class="line">-third commit                    // 当前reset的暂存区比历史区少了一行 # 与预期相同</div></pre></td></tr></table></figure>
-<h2 id="git-clean"><a href="#git-clean" class="headerlink" title="git clean"></a>git clean</h2><p>git clean 会删除工作区中没有被git跟踪的文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ git clean --help</div><div class="line"></div><div class="line">##from git-clean Manual Page：</div><div class="line">#name </div><div class="line">git-clean - Remove untracked files from the working tree</div><div class="line">#synopsis 概要</div><div class="line">git clean [-d] [-f] [-i] [-n] [-q] [-e &lt;pattern&gt;] [-x | -X] [--] &lt;path&gt;…​</div><div class="line"></div><div class="line">#DESCRIPTION </div><div class="line">Cleans the working tree by recursively removing files that are not under version control, starting from the current directory.</div><div class="line">...</div></pre></td></tr></table></figure>
-<blockquote>
-<p>默认，git clean会清除当前目录下的未跟踪文件；如果有 -x 参数，被忽略的文件也会被删除；<br>如果指定 <path></path>，则会删除指定目录下的未跟踪文件</p>
-</blockquote>
-<p>常用参数命令 ：<br>命令| 说明<br>—|—<br>git -n| 显示将要做什么，而不真正删除，可以确认将要删除的文件<br>git -f| 强制删除，如文件夹<br>git -X| 大写的X，仅删除被git忽略的文件<br>git -x| 表示，git忽略的文件也会被删除，注意与 -X区别</p>
-<p>For Example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ cat .gitignore         //查看忽略规则</div><div class="line">*.[ab]</div><div class="line">$ touch test.a test.b test.c test.d  //创建测试文件</div><div class="line">$ git add test.d            //将test.d添加进 暂存区</div></pre></td></tr></table></figure></p>
-<p>根据以上操作，则 test.a 和 test.b文件是git忽略文件，test.c是未跟踪文件，test.d是 已跟踪文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ git clean -n                 //默认，仅删除未被跟踪的文件</div><div class="line">Would remove test.c</div><div class="line"></div><div class="line">$ git clean -x -n              //-x 小写，未被跟踪和忽略文件都会被删除</div><div class="line">Would remove test.a</div><div class="line">Would remove test.b</div><div class="line">Would remove test.c</div><div class="line"></div><div class="line">$ git clean -X -n              //-X 大写，仅删除被忽略文件</div><div class="line">Would remove test.a</div><div class="line">Would remove test.b</div></pre></td></tr></table></figure>
-<h2 id="git-revert"><a href="#git-revert" class="headerlink" title="git revert"></a>git revert</h2><p>git revert 删除一些已提交的历史文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git clean --help</div><div class="line">#NAME</div><div class="line">git-revert - Revert some existing commits</div><div class="line"></div><div class="line">#DESCRIPTION</div><div class="line">Given one or more existing commits, revert the changes that the related patches introduce, and record some new commits that record them. This requires your working tree to be clean (no modifications from the HEAD commit).</div></pre></td></tr></table></figure>
-<blockquote>
-<p>git revert 使用新的提交来覆盖已有的提交，当然要求将被覆盖的文件不要处于修改状态</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">$ git lol</div><div class="line">* 54d2ffa (HEAD -&gt; master) xxxcommit</div><div class="line">* 074afd6 xxcommit</div><div class="line">$ git revert 074afd6   //revert 074afd6提交</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo/cleandir (master|REVERTING)</div><div class="line">$ git status</div><div class="line">On branch master</div><div class="line">You are currently reverting commit 074afd6.</div><div class="line">  (fix conflicts and run &quot;git revert --continue&quot;)</div><div class="line">  (use &quot;git revert --abort&quot; to cancel the revert operation)</div><div class="line"></div><div class="line">Unmerged paths:</div><div class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line">  (use &quot;git add &lt;file&gt;...&quot; to mark resolution)</div><div class="line"></div><div class="line">        both modified:   test.d</div><div class="line"></div><div class="line">no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</div></pre></td></tr></table></figure>
-<blockquote>
-<p>提示使用 git revert –abort来撤销 revert操作或者 提交本次操作</p>
-</blockquote>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;Git的撤销操作&quot;&gt;&lt;a href=&quot;#Git的撤销操作&quot; class=&quot;headerlink&quot; title=&quot;Git的撤销操作&quot;&gt;&lt;/a&gt;Git的撤销操作&lt;/h2&gt;&lt;p&gt;这里介绍一些基本的撤消操作相关的命令。当然，有些撤销操作是不可逆的&lt;/p&gt;
-&lt;p&gt;涉及命令：
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>Git 学习进阶篇-历史查看</title>
@@ -446,170 +360,91 @@
   </entry>
   
   <entry>
-    <title></title>
-    <link href="http://doublesharejust.com.cn/2016/11/13/Git%20%E5%AD%A6%E4%B9%A0%E5%88%9D%E5%A7%8B%E7%AF%87/"/>
-    <id>http://doublesharejust.com.cn/2016/11/13/Git 学习初始篇/</id>
-    <published>2016-11-13T15:16:51.958Z</published>
-    <updated>2016-11-17T11:40:16.789Z</updated>
+    <title>Git 学习进阶篇-撤销操作</title>
+    <link href="http://doublesharejust.com.cn/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87-%20%E6%92%A4%E9%94%80%E6%93%8D%E4%BD%9C/"/>
+    <id>http://doublesharejust.com.cn/2016/11/12/Git 学习进阶篇- 撤销操作/</id>
+    <published>2016-11-12T09:58:27.000Z</published>
+    <updated>2016-11-19T03:39:04.308Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="what-is-Git"><a href="#what-is-Git" class="headerlink" title="what is Git"></a>what is Git</h2><p>重点：强大的分布式、高效代码管理工具！</p>
-<h3 id="为什么使用？"><a href="#为什么使用？" class="headerlink" title="为什么使用？"></a>为什么使用？</h3><p>重点：使用github社区必备，而且确实方便高效。</p>
-<h2 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h2><p><strong>Subversion </strong> : 集中化的版本控制系统,有一个单一的集中管理的服务器，保存所有文件的修订版本，而协同工作的人们都通过客户端连到这台服务器，取出最新的文件或者提交更新</p>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/svn_1.png" alt="image"></p>
-<ul>
-<li><p>优点：每个人都可以在一定程度上看到项目中的其他人正在做些什么。 而管理员也可以轻松掌控每个开发者的权限，并且管理一个 CVCS 要远比在各个客户端上维护本地数据库来得轻松容易。</p>
-</li>
-<li><p>缺点：是中央服务器的单点故障。发生故障谁都无法提交更新，也就无法协同工作。</p>
-</li>
-</ul>
-<p><strong>Git</strong>:客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来。 </p>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_1.png" alt="image"></p>
-<h2 id="git与svn区别"><a href="#git与svn区别" class="headerlink" title="git与svn区别"></a>git与svn区别</h2><p>主要区别：对数据的处理方法</p>
-<ul>
-<li>Git直接记录完整文件，SVN则是记录基本文件和每个文件随时间逐步累积的差异</li>
-</ul>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_2.png" alt="image"></p>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/svn_2.png" alt="image"></p>
-<ul>
-<li>Git 所有操作几乎都是本地执行，不用连网，处理速度飞快。<blockquote>
-<p>在没有网络的情况也可以访问历史，进行本地修改、提交等操作，只需要在有网络时push到远程仓库</p>
-</blockquote>
-</li>
-<li>Git 时刻保持数据完整性 <blockquote>
-<p>在commit前，git会对数据进校验和（checksum）计算，并将此结果作为数据的唯一标识和索引。检查数据是否修改、缺失。</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
-<p>Git 使用 SHA-1 算法计算数据的校验和，通过对文件的内容或目录的结构计算出一个 SHA-1 哈希值，作为指纹字符串。该字串由 40 个十六进制字符（0-9 及 a-f）组成，看起来就像是：</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">24b9da6552252987aa493b52f8696cd6d3b00373</div></pre></td></tr></table></figure>
-<p>Git 的工作完全依赖于这类指纹字串，所以你会经常看到这样的哈希值。实际上，所有保存在 Git 数据库中的东西都是用此哈希值来作索引的，而不是靠文件名。 </p>
-<h2 id="git的简单配置"><a href="#git的简单配置" class="headerlink" title="git的简单配置"></a>git的简单配置</h2><p>假设你已安装好git</p>
-<h3 id="git操作级别"><a href="#git操作级别" class="headerlink" title="git操作级别"></a>git操作级别</h3><table>
+    <content type="html"><![CDATA[<h2 id="Git的撤销操作"><a href="#Git的撤销操作" class="headerlink" title="Git的撤销操作"></a>Git的撤销操作</h2><p>这里介绍一些基本的撤消操作相关的命令。当然，有些撤销操作是不可逆的</p>
+<p>涉及命令：</p>
+<table>
 <thead>
 <tr>
-<th>优先级 (高到低)</th>
-<th>级别 (低到高)</th>
-<th>描述</th>
+<th>命令</th>
+<th>说明</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>1</td>
-<td>local</td>
-<td>本地级别</td>
+<td>git checkout</td>
+<td>还原工作区内容，即暂存区内容覆盖工作区内容,</td>
 </tr>
 <tr>
-<td>2</td>
-<td>global</td>
-<td>用户级别</td>
+<td>git reset</td>
+<td>还原暂存区内容，即撤销 git add操作</td>
 </tr>
 <tr>
-<td>3</td>
-<td>system</td>
-<td>系统级别</td>
+<td>git clean</td>
+<td>删除工作区中没有被git跟踪的文件</td>
+</tr>
+<tr>
+<td>git revert</td>
+<td>删除一些已提交的历史文件，当然会用新的覆盖旧的</td>
 </tr>
 </tbody>
 </table>
-<h3 id="git文档查看"><a href="#git文档查看" class="headerlink" title="git文档查看"></a>git文档查看</h3><table>
-<thead>
-<tr>
-<th>方式</th>
-<th>示例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>git config –help</td>
-</tr>
-<tr>
-<td>2</td>
-<td>git help config</td>
-</tr>
-</tbody>
-</table>
-<h3 id="命令技巧"><a href="#命令技巧" class="headerlink" title="命令技巧"></a>命令技巧</h3><ul>
-<li>输入 git conf 双击 tab 键 可自动补充内容，类似于 linux中自动补充</li>
-<li>输入 git config – ，双击 tab 可显示可用参数</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git config --</div><div class="line">--add              --global           --rename-section</div><div class="line">--file=            --list             --replace-all</div><div class="line">--get              --local            --system</div><div class="line">--get-all          --name-only        --unset</div><div class="line">--get-regexp       --remove-section   --unset-all</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 ~/Desktop</div><div class="line">$ git config --</div></pre></td></tr></table></figure>
-<h3 id="使用前配置"><a href="#使用前配置" class="headerlink" title="使用前配置"></a>使用前配置</h3><ul>
-<li>设置用户和邮箱:相当于身份证</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.name &apos;xx&apos;</div><div class="line">git config --global user.email &apos;xx@yy&apos;</div></pre></td></tr></table></figure>
+<h2 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h2><p>git chekcout 既有切换分支功能，也可以还原工作区文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git checkout --help</div><div class="line">#NAME</div><div class="line">git-checkout - Switch branches or restore working tree files</div></pre></td></tr></table></figure>
 <ul>
-<li><ol>
-<li>查看用户<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git config --get user.name  //当前使用的,默认最新的</div><div class="line"></div><div class="line">git config --list --global  //用户所有user.name</div></pre></td></tr></table></figure>
+<li>以当前最新历史记录还原：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">$ vim master.d               //修改master.d文件</div><div class="line">$ git diff                   //本地与暂存区差异</div><div class="line">diff --git a/master.d b/master.d</div><div class="line">index e7bd13e..3077768 100644</div><div class="line">--- a/master.d</div><div class="line">+++ b/master.d</div><div class="line">@@ -4,4 +4,6 @@ modify on branch branch_marge</div><div class="line"> modify on branch</div><div class="line"></div><div class="line"> ef223eabc</div><div class="line">+test gitcheckout</div><div class="line">+</div><div class="line"></div><div class="line">$ git checkout -- master.d      //使用git checkout撤销修改</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git diff</div></pre></td></tr></table></figure>
+<ul>
+<li>同样命令： git checkout SHA-1/TAG –master.d  可以使用某一历史来还原，不过这时需要进行git add,和git commit来确认提交</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$ git lol -- master.d</div><div class="line">* fb78979 1</div><div class="line">* 257f3a2 modify master.d</div><div class="line">*   d8e6e7d Merge branch &apos;branch_V0&apos;</div><div class="line">|\</div><div class="line">| * 3b9ceaa (branch_V0) commit on branch_V0</div><div class="line">* | 872942d (branch_merge) commit on branch_merge</div><div class="line">* | 629aa7f second commit on master</div><div class="line">|/</div><div class="line">* 5154992 (tag: V0, tag: MASTER_FIRST) master.d first time commit</div><div class="line"></div><div class="line">$ git checkout d8e6e7d -- master.d    //还原 SHA-1值为 d8e6e7d 的提交</div></pre></td></tr></table></figure>
+<h2 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h2><p>将当前暂存区内容还原至某一历史的暂存区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># NAME</div><div class="line">git-reset - Reset current HEAD to the specified state</div></pre></td></tr></table></figure>
+<ul>
+<li><p>使用当前最新历史记录的暂存区还原：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">$ vim master.d</div><div class="line">$ git add .                     //添加进暂存区</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git diff --cached             //查看暂存区与历史区差异</div><div class="line">diff --git a/master.d b/master.d</div><div class="line">index e7bd13e..e3bfabc 100644</div><div class="line">--- a/master.d</div><div class="line">+++ b/master.d</div><div class="line">@@ -1,7 +1,7 @@</div><div class="line">-111111111</div><div class="line">+te111111111</div><div class="line"> ef223eabc</div><div class="line">-</div><div class="line">+fef</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git reset -- master.d             //reset对master.d的操作</div><div class="line">Unstaged changes after reset:</div><div class="line">M       master.d</div></pre></td></tr></table></figure>
 </li>
-</ol>
-</li>
-<li><ol>
-<li>删除用户</li>
-</ol>
+<li><p>使用某一历史提交的暂存区的内容还原当前暂存区的内容</p>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global --unset user.name 用户名</div></pre></td></tr></table></figure>
-<ul>
-<li>config命令<br>如 创建别名<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global alias.ci commit</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>查看效果，多了个ci，也就是commit命令别名</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git c</div><div class="line">checkout      cherry-pick   citool        clone         config</div><div class="line">cherry        ci            clean         commit</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git config --global alias.lol &apos;log --oneline&apos;</div><div class="line">$ git lol</div><div class="line">91b757f Merge remote-tracking branch &apos;origin/master&apos;</div><div class="line">f352b6e 添加博客</div><div class="line">2c79fcb Create README.md</div><div class="line">21155b9 Initial commit</div></pre></td></tr></table></figure>
-<h2 id="Git的存储"><a href="#Git的存储" class="headerlink" title="Git的存储"></a>Git的存储</h2><p>Git存储只关系文件内容</p>
-<p>Git使用40个16进制字符的SHA-1 Hash来存储唯一标识对象</p>
-<p>Git有四种对象：</p>
-<ul>
-<li>blob 文本文件、二进制文件、链接文件</li>
-<li>tree 目录</li>
-<li>commit 历史提交</li>
-<li>tag 指向固定的历史提交</li>
-</ul>
-<p>四种对象之间关系：一个tag指向一个commit,commit指向一个tree对象，tree对象中也可包含其他tree对象和blob对象；若有像个相同内容的文件，则指向在相同blob，而文件名等信息存储在 tree对象中</p>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn2.png" alt="image"></p>
-<p>Git将对象存储在仓库中</p>
-<h2 id="Git仓库"><a href="#Git仓库" class="headerlink" title="Git仓库"></a>Git仓库</h2><ul>
-<li>创建Git仓库: <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init  //新建</div><div class="line">git clone  //克隆</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>创建指定仓库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git init git_repo //创建时 git_repo下有.git目录</div><div class="line">git init --bare git_bare_repo  //git_bare_repo下没有.git目录，不包含工作区</div><div class="line">git init  //直接在当前目录下新建</div></pre></td></tr></table></figure></p>
-<p>克隆已有仓库</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git clone git_repo git_clone  //1 本地仓库克隆，指定路径</div><div class="line"></div><div class="line">git clone https://github.com/xxx  //2 克隆github远程仓库到当前目录</div></pre></td></tr></table></figure>
-<h2 id="Git工作流程"><a href="#Git工作流程" class="headerlink" title="Git工作流程"></a>Git工作流程</h2><p>Git仓库有三个区域：</p>
-<ul>
-<li>工作区working direcoty;暂存区staging area,历史仓库history respository</li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn3.png" alt="image"></p>
-<ul>
-<li>区域间文件传递：</li>
-</ul>
-<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn4.png" alt="image"><br>涉及的命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git add  //将工作区文件添加到暂存区</div><div class="line">git add -A //将工作区所有文件添加早暂存区</div><div class="line">git commit //将暂存区添加到历史区</div><div class="line">git status //查看工作区与暂存区文件区别</div><div class="line">git rm  //删除暂存区文件</div><div class="line">git mv //移动/重命名 暂存区文件，一系列操作的组合(先删除后添加)</div><div class="line">gitingnore  //忽略工作区中某些不希望被加入暂存区和历史区的文件</div></pre></td></tr></table></figure>
-<p>而，如果只是 mv 命令(没有git)，则操作的只是本地文件</p>
-<p>For Example：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ touch test.txt a.java  //创建文件</div><div class="line">$ git add test.txt a.java  //添加至缓存</div><div class="line">$ git status  //查看文件状态</div><div class="line"></div><div class="line">On branch master</div><div class="line">Initial commit</div><div class="line"></div><div class="line">Changes to be committed:</div><div class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">        new file:   a.java</div><div class="line">        new file:   test.txt</div><div class="line"></div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git commit -m &quot;add files first time&quot;  //提交至历史区</div><div class="line"></div><div class="line">[master (root-commit) 02463dd] add files first time</div><div class="line"> 2 files changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 a.java</div><div class="line"> create mode 100644 test.txt</div></pre></td></tr></table></figure>
-<p>这里说下<strong>Git中文件的状态</strong> ：未跟踪和已跟踪，通过<strong>git status</strong>命令查看</p>
+<p>如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">$ git lol -- stage.txt  //文件准备，每次添加一行提交     </div><div class="line">* 20373f0 (HEAD -&gt; master) third commit</div><div class="line">* 02ab411 second commit</div><div class="line">* e99b96a first commit stage.txt</div><div class="line"></div><div class="line">$ cat stage.txt        //当前文件中内容</div><div class="line">first commit</div><div class="line">second commit</div><div class="line">third commit</div><div class="line"></div><div class="line">$ vim stage.txt         //编辑，添加内容 &apos;forth commit&apos;</div><div class="line">$ git add .             //添加进暂存区</div><div class="line">$ git diff --cached     </div><div class="line">diff --git a/stage.txt b/stage.txt</div><div class="line">index 90dc5cb..e6d3e64 100644</div><div class="line">--- a/stage.txt</div><div class="line">+++ b/stage.txt</div><div class="line">@@ -1,3 +1,4 @@</div><div class="line"> first commit</div><div class="line"> second commit</div><div class="line"> third commit</div><div class="line">+forth commit           //可以看到暂存区比历史区多了一行</div></pre></td></tr></table></figure></p>
+<p>执行 reset 操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">$ git reset 02ab411 -- stage.txt   //还原到某一时刻的stage，该时刻因该有两次add，即两行</div><div class="line">Unstaged changes after reset:</div><div class="line">M       stage.txt</div><div class="line">$ git diff                         //工作区与暂存区区别</div><div class="line">diff --git a/stage.txt b/stage.txt</div><div class="line">index 56301e2..e6d3e64 100644</div><div class="line">--- a/stage.txt</div><div class="line">+++ b/stage.txt</div><div class="line">@@ -1,2 +1,4 @@</div><div class="line"> first commit</div><div class="line"> second commit                    //当前工作区比 reset的暂存区多了两行 #与预期相同</div><div class="line">+third commit</div><div class="line">+forth commit</div><div class="line"></div><div class="line">$ git diff --cached -- stage.txt    //暂存区与历史区区别</div><div class="line">diff --git a/stage.txt b/stage.txt</div><div class="line">index 90dc5cb..56301e2 100644</div><div class="line">--- a/stage.txt</div><div class="line">+++ b/stage.txt</div><div class="line">@@ -1,3 +1,2 @@</div><div class="line"> first commit</div><div class="line"> second commit </div><div class="line">-third commit                    // 当前reset的暂存区比历史区少了一行 # 与预期相同</div></pre></td></tr></table></figure>
+<h2 id="git-clean"><a href="#git-clean" class="headerlink" title="git clean"></a>git clean</h2><p>git clean 会删除工作区中没有被git跟踪的文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ git clean --help</div><div class="line"></div><div class="line">##from git-clean Manual Page：</div><div class="line">#name </div><div class="line">git-clean - Remove untracked files from the working tree</div><div class="line">#synopsis 概要</div><div class="line">git clean [-d] [-f] [-i] [-n] [-q] [-e &lt;pattern&gt;] [-x | -X] [--] &lt;path&gt;…​</div><div class="line"></div><div class="line">#DESCRIPTION </div><div class="line">Cleans the working tree by recursively removing files that are not under version control, starting from the current directory.</div><div class="line">...</div></pre></td></tr></table></figure>
 <blockquote>
-<p>请记住，工作目录下面的所有文件都不外乎这两种状态：已跟踪或未跟踪。已跟踪的文件是指本来就被纳入版本控制管理的文件，在上次快照中有它们的记录，工作一段时间后，它们的状态可能是未更新，已修改或者已放入暂存区。而所有其他文件都属于未跟踪文件。它们既没有上次更新时的快照，也不在当前的暂存区域。初次克隆某个仓库时，工作目录中的所有文件都属于已跟踪文件，且状态为未修改。</p>
+<p>默认，git clean会清除当前目录下的未跟踪文件；如果有 -x 参数，被忽略的文件也会被删除；<br>如果指定 <path></path>，则会删除指定目录下的未跟踪文件</p>
 </blockquote>
-<p>简单理解的话，只要是已经<strong>被Git命令操作过的，纳入Git管理</strong>的文件都是已跟踪文件，没有被Git命令操作的文件都是未跟踪。比如在工作区touch新文件，则状态是未跟踪，使用git add 添加进缓存区是，就是已跟踪了。</p>
-<p>其中，Git中文件状态变化周期如下图：</p>
-<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_3_filestatus.png" alt="image"></p>
-<p>如果需要<strong>忽略某些文件</strong>，而不需要被跟踪？可以在需要的目录位置创建 <strong>.gitignore</strong> 文件</p>
-<p>通配符匹配规则：<br>匹配符 | 规则 | 举例<br>—|—|—<br>a.txt | 过滤具体的 a.txt文件 |<br>*~ |中间类型文件| 如vim~ 匹配vim操作产生的文件</p>
-<ul>
-<li>| 匹配多个字符| <em>.txt 所有txt文件都被忽略<br>[]| 包含单个字符的匹配列表| </em>.[ab] 过滤以a或b结尾的文件<br>/ | 匹配目录| /demo 过滤当前目录demo文件夹及文件夹下所有文件<br>**/| 匹配任何目录下的某文件夹|  两个星号/demo，过滤任何目录(以.gitignore文件所在目录为根目录）下包含demo文件夹及其文件夹下的文件<br>! | 不过滤 | !a.txt 不过滤a.txt文件，若文件本身以 !开始，则需要加”\“ 转义，如”\!a.txt” 不过滤 !a.txt文件</li>
-</ul>
-<p>For Example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ vim .gitignore  // 添加规则 *.css，忽略.css文件</div><div class="line">$ touch table.css</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git status   //已忽略 table.css</div><div class="line">On branch master</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure></p>]]></content>
+<p>常用参数命令 ：<br>命令| 说明<br>—|—<br>git -n| 显示将要做什么，而不真正删除，可以确认将要删除的文件<br>git -f| 强制删除，如文件夹<br>git -X| 大写的X，仅删除被git忽略的文件<br>git -x| 表示，git忽略的文件也会被删除，注意与 -X区别</p>
+<p>For Example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ cat .gitignore         //查看忽略规则</div><div class="line">*.[ab]</div><div class="line">$ touch test.a test.b test.c test.d  //创建测试文件</div><div class="line">$ git add test.d            //将test.d添加进 暂存区</div></pre></td></tr></table></figure></p>
+<p>根据以上操作，则 test.a 和 test.b文件是git忽略文件，test.c是未跟踪文件，test.d是 已跟踪文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ git clean -n                 //默认，仅删除未被跟踪的文件</div><div class="line">Would remove test.c</div><div class="line"></div><div class="line">$ git clean -x -n              //-x 小写，未被跟踪和忽略文件都会被删除</div><div class="line">Would remove test.a</div><div class="line">Would remove test.b</div><div class="line">Would remove test.c</div><div class="line"></div><div class="line">$ git clean -X -n              //-X 大写，仅删除被忽略文件</div><div class="line">Would remove test.a</div><div class="line">Would remove test.b</div></pre></td></tr></table></figure>
+<h2 id="git-revert"><a href="#git-revert" class="headerlink" title="git revert"></a>git revert</h2><p>git revert 删除一些已提交的历史文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git clean --help</div><div class="line">#NAME</div><div class="line">git-revert - Revert some existing commits</div><div class="line"></div><div class="line">#DESCRIPTION</div><div class="line">Given one or more existing commits, revert the changes that the related patches introduce, and record some new commits that record them. This requires your working tree to be clean (no modifications from the HEAD commit).</div></pre></td></tr></table></figure>
+<blockquote>
+<p>git revert 使用新的提交来覆盖已有的提交，当然要求将被覆盖的文件不要处于修改状态</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">$ git lol</div><div class="line">* 54d2ffa (HEAD -&gt; master) xxxcommit</div><div class="line">* 074afd6 xxcommit</div><div class="line">$ git revert 074afd6   //revert 074afd6提交</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo/cleandir (master|REVERTING)</div><div class="line">$ git status</div><div class="line">On branch master</div><div class="line">You are currently reverting commit 074afd6.</div><div class="line">  (fix conflicts and run &quot;git revert --continue&quot;)</div><div class="line">  (use &quot;git revert --abort&quot; to cancel the revert operation)</div><div class="line"></div><div class="line">Unmerged paths:</div><div class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line">  (use &quot;git add &lt;file&gt;...&quot; to mark resolution)</div><div class="line"></div><div class="line">        both modified:   test.d</div><div class="line"></div><div class="line">no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>提示使用 git revert –abort来撤销 revert操作或者 提交本次操作</p>
+</blockquote>]]></content>
     
     <summary type="html">
     
-      &lt;h1 id=&quot;Git&quot;&gt;&lt;a href=&quot;#Git&quot; class=&quot;headerlink&quot; title=&quot;Git&quot;&gt;&lt;/a&gt;Git&lt;/h1&gt;&lt;h2 id=&quot;what-is-Git&quot;&gt;&lt;a href=&quot;#what-is-Git&quot; class=&quot;headerlink&quot; title=
+      更深入介绍版本控制工具git的使用
     
     </summary>
     
+      <category term="Git" scheme="http://doublesharejust.com.cn/categories/Git/"/>
+    
+    
+      <category term="撤销" scheme="http://doublesharejust.com.cn/tags/%E6%92%A4%E9%94%80/"/>
     
   </entry>
   
@@ -807,6 +642,178 @@
     
     
       <category term="分支，合并" scheme="http://doublesharejust.com.cn/tags/%E5%88%86%E6%94%AF%EF%BC%8C%E5%90%88%E5%B9%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Git 学习初始篇</title>
+    <link href="http://doublesharejust.com.cn/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E5%88%9D%E5%A7%8B%E7%AF%87/"/>
+    <id>http://doublesharejust.com.cn/2016/11/12/Git 学习初始篇/</id>
+    <published>2016-11-12T09:58:27.000Z</published>
+    <updated>2016-11-19T03:39:01.409Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="what-is-Git"><a href="#what-is-Git" class="headerlink" title="what is Git"></a>what is Git</h2><p>重点：强大的分布式、高效代码管理工具！</p>
+<h3 id="为什么使用？"><a href="#为什么使用？" class="headerlink" title="为什么使用？"></a>为什么使用？</h3><p>重点：使用github社区必备，而且确实方便高效。</p>
+<h2 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h2><p><strong>Subversion </strong> : 集中化的版本控制系统,有一个单一的集中管理的服务器，保存所有文件的修订版本，而协同工作的人们都通过客户端连到这台服务器，取出最新的文件或者提交更新</p>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/svn_1.png" alt="image"></p>
+<ul>
+<li><p>优点：每个人都可以在一定程度上看到项目中的其他人正在做些什么。 而管理员也可以轻松掌控每个开发者的权限，并且管理一个 CVCS 要远比在各个客户端上维护本地数据库来得轻松容易。</p>
+</li>
+<li><p>缺点：是中央服务器的单点故障。发生故障谁都无法提交更新，也就无法协同工作。</p>
+</li>
+</ul>
+<p><strong>Git</strong>:客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来。 </p>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_1.png" alt="image"></p>
+<h2 id="git与svn区别"><a href="#git与svn区别" class="headerlink" title="git与svn区别"></a>git与svn区别</h2><p>主要区别：对数据的处理方法</p>
+<ul>
+<li>Git直接记录完整文件，SVN则是记录基本文件和每个文件随时间逐步累积的差异</li>
+</ul>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_2.png" alt="image"></p>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/svn_2.png" alt="image"></p>
+<ul>
+<li>Git 所有操作几乎都是本地执行，不用连网，处理速度飞快。<blockquote>
+<p>在没有网络的情况也可以访问历史，进行本地修改、提交等操作，只需要在有网络时push到远程仓库</p>
+</blockquote>
+</li>
+<li>Git 时刻保持数据完整性 <blockquote>
+<p>在commit前，git会对数据进校验和（checksum）计算，并将此结果作为数据的唯一标识和索引。检查数据是否修改、缺失。</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>Git 使用 SHA-1 算法计算数据的校验和，通过对文件的内容或目录的结构计算出一个 SHA-1 哈希值，作为指纹字符串。该字串由 40 个十六进制字符（0-9 及 a-f）组成，看起来就像是：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">24b9da6552252987aa493b52f8696cd6d3b00373</div></pre></td></tr></table></figure>
+<p>Git 的工作完全依赖于这类指纹字串，所以你会经常看到这样的哈希值。实际上，所有保存在 Git 数据库中的东西都是用此哈希值来作索引的，而不是靠文件名。 </p>
+<h2 id="git的简单配置"><a href="#git的简单配置" class="headerlink" title="git的简单配置"></a>git的简单配置</h2><p>假设你已安装好git</p>
+<h3 id="git操作级别"><a href="#git操作级别" class="headerlink" title="git操作级别"></a>git操作级别</h3><table>
+<thead>
+<tr>
+<th>优先级 (高到低)</th>
+<th>级别 (低到高)</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>local</td>
+<td>本地级别</td>
+</tr>
+<tr>
+<td>2</td>
+<td>global</td>
+<td>用户级别</td>
+</tr>
+<tr>
+<td>3</td>
+<td>system</td>
+<td>系统级别</td>
+</tr>
+</tbody>
+</table>
+<h3 id="git文档查看"><a href="#git文档查看" class="headerlink" title="git文档查看"></a>git文档查看</h3><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>git config –help</td>
+</tr>
+<tr>
+<td>2</td>
+<td>git help config</td>
+</tr>
+</tbody>
+</table>
+<h3 id="命令技巧"><a href="#命令技巧" class="headerlink" title="命令技巧"></a>命令技巧</h3><ul>
+<li>输入 git conf 双击 tab 键 可自动补充内容，类似于 linux中自动补充</li>
+<li>输入 git config – ，双击 tab 可显示可用参数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git config --</div><div class="line">--add              --global           --rename-section</div><div class="line">--file=            --list             --replace-all</div><div class="line">--get              --local            --system</div><div class="line">--get-all          --name-only        --unset</div><div class="line">--get-regexp       --remove-section   --unset-all</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 ~/Desktop</div><div class="line">$ git config --</div></pre></td></tr></table></figure>
+<h3 id="使用前配置"><a href="#使用前配置" class="headerlink" title="使用前配置"></a>使用前配置</h3><ul>
+<li>设置用户和邮箱:相当于身份证</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.name &apos;xx&apos;</div><div class="line">git config --global user.email &apos;xx@yy&apos;</div></pre></td></tr></table></figure>
+<ul>
+<li><ol>
+<li>查看用户<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git config --get user.name  //当前使用的,默认最新的</div><div class="line"></div><div class="line">git config --list --global  //用户所有user.name</div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol>
+<li>删除用户</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global --unset user.name 用户名</div></pre></td></tr></table></figure>
+<ul>
+<li>config命令<br>如 创建别名<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global alias.ci commit</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>查看效果，多了个ci，也就是commit命令别名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git c</div><div class="line">checkout      cherry-pick   citool        clone         config</div><div class="line">cherry        ci            clean         commit</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git config --global alias.lol &apos;log --oneline&apos;</div><div class="line">$ git lol</div><div class="line">91b757f Merge remote-tracking branch &apos;origin/master&apos;</div><div class="line">f352b6e 添加博客</div><div class="line">2c79fcb Create README.md</div><div class="line">21155b9 Initial commit</div></pre></td></tr></table></figure>
+<h2 id="Git的存储"><a href="#Git的存储" class="headerlink" title="Git的存储"></a>Git的存储</h2><p>Git存储只关系文件内容</p>
+<p>Git使用40个16进制字符的SHA-1 Hash来存储唯一标识对象</p>
+<p>Git有四种对象：</p>
+<ul>
+<li>blob 文本文件、二进制文件、链接文件</li>
+<li>tree 目录</li>
+<li>commit 历史提交</li>
+<li>tag 指向固定的历史提交</li>
+</ul>
+<p>四种对象之间关系：一个tag指向一个commit,commit指向一个tree对象，tree对象中也可包含其他tree对象和blob对象；若有像个相同内容的文件，则指向在相同blob，而文件名等信息存储在 tree对象中</p>
+<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn2.png" alt="image"></p>
+<p>Git将对象存储在仓库中</p>
+<h2 id="Git仓库"><a href="#Git仓库" class="headerlink" title="Git仓库"></a>Git仓库</h2><ul>
+<li>创建Git仓库: <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git init  //新建</div><div class="line">git clone  //克隆</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>创建指定仓库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git init git_repo //创建时 git_repo下有.git目录</div><div class="line">git init --bare git_bare_repo  //git_bare_repo下没有.git目录，不包含工作区</div><div class="line">git init  //直接在当前目录下新建</div></pre></td></tr></table></figure></p>
+<p>克隆已有仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git clone git_repo git_clone  //1 本地仓库克隆，指定路径</div><div class="line"></div><div class="line">git clone https://github.com/xxx  //2 克隆github远程仓库到当前目录</div></pre></td></tr></table></figure>
+<h2 id="Git工作流程"><a href="#Git工作流程" class="headerlink" title="Git工作流程"></a>Git工作流程</h2><p>Git仓库有三个区域：</p>
+<ul>
+<li>工作区working direcoty;暂存区staging area,历史仓库history respository</li>
+</ul>
+<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn3.png" alt="image"></p>
+<ul>
+<li>区域间文件传递：</li>
+</ul>
+<p><img src="http://og6e19zce.bkt.clouddn.com/git_learn4.png" alt="image"><br>涉及的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git add  //将工作区文件添加到暂存区</div><div class="line">git add -A //将工作区所有文件添加早暂存区</div><div class="line">git commit //将暂存区添加到历史区</div><div class="line">git status //查看工作区与暂存区文件区别</div><div class="line">git rm  //删除暂存区文件</div><div class="line">git mv //移动/重命名 暂存区文件，一系列操作的组合(先删除后添加)</div><div class="line">gitingnore  //忽略工作区中某些不希望被加入暂存区和历史区的文件</div></pre></td></tr></table></figure>
+<p>而，如果只是 mv 命令(没有git)，则操作的只是本地文件</p>
+<p>For Example：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ touch test.txt a.java  //创建文件</div><div class="line">$ git add test.txt a.java  //添加至缓存</div><div class="line">$ git status  //查看文件状态</div><div class="line"></div><div class="line">On branch master</div><div class="line">Initial commit</div><div class="line"></div><div class="line">Changes to be committed:</div><div class="line">  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">        new file:   a.java</div><div class="line">        new file:   test.txt</div><div class="line"></div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git commit -m &quot;add files first time&quot;  //提交至历史区</div><div class="line"></div><div class="line">[master (root-commit) 02463dd] add files first time</div><div class="line"> 2 files changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 a.java</div><div class="line"> create mode 100644 test.txt</div></pre></td></tr></table></figure>
+<p>这里说下<strong>Git中文件的状态</strong> ：未跟踪和已跟踪，通过<strong>git status</strong>命令查看</p>
+<blockquote>
+<p>请记住，工作目录下面的所有文件都不外乎这两种状态：已跟踪或未跟踪。已跟踪的文件是指本来就被纳入版本控制管理的文件，在上次快照中有它们的记录，工作一段时间后，它们的状态可能是未更新，已修改或者已放入暂存区。而所有其他文件都属于未跟踪文件。它们既没有上次更新时的快照，也不在当前的暂存区域。初次克隆某个仓库时，工作目录中的所有文件都属于已跟踪文件，且状态为未修改。</p>
+</blockquote>
+<p>简单理解的话，只要是已经<strong>被Git命令操作过的，纳入Git管理</strong>的文件都是已跟踪文件，没有被Git命令操作的文件都是未跟踪。比如在工作区touch新文件，则状态是未跟踪，使用git add 添加进缓存区是，就是已跟踪了。</p>
+<p>其中，Git中文件状态变化周期如下图：</p>
+<p><img src="http://ogrlfqipo.bkt.clouddn.com/git_3_filestatus.png" alt="image"></p>
+<p>如果需要<strong>忽略某些文件</strong>，而不需要被跟踪？可以在需要的目录位置创建 <strong>.gitignore</strong> 文件</p>
+<p>通配符匹配规则：<br>匹配符 | 规则 | 举例<br>—|—|—<br>a.txt | 过滤具体的 a.txt文件 |<br>*~ |中间类型文件| 如vim~ 匹配vim操作产生的文件</p>
+<ul>
+<li>| 匹配多个字符| <em>.txt 所有txt文件都被忽略<br>[]| 包含单个字符的匹配列表| </em>.[ab] 过滤以a或b结尾的文件<br>/ | 匹配目录| /demo 过滤当前目录demo文件夹及文件夹下所有文件<br>**/| 匹配任何目录下的某文件夹|  两个星号/demo，过滤任何目录(以.gitignore文件所在目录为根目录）下包含demo文件夹及其文件夹下的文件<br>! | 不过滤 | !a.txt 不过滤a.txt文件，若文件本身以 !开始，则需要加”\“ 转义，如”\!a.txt” 不过滤 !a.txt文件</li>
+</ul>
+<p>For Example:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ vim .gitignore  // 添加规则 *.css，忽略.css文件</div><div class="line">$ touch table.css</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/test/git_repo (master)</div><div class="line">$ git status   //已忽略 table.css</div><div class="line">On branch master</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure></p>]]></content>
+    
+    <summary type="html">
+    
+      更深入介绍版本控制工具git的使用
+    
+    </summary>
+    
+      <category term="Git" scheme="http://doublesharejust.com.cn/categories/Git/"/>
+    
+    
+      <category term="版本控制" scheme="http://doublesharejust.com.cn/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/"/>
     
   </entry>
   
@@ -1849,6 +1856,82 @@
   </entry>
   
   <entry>
+    <title>Java设计模式-装饰者模式</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-19T03:39:24.098Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>项目：咖啡馆订单系统</p>
+<ul>
+<li>咖啡种类：Espresso,ShortBlack,LongBlack,Decaf</li>
+<li>调料：Milk,Soy,Chocolate</li>
+<li>扩展性好：有新品种咖啡，无需改动之前的，不会对原有代码有影响、改动方便、维护方便</li>
+</ul>
+<p>1 装饰者模式就像打包一个快递</p>
+<ul>
+<li>主体：陶瓷、衣服</li>
+<li>包装：报纸填充、塑料泡沫、纸板<br>2 Component:主体超类 或再添加一中间层(实现公共功能)</li>
+</ul>
+<p>3 ConcreteComponent 待包装的主体，如Decaf 和 Decorator </p>
+<p>4 装饰者模式：动态的将新功能附加到对象上。在对象功能拓展方面，它比继承更有弹性</p>
+<h2 id="Java内置装饰者"><a href="#Java内置装饰者" class="headerlink" title="Java内置装饰者"></a>Java内置装饰者</h2><p>Java的IO结构<br>InputStream是超类 FilterInputStream是中间类 BufferedInputStream属于装饰类</p>
+<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><ul>
+<li>开放、关闭原则：对添加新代码开放，对已测试好功能关闭</li>
+<li>易拓展</li>
+</ul>]]></content>
+    
+    <summary type="html">
+    
+      Java设计模式学习笔记
+    
+    </summary>
+    
+      <category term="设计模式" scheme="http://doublesharejust.com.cn/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+      <category term="单例模式" scheme="http://doublesharejust.com.cn/tags/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java设计模式-单例模式</title>
+    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-单例模式/</id>
+    <published>2016-10-02T09:58:27.000Z</published>
+    <updated>2016-11-19T03:39:13.853Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>保证一个类仅有一个实例，并提供一个访问它的全局访问点。</p>
+<blockquote>
+<p>适用性：当类只能有一个实例而且客户可以从一个众所周知的访问点访问它时。当这个唯一实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能使用一个扩展的实例时。</p>
+</blockquote>
+<h2 id="占位符式"><a href="#占位符式" class="headerlink" title="占位符式"></a>占位符式</h2><ul>
+<li>线程安全<blockquote>
+<p>JVM内部机制保证在执行类构造器初始化的时候是线程安全的</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public class JustDemo &#123;</div><div class="line">    private  static  boolean flag = true;</div><div class="line">    public JustDemo() &#123;</div><div class="line">        synchronized (JustDemo.class)&#123;</div><div class="line">            if(flag)&#123;</div><div class="line">                flag = false;</div><div class="line">            &#125;else&#123;</div><div class="line">                throw new RuntimeException(&quot;反射入侵已阻止&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    private static class Single&#123;</div><div class="line">        private static final JustDemo INSTANCE = new JustDemo();</div><div class="line">    &#125;</div><div class="line">    public JustDemo getInstance() &#123;</div><div class="line">        return Single.INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>上面示例可防止Java反射方法调用</p>
+</blockquote>
+<h2 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class LazySingleton &#123;</div><div class="line">    private static LazySingleton instance;</div><div class="line"></div><div class="line">    private LazySingleton() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static synchronized LazySingleton getInstance() &#123;</div><div class="line">        if (instance == null)&#123;</div><div class="line">            instance = new LazySingleton();</div><div class="line">        &#125;</div><div class="line">        return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Singleton &#123;</div><div class="line">    private static Singleton instance = new Singleton();</div><div class="line"></div><div class="line">    private Singleton() &#123;</div><div class="line">    &#125;</div><div class="line">    public static Singleton getInstance() &#123;</div><div class="line">            return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      Java设计模式学习笔记
+    
+    </summary>
+    
+      <category term="设计模式" scheme="http://doublesharejust.com.cn/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+      <category term="单例模式" scheme="http://doublesharejust.com.cn/tags/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Java并发工具包（上）</title>
     <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
     <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（上）/</id>
@@ -1926,43 +2009,6 @@
   </entry>
   
   <entry>
-    <title>Java设计模式-单例模式</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-单例模式/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.734Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>保证一个类仅有一个实例，并提供一个访问它的全局访问点。</p>
-<blockquote>
-<p>适用性：当类只能有一个实例而且客户可以从一个众所周知的访问点访问它时。当这个唯一实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能使用一个扩展的实例时。</p>
-</blockquote>
-<h2 id="占位符式"><a href="#占位符式" class="headerlink" title="占位符式"></a>占位符式</h2><ul>
-<li>线程安全<blockquote>
-<p>JVM内部机制保证在执行类构造器初始化的时候是线程安全的</p>
-</blockquote>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public class JustDemo &#123;</div><div class="line">    private  static  boolean flag = true;</div><div class="line">    public JustDemo() &#123;</div><div class="line">        synchronized (JustDemo.class)&#123;</div><div class="line">            if(flag)&#123;</div><div class="line">                flag = false;</div><div class="line">            &#125;else&#123;</div><div class="line">                throw new RuntimeException(&quot;反射入侵已阻止&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    private static class Single&#123;</div><div class="line">        private static final JustDemo INSTANCE = new JustDemo();</div><div class="line">    &#125;</div><div class="line">    public JustDemo getInstance() &#123;</div><div class="line">        return Single.INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>上面示例可防止Java反射方法调用</p>
-</blockquote>
-<h2 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class LazySingleton &#123;</div><div class="line">    private static LazySingleton instance;</div><div class="line"></div><div class="line">    private LazySingleton() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static synchronized LazySingleton getInstance() &#123;</div><div class="line">        if (instance == null)&#123;</div><div class="line">            instance = new LazySingleton();</div><div class="line">        &#125;</div><div class="line">        return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Singleton &#123;</div><div class="line">    private static Singleton instance = new Singleton();</div><div class="line"></div><div class="line">    private Singleton() &#123;</div><div class="line">    &#125;</div><div class="line">    public static Singleton getInstance() &#123;</div><div class="line">            return instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      Java设计模式学习笔记
-    
-    </summary>
-    
-      <category term="单例模式" scheme="http://doublesharejust.com.cn/categories/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Java并发工具包(下)</title>
     <link href="http://doublesharejust.com.cn/2016/10/02/Java%E5%B9%B6%E5%8F%91%E5%B7%A5%E5%85%B7%E5%8C%85%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
     <id>http://doublesharejust.com.cn/2016/10/02/Java并发工具包（下）/</id>
@@ -2015,45 +2061,6 @@
     
     
       <category term="Java并发" scheme="http://doublesharejust.com.cn/tags/Java%E5%B9%B6%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java设计模式-装饰者模式</title>
-    <link href="http://doublesharejust.com.cn/2016/10/02/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://doublesharejust.com.cn/2016/10/02/Java设计模式-装饰者模式/</id>
-    <published>2016-10-02T09:58:27.000Z</published>
-    <updated>2016-11-07T14:46:56.721Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>项目：咖啡馆订单系统</p>
-<ul>
-<li>咖啡种类：Espresso,ShortBlack,LongBlack,Decaf</li>
-<li>调料：Milk,Soy,Chocolate</li>
-<li>扩展性好：有新品种咖啡，无需改动之前的，不会对原有代码有影响、改动方便、维护方便</li>
-</ul>
-<p>1 装饰者模式就像打包一个快递</p>
-<ul>
-<li>主体：陶瓷、衣服</li>
-<li>包装：报纸填充、塑料泡沫、纸板<br>2 Component:主体超类 或再添加一中间层(实现公共功能)</li>
-</ul>
-<p>3 ConcreteComponent 待包装的主体，如Decaf 和 Decorator </p>
-<p>4 装饰者模式：动态的将新功能附加到对象上。在对象功能拓展方面，它比继承更有弹性</p>
-<h2 id="Java内置装饰者"><a href="#Java内置装饰者" class="headerlink" title="Java内置装饰者"></a>Java内置装饰者</h2><p>Java的IO结构<br>InputStream是超类 FilterInputStream是中间类 BufferedInputStream属于装饰类</p>
-<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><ul>
-<li>开放、关闭原则：对添加新代码开放，对已测试好功能关闭</li>
-<li>易拓展</li>
-</ul>]]></content>
-    
-    <summary type="html">
-    
-      Java设计模式学习笔记
-    
-    </summary>
-    
-      <category term="装饰者模式" scheme="http://doublesharejust.com.cn/categories/%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-      <category term="设计模式" scheme="http://doublesharejust.com.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   
