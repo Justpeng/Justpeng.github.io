@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="author" content="Just">
+
+
+
+<meta name="description" content="更深入介绍版本控制工具git的使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 学习进阶篇-重写历史记录">
+<meta property="og:url" content="http://jidea.net/2016/11/12/Git 学习进阶篇-重写历史记录/index.html">
+<meta property="og:site_name" content="Just_Idea">
+<meta property="og:description" content="更深入介绍版本控制工具git的使用">
+<meta property="og:updated_time" content="2016-11-20T15:15:00.798Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git 学习进阶篇-重写历史记录">
+<meta name="twitter:description" content="更深入介绍版本控制工具git的使用">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Just_Idea" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Git 学习进阶篇-重写历史记录 | Just_Idea</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: false,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head></html>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Just</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">学习和分享</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:1055767089@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/u/3826264194/home" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" href="http://blog.csdn.net/louislip" title="CSDN"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dom4j/">Dom4j</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/">Hadoop</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git历史/">git历史</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分支，合并/">分支，合并</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/撤销/">撤销</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重写历史/">重写历史</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+
+                
+                
+                <section class="switch-part switch-part3">
+                
+                    <div id="js-aboutme">学习、分享和交流都是一种快乐</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Just</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Just</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">学习和分享</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:1055767089@qq.com" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/u/3826264194/home" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="http://blog.csdn.net/louislip" title="CSDN"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我">
+</nav>
+      <div class="body-wrap"><article id="post-Git 学习进阶篇-重写历史记录" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/11/12/Git 学习进阶篇-重写历史记录/" class="article-date">
+      <time datetime="2016-11-12T09:58:27.000Z" itemprop="datePublished">2016-11-12</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        <h1 class="article-title" itemprop="name">
+      Git 学习进阶篇-重写历史记录
+    </h1>
+      </header>
+      
+      <div class="article-info article-info-post">
+        <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Git/">Git</a>
+    </div>
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/重写历史/">重写历史</a></li></ul>
+    </div>
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h2 id="Git-重写历史记录"><a href="#Git-重写历史记录" class="headerlink" title="Git 重写历史记录"></a>Git 重写历史记录</h2><p>涉及命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#git commit -amend</div><div class="line">#git rebase</div><div class="line">#git reset</div></pre></td></tr></table></figure></p>
+<h2 id="git-commit-–ament"><a href="#git-commit-–ament" class="headerlink" title="git commit –ament"></a>git commit –ament</h2><p>如果刚进行提交操作，发现提交信息写错了，或者还需要几个文件一起提交，那么使用–amend命令可以重新提交。</p>
+<h3 id="忘了添加某个文件，重新提交"><a href="#忘了添加某个文件，重新提交" class="headerlink" title="忘了添加某个文件，重新提交"></a>忘了添加某个文件，重新提交</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ git lol -- stage.txt                   //当前提交信息</div><div class="line">* 3ee6f40 (HEAD -&gt; master) efive commit~</div><div class="line">* d4df151 five</div><div class="line"></div><div class="line">$ touch stage2.txt</div><div class="line">$ git add .                             //git rm </div><div class="line">$ git commit --amend</div><div class="line">[master 6ba634c] two file to commit~</div><div class="line"> Date: Thu Nov 17 23:39:39 2016 +0800</div><div class="line"> 2 files changed, 1 insertion(+)</div><div class="line"> create mode 100644 stage2.txt</div><div class="line"></div><div class="line">$ git lol</div><div class="line">* 6ba634c (HEAD -&gt; master) two file to commit~       //重新提交，覆盖了3ee6f40提交</div><div class="line">* d4df151 five</div></pre></td></tr></table></figure>
+<h3 id="忘了删除某个文件，重新提交"><a href="#忘了删除某个文件，重新提交" class="headerlink" title="忘了删除某个文件，重新提交"></a>忘了删除某个文件，重新提交</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">$ touch a.text b.txt                //添加两个文件</div><div class="line">$ git add .</div><div class="line">$ git commit -m &apos;test for git rm&apos;</div><div class="line"></div><div class="line">$ git lol                           //查看历史</div><div class="line">* 2506ac0 (HEAD -&gt; master) test for git rm</div><div class="line">* 50c430c delete a file</div><div class="line"></div><div class="line">$ git rm b.txt                      //这时，发现b.txt不应该提交，需要删除</div><div class="line">rm &apos;b.txt&apos;</div><div class="line"></div><div class="line">$ git commit --amend                //重写历史，将暂存区内容作为提交的快照</div><div class="line">[master bf8190a] test for git rm,and rm b.txt</div><div class="line"> Date: Sun Nov 20 20:57:20 2016 +0800</div><div class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 a.text</div><div class="line"></div><div class="line">$ git lol                           //查看历史，可以看到记录已被修改</div><div class="line">* bf8190a (HEAD -&gt; master) test for git rm,and rm b.txt</div><div class="line">* 50c430c delete a file</div><div class="line">* ea9691e add file remove.d</div><div class="line"></div><div class="line">$ ls                                //b.txt文件也已经被删除</div><div class="line">a.text  checkoutdir/  cleandir/  master.d  revertdir/  stage.txt</div></pre></td></tr></table></figure>
+<h2 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a>git rebase</h2><p>使用git commit –amend可以重写最近的一次提交，但是无法修改历史中更早的提交；git rebase则可以实现</p>
+<h3 id="修改多个提交说明"><a href="#修改多个提交说明" class="headerlink" title="修改多个提交说明"></a>修改多个提交说明</h3><p>如果你想修改某次提交，需要参数 git rebase -i HEAD~n/SHA-1,如果是已经push到远程中心服务器的提交，需要慎重使用</p>
+<ul>
+<li><p>文件准备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ git lol -- a.txt</div><div class="line">* 9bc0634 (HEAD -&gt; master) fourth a.txt commit</div><div class="line">* 1169361 third a.txt commit</div><div class="line">* f868857 second a.txt commit</div><div class="line">* e232dcd first a.txt commit</div><div class="line"></div><div class="line">$ cat -- a.txt    //上面每次提交所对应的内容， git log的顺序是从 最新提交到历史提交</div><div class="line">1111111       </div><div class="line">2222222</div><div class="line">3333333</div><div class="line">4444444</div></pre></td></tr></table></figure>
+</li>
+<li><p>执行命令 git rebase -i HEAD~ 修改前两次提交</p>
+</li>
+</ul>
+<blockquote>
+<p>显示顺序 历史-最新，因为rebase是从历史开始修改,与git log 查看历史顺序相反</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">pick 1169361 third a.txt commit              </div><div class="line">pick 9bc0634 fourth a.txt commit</div><div class="line"></div><div class="line"># Rebase f868857..9bc0634 onto f868857 (2 command(s)) //修改的范围</div><div class="line">#</div><div class="line"># Commands:</div><div class="line"># p, pick = use commit</div><div class="line"># r, reword = use commit, but edit the commit message</div><div class="line"># e, edit = use commit, but stop for amending</div><div class="line"># s, squash = use commit, but meld into previous commit</div><div class="line"># f, fixup = like &quot;squash&quot;, but discard this commit&apos;s log message</div><div class="line"># x, exec = run command (the rest of the line) using shell</div><div class="line"># d, drop = remove commit</div></pre></td></tr></table></figure>
+<ul>
+<li><p>使用edit，修改这两次提交信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">edit 1169361 third a.txt commitd</div><div class="line">edit 9bc0634 fourth a.txt commit</div><div class="line"></div><div class="line">//保存，退出</div></pre></td></tr></table></figure>
+</li>
+<li><p>依次修改历史提交信息</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ git rebase -i HEAD~2</div><div class="line">Stopped at 1169361b7859289b58ed36defcaa19d0d2e207b6... third a.txt commitd</div><div class="line">You can amend the commit now, with</div><div class="line"></div><div class="line">        git commit --amend         //告诉我们使用 --amend命令修改commit信息</div><div class="line"></div><div class="line">Once you are satisfied with your changes, run</div><div class="line"></div><div class="line">        git rebase --continue     //如果修改完毕，--continue继续下一步</div><div class="line">A@Just-pc MINGW32 /g/git_test/git_repo (master|REBASE-i 1/2)  //看到rebase有两步</div></pre></td></tr></table></figure>
+<ul>
+<li>使用git commit –amend 来修改 SHA-1 为【1169361】的提交信息</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git commit --amend</div><div class="line">[detached HEAD ff5173e] after rebase:third a.txt commit  //修改后的提交信息</div><div class="line"> Date: Sun Nov 20 21:11:11 2016 +0800</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"> </div><div class="line">$ git rebase --continue                         //下一步</div><div class="line">Stopped at 9bc063423f76f8d4a33122943421651255356a69... fourth a.txt commit</div><div class="line">...</div><div class="line">@Just-pc MINGW32 /g/git_test/git_repo (master|REBASE-i 2/2)</div></pre></td></tr></table></figure>
+<ul>
+<li>继续第二步，然后结束rebase<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">$ git commit --amend</div><div class="line">[detached HEAD 89599bf] after rebase:fourth a.txt commit</div><div class="line"> Date: Sun Nov 20 21:12:05 2016 +0800</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"></div><div class="line">$ git rebase continue</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|REBASE-i 2/2)</div><div class="line">$ git rebase --continue</div><div class="line">Successfully rebased and updated refs/heads/master.</div><div class="line"></div><div class="line">$ git lol  //查看历史，近两次提交信息已修改完成</div><div class="line">* 89599bf (HEAD -&gt; master) after rebase:fourth a.txt commit</div><div class="line">* ff5173e after rebase:third a.txt commit</div><div class="line">* f868857 second a.txt commit</div><div class="line">* e232dcd first a.txt commit</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>还有其他命令 git rebase (–continue | –abort | –skip) 亲自体验下咯</p>
+</blockquote>
+<h3 id="重排提交"><a href="#重排提交" class="headerlink" title="重排提交"></a>重排提交</h3><p>可以直接删除某次历史提交<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git rebase -i HEAD~3</div><div class="line">pick 1169361 third a.txt commit              </div><div class="line">pick 9bc0634 fourth a.txt commit</div><div class="line">pick 1169361 third a.txt commit  //直接删除</div></pre></td></tr></table></figure></p>
+<p>结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ git rebase -i HEAD~3</div><div class="line">Successfully rebased and updated refs/heads/master.</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol                         //已不存在 1169361</div><div class="line">* ff5173e (HEAD -&gt; master) after rebase:third a.txt commit</div><div class="line">* f868857 second a.txt commit</div><div class="line">* e232dcd first a.txt commit</div></pre></td></tr></table></figure>
+<blockquote>
+<p>使用rebase期间针对某一提交，也可以进行等操作，直到运行 git rebase –continue结束对这一提交的修改</p>
+</blockquote>
+<h3 id="线性分支"><a href="#线性分支" class="headerlink" title="线性分支"></a>线性分支</h3><ul>
+<li>分支准备<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">$ git checkout -b rebase_branch      //从 ff5173e 引用检出</div><div class="line">Switched to a new branch &apos;rebase_branch&apos;</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (rebase_branch)</div><div class="line">$ vim a.txt                                 //在分支rebase_branch修改、提交文件a.txt</div><div class="line">$ cat a.txt</div><div class="line">1111111</div><div class="line">2222222</div><div class="line">3333333</div><div class="line">initial on rebase_marge                     //添加的内容</div><div class="line">                           </div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ cat a.txt                                 //切换到master分支上，修改文件a.txt</div><div class="line">1111111</div><div class="line">2222222</div><div class="line">3333333</div><div class="line">modify on master </div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol                                  //查看历史，从ff5173e出现tree的节点</div><div class="line">* 95486b0 (HEAD -&gt; master) modify a.txt</div><div class="line">| * a59e983 (rebase_branch) rebase_branch innitail commit</div><div class="line">|/</div><div class="line">* ff5173e after rebase:third a.txt commit</div><div class="line">* f868857 second a.txt commit</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>目的：</p>
+<blockquote>
+<p>不使用marge命令，来使得rebase_branch分支相当于是从 master的最新引用95486b0上checkout出来的，相当于是线性分支</p>
+</blockquote>
+<ul>
+<li>线性融合</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ git rebase master</div><div class="line">...</div><div class="line">CONFLICT (content): Merge conflict in a.txt</div><div class="line">...</div><div class="line">When you have resolved this problem, run &quot;git rebase --continue&quot;.</div><div class="line">If you prefer to skip this patch, run &quot;git rebase --skip&quot; instead.</div><div class="line">To check out the original branch and stop rebasing, run &quot;git rebase --abort&quot;.</div></pre></td></tr></table></figure>
+<blockquote>
+<p>提示中，告诉我们是在处理两个分支有内容冲突的文件 a.txt,使用 –continue继续当前操作，或者–skip 跳过，或者 –abort放弃当前操作</p>
+</blockquote>
+<p>我们这里选择继续当前操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">$ vim a.txt              //修改冲突文件内容</div><div class="line">1111111</div><div class="line">2222222</div><div class="line">3333333</div><div class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; 95486b0adc5c1e743ddcb1df8e7eaff5aeb97670</div><div class="line">modify on master</div><div class="line">=======</div><div class="line">initial on rebase_marge</div><div class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; rebase_branch innitail commit</div><div class="line"></div><div class="line">$ git add .             //然后，add进暂存区</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (rebase_branch|REBASE 1/1)</div><div class="line">$ git rebase --continue //不使用commit，直接 --continue</div><div class="line">Applying: rebase_branch innitail commit</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (rebase_branch)</div><div class="line">$ git lol</div><div class="line">* dcc2a9a (HEAD -&gt; rebase_branch) rebase_branch innitail commit  //已成为线性得了</div></pre></td></tr></table></figure>
+<h2 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h2><p>当上面的 rebase_branch分支执行过线性合并后，其实在历史记录中，使用git log已经找不到之前的修改了，但是如果我们需要还原rebase操作又该怎么呢？</p>
+<p>方法: git reflog与git reset组合</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>git reflog</td>
+<td>可以查看对master分支的所有引用修改</td>
+</tr>
+<tr>
+<td>git reset –hard</td>
+<td>暂存区和工作区都被某一历史还原 </td>
+</tr>
+<tr>
+<td>git reset –mixed</td>
+<td>暂存区被还原 (默认)</td>
+</tr>
+<tr>
+<td>git reset –soft</td>
+<td>不还原</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>相同之处：git reset (–hard | –mixed | –soft) 都将分支和HEAD引用，指向reset的commit</p>
+</blockquote>
+<ul>
+<li>查看所有引用master的历史提交<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">$ git reflog    //a59e983 HEAD@&#123;6&#125; 是第一次在分支rebase_branch 上的提交</div><div class="line">dcc2a9a HEAD@&#123;0&#125;: rebase finished: returning to refs/heads/rebase_branch</div><div class="line">dcc2a9a HEAD@&#123;1&#125;: rebase: rebase_branch innitail commit</div><div class="line">95486b0 HEAD@&#123;2&#125;: rebase: checkout master</div><div class="line">a59e983 HEAD@&#123;3&#125;: checkout: moving from master to rebase_branch</div><div class="line">95486b0 HEAD@&#123;4&#125;: commit: modify a.txt</div><div class="line">ff5173e HEAD@&#123;5&#125;: checkout: moving from rebase_branch to master</div><div class="line">a59e983 HEAD@&#123;6&#125;: commit: rebase_branch innitail commit</div><div class="line">ff5173e HEAD@&#123;7&#125;: checkout: moving from master to rebase_branch</div><div class="line"></div><div class="line">$ git reset --hard HEAD@&#123;6&#125;</div><div class="line">HEAD is now at a59e983 rebase_branch innitail commit</div><div class="line"></div><div class="line">$ git lol</div><div class="line">* 95486b0 (master) modify a.txt</div><div class="line">| * a59e983 (HEAD -&gt; rebase_branch) rebase_branch innitail commit</div><div class="line">|/</div><div class="line">* ff5173e after rebase:third a.txt commit</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="END"><a href="#END" class="headerlink" title="END"></a>END</h3><ul>
+<li>git commit –amend使用新的提交覆盖当前提交</li>
+<li>git rebase比git commit –amend可修改的历史范围更加广泛，还可以处理分支操作，</li>
+<li>git reset依据参数还原某些历史</li>
+</ul>
+<p>注：对于已经push到远程服务中心，即已经共享的提交，需要谨慎操作！~</p>
+<hr>
+<h3 id="more"><a href="#more" class="headerlink" title="more"></a>more</h3><p>欢迎访问我的博客站点：<a href="http://jidea.net">http://jidea.net</a></p>
+      
+    </div>
+    
+  </div>
+  
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/11/12/Git 学习进阶篇-重写历史记录/">Git 学习进阶篇-重写历史记录</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Just</a></p>
+        <p><span>发布时间:</span>2016-11-12, 17:58:27</p>
+        <p><span>最后更新:</span>2016-11-20, 23:15:00</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/12/Git 学习进阶篇-重写历史记录/" title="Git 学习进阶篇-重写历史记录">http://jidea.net/2016/11/12/Git 学习进阶篇-重写历史记录/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://jidea.net/2016/11/12/Git 学习进阶篇-重写历史记录/　　作者: Just" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/11/12/Git 学习进阶篇- 撤销操作/">
+                    Git 学习进阶篇-撤销操作
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/11/07/Linux常用命令小结/">
+                    Linux常用命令小结
+                </a>
+            </div>
+        
+    </nav>
+  
+</article>
+<div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git-重写历史记录"><span class="toc-number">1.</span> <span class="toc-text">Git 重写历史记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-commit-–ament"><span class="toc-number">2.</span> <span class="toc-text">git commit –ament</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#忘了添加某个文件，重新提交"><span class="toc-number">2.1.</span> <span class="toc-text">忘了添加某个文件，重新提交</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#忘了删除某个文件，重新提交"><span class="toc-number">2.2.</span> <span class="toc-text">忘了删除某个文件，重新提交</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-rebase"><span class="toc-number">3.</span> <span class="toc-text">git rebase</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#修改多个提交说明"><span class="toc-number">3.1.</span> <span class="toc-text">修改多个提交说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重排提交"><span class="toc-number">3.2.</span> <span class="toc-text">重排提交</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线性分支"><span class="toc-number">3.3.</span> <span class="toc-text">线性分支</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-reset"><span class="toc-number">4.</span> <span class="toc-text">git reset</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#END"><span class="toc-number">4.1.</span> <span class="toc-text">END</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#more"><span class="toc-number">4.2.</span> <span class="toc-text">more</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录" title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+    <div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Git 学习进阶篇-重写历史记录　| Just_Idea　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+    
+        <section class="youyan" id="comments">
+    <script>
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2119744';
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    <script> loadComment(); </script>
+    <div id="uyan_frame"></div>
+</section>
+    
+
+
+<div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/11/12/Git 学习进阶篇- 撤销操作/" title="上一篇: Git 学习进阶篇-撤销操作">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/11/07/Linux常用命令小结/" title="下一篇: Linux常用命令小结">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/13/Git 学习进阶篇 -历史查看/">Git 学习进阶篇-历史查看</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/12/Git 学习进阶篇-重写历史记录/">Git 学习进阶篇-重写历史记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/12/Git 学习进阶篇- 撤销操作/">Git 学习进阶篇-撤销操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/12/Git 学习进阶篇 - 分支与合并/">Git 学习进阶篇-分支与合并</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/12/Git 学习初始篇/">Git 学习初始篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/07/Linux常用命令小结/">Linux常用命令小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式本地集群搭建（二）/">Hadoop分布式集群搭建（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/">Hadoop分布式集群搭建 Centos7 环境准备</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Dom4j/">Dom4j-使用指导</a></li></ul>
+
+
+    <script>
+        
+    </script></div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016 Just
+            </div>
+            <div class="footer-right">
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style="display:none">
+                        <span id="page-visit" title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    <script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+<script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 1;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide()" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        $("a").attr("target", "_blank");
+        $("#scroll a, #toc a").removeAttr("target");
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
