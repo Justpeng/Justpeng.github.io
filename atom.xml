@@ -822,7 +822,7 @@
     <link href="http://jidea.net/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87-%E9%87%8D%E5%86%99%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/"/>
     <id>http://jidea.net/2016/11/12/Git 学习进阶篇-重写历史记录/</id>
     <published>2016-11-12T09:58:27.000Z</published>
-    <updated>2016-11-20T15:15:00.798Z</updated>
+    <updated>2016-11-20T15:19:36.220Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Git-重写历史记录"><a href="#Git-重写历史记录" class="headerlink" title="Git 重写历史记录"></a>Git 重写历史记录</h2><p>涉及命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#git commit -amend</div><div class="line">#git rebase</div><div class="line">#git reset</div></pre></td></tr></table></figure></p>
 <h2 id="git-commit-–ament"><a href="#git-commit-–ament" class="headerlink" title="git commit –ament"></a>git commit –ament</h2><p>如果刚进行提交操作，发现提交信息写错了，或者还需要几个文件一起提交，那么使用–amend命令可以重新提交。</p>
@@ -923,9 +923,7 @@
 <li>git rebase比git commit –amend可修改的历史范围更加广泛，还可以处理分支操作，</li>
 <li>git reset依据参数还原某些历史</li>
 </ul>
-<p>注：对于已经push到远程服务中心，即已经共享的提交，需要谨慎操作！~</p>
-<hr>
-<h3 id="more"><a href="#more" class="headerlink" title="more"></a>more</h3><p>欢迎访问我的博客站点：<a href="http://jidea.net">http://jidea.net</a></p>]]></content>
+<p>注：对于已经push到远程服务中心，即已经共享的提交，需要谨慎操作！~</p>]]></content>
     
     <summary type="html">
     

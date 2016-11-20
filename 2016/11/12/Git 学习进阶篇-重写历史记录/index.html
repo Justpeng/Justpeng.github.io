@@ -19,7 +19,7 @@
 <meta property="og:url" content="http://jidea.net/2016/11/12/Git 学习进阶篇-重写历史记录/index.html">
 <meta property="og:site_name" content="Just_Idea">
 <meta property="og:description" content="更深入介绍版本控制工具git的使用">
-<meta property="og:updated_time" content="2016-11-20T15:15:00.798Z">
+<meta property="og:updated_time" content="2016-11-20T15:19:36.220Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git 学习进阶篇-重写历史记录">
 <meta name="twitter:description" content="更深入介绍版本控制工具git的使用">
@@ -378,8 +378,6 @@
 <li>git reset依据参数还原某些历史</li>
 </ul>
 <p>注：对于已经push到远程服务中心，即已经共享的提交，需要谨慎操作！~</p>
-<hr>
-<h3 id="more"><a href="#more" class="headerlink" title="more"></a>more</h3><p>欢迎访问我的博客站点：<a href="http://jidea.net">http://jidea.net</a></p>
       
     </div>
     
@@ -389,7 +387,7 @@
         <p><span>本文标题:</span><a href="/2016/11/12/Git 学习进阶篇-重写历史记录/">Git 学习进阶篇-重写历史记录</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Just</a></p>
         <p><span>发布时间:</span>2016-11-12, 17:58:27</p>
-        <p><span>最后更新:</span>2016-11-20, 23:15:00</p>
+        <p><span>最后更新:</span>2016-11-20, 23:19:36</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/11/12/Git 学习进阶篇-重写历史记录/" title="Git 学习进阶篇-重写历史记录">http://jidea.net/2016/11/12/Git 学习进阶篇-重写历史记录/</a>
             <span class="copy-path" data-clipboard-text="原文: http://jidea.net/2016/11/12/Git 学习进阶篇-重写历史记录/　　作者: Just" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -423,7 +421,7 @@
 <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git-重写历史记录"><span class="toc-number">1.</span> <span class="toc-text">Git 重写历史记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-commit-–ament"><span class="toc-number">2.</span> <span class="toc-text">git commit –ament</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#忘了添加某个文件，重新提交"><span class="toc-number">2.1.</span> <span class="toc-text">忘了添加某个文件，重新提交</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#忘了删除某个文件，重新提交"><span class="toc-number">2.2.</span> <span class="toc-text">忘了删除某个文件，重新提交</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-rebase"><span class="toc-number">3.</span> <span class="toc-text">git rebase</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#修改多个提交说明"><span class="toc-number">3.1.</span> <span class="toc-text">修改多个提交说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重排提交"><span class="toc-number">3.2.</span> <span class="toc-text">重排提交</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线性分支"><span class="toc-number">3.3.</span> <span class="toc-text">线性分支</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-reset"><span class="toc-number">4.</span> <span class="toc-text">git reset</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#END"><span class="toc-number">4.1.</span> <span class="toc-text">END</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#more"><span class="toc-number">4.2.</span> <span class="toc-text">more</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git-重写历史记录"><span class="toc-number">1.</span> <span class="toc-text">Git 重写历史记录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-commit-–ament"><span class="toc-number">2.</span> <span class="toc-text">git commit –ament</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#忘了添加某个文件，重新提交"><span class="toc-number">2.1.</span> <span class="toc-text">忘了添加某个文件，重新提交</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#忘了删除某个文件，重新提交"><span class="toc-number">2.2.</span> <span class="toc-text">忘了删除某个文件，重新提交</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-rebase"><span class="toc-number">3.</span> <span class="toc-text">git rebase</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#修改多个提交说明"><span class="toc-number">3.1.</span> <span class="toc-text">修改多个提交说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重排提交"><span class="toc-number">3.2.</span> <span class="toc-text">重排提交</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线性分支"><span class="toc-number">3.3.</span> <span class="toc-text">线性分支</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-reset"><span class="toc-number">4.</span> <span class="toc-text">git reset</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#END"><span class="toc-number">4.1.</span> <span class="toc-text">END</span></a></li></ol></li></ol>
         
     </div>
     <style>
