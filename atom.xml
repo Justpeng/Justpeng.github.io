@@ -532,6 +532,127 @@
   </entry>
   
   <entry>
+    <title>Git 学习进阶篇-重写历史记录</title>
+    <link href="http://jidea.net/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87-%E9%87%8D%E5%86%99%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/"/>
+    <id>http://jidea.net/2016/11/12/Git 学习进阶篇-重写历史记录/</id>
+    <published>2016-11-12T09:58:27.000Z</published>
+    <updated>2016-11-20T15:19:36.220Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Git-重写历史记录"><a href="#Git-重写历史记录" class="headerlink" title="Git 重写历史记录"></a>Git 重写历史记录</h2><p>涉及命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#git commit -amend</div><div class="line">#git rebase</div><div class="line">#git reset</div></pre></td></tr></table></figure></p>
+<h2 id="git-commit-–ament"><a href="#git-commit-–ament" class="headerlink" title="git commit –ament"></a>git commit –ament</h2><p>如果刚进行提交操作，发现提交信息写错了，或者还需要几个文件一起提交，那么使用–amend命令可以重新提交。</p>
+<h3 id="忘了添加某个文件，重新提交"><a href="#忘了添加某个文件，重新提交" class="headerlink" title="忘了添加某个文件，重新提交"></a>忘了添加某个文件，重新提交</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ git lol -- stage.txt                   //当前提交信息</div><div class="line">* 3ee6f40 (HEAD -&gt; master) efive commit~</div><div class="line">* d4df151 five</div><div class="line"></div><div class="line">$ touch stage2.txt</div><div class="line">$ git add .                             //git rm </div><div class="line">$ git commit --amend</div><div class="line">[master 6ba634c] two file to commit~</div><div class="line"> Date: Thu Nov 17 23:39:39 2016 +0800</div><div class="line"> 2 files changed, 1 insertion(+)</div><div class="line"> create mode 100644 stage2.txt</div><div class="line"></div><div class="line">$ git lol</div><div class="line">* 6ba634c (HEAD -&gt; master) two file to commit~       //重新提交，覆盖了3ee6f40提交</div><div class="line">* d4df151 five</div></pre></td></tr></table></figure>
+<h3 id="忘了删除某个文件，重新提交"><a href="#忘了删除某个文件，重新提交" class="headerlink" title="忘了删除某个文件，重新提交"></a>忘了删除某个文件，重新提交</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">$ touch a.text b.txt                //添加两个文件</div><div class="line">$ git add .</div><div class="line">$ git commit -m &apos;test for git rm&apos;</div><div class="line"></div><div class="line">$ git lol                           //查看历史</div><div class="line">* 2506ac0 (HEAD -&gt; master) test for git rm</div><div class="line">* 50c430c delete a file</div><div class="line"></div><div class="line">$ git rm b.txt                      //这时，发现b.txt不应该提交，需要删除</div><div class="line">rm &apos;b.txt&apos;</div><div class="line"></div><div class="line">$ git commit --amend                //重写历史，将暂存区内容作为提交的快照</div><div class="line">[master bf8190a] test for git rm,and rm b.txt</div><div class="line"> Date: Sun Nov 20 20:57:20 2016 +0800</div><div class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 a.text</div><div class="line"></div><div class="line">$ git lol                           //查看历史，可以看到记录已被修改</div><div class="line">* bf8190a (HEAD -&gt; master) test for git rm,and rm b.txt</div><div class="line">* 50c430c delete a file</div><div class="line">* ea9691e add file remove.d</div><div class="line"></div><div class="line">$ ls                                //b.txt文件也已经被删除</div><div class="line">a.text  checkoutdir/  cleandir/  master.d  revertdir/  stage.txt</div></pre></td></tr></table></figure>
+<h2 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a>git rebase</h2><p>使用git commit –amend可以重写最近的一次提交，但是无法修改历史中更早的提交；git rebase则可以实现</p>
+<h3 id="修改多个提交说明"><a href="#修改多个提交说明" class="headerlink" title="修改多个提交说明"></a>修改多个提交说明</h3><p>如果你想修改某次提交，需要参数 git rebase -i HEAD~n/SHA-1,如果是已经push到远程中心服务器的提交，需要慎重使用</p>
+<ul>
+<li><p>文件准备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ git lol -- a.txt</div><div class="line">* 9bc0634 (HEAD -&gt; master) fourth a.txt commit</div><div class="line">* 1169361 third a.txt commit</div><div class="line">* f868857 second a.txt commit</div><div class="line">* e232dcd first a.txt commit</div><div class="line"></div><div class="line">$ cat -- a.txt    //上面每次提交所对应的内容， git log的顺序是从 最新提交到历史提交</div><div class="line">1111111       </div><div class="line">2222222</div><div class="line">3333333</div><div class="line">4444444</div></pre></td></tr></table></figure>
+</li>
+<li><p>执行命令 git rebase -i HEAD~ 修改前两次提交</p>
+</li>
+</ul>
+<blockquote>
+<p>显示顺序 历史-最新，因为rebase是从历史开始修改,与git log 查看历史顺序相反</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">pick 1169361 third a.txt commit              </div><div class="line">pick 9bc0634 fourth a.txt commit</div><div class="line"></div><div class="line"># Rebase f868857..9bc0634 onto f868857 (2 command(s)) //修改的范围</div><div class="line">#</div><div class="line"># Commands:</div><div class="line"># p, pick = use commit</div><div class="line"># r, reword = use commit, but edit the commit message</div><div class="line"># e, edit = use commit, but stop for amending</div><div class="line"># s, squash = use commit, but meld into previous commit</div><div class="line"># f, fixup = like &quot;squash&quot;, but discard this commit&apos;s log message</div><div class="line"># x, exec = run command (the rest of the line) using shell</div><div class="line"># d, drop = remove commit</div></pre></td></tr></table></figure>
+<ul>
+<li><p>使用edit，修改这两次提交信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">edit 1169361 third a.txt commitd</div><div class="line">edit 9bc0634 fourth a.txt commit</div><div class="line"></div><div class="line">//保存，退出</div></pre></td></tr></table></figure>
+</li>
+<li><p>依次修改历史提交信息</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ git rebase -i HEAD~2</div><div class="line">Stopped at 1169361b7859289b58ed36defcaa19d0d2e207b6... third a.txt commitd</div><div class="line">You can amend the commit now, with</div><div class="line"></div><div class="line">        git commit --amend         //告诉我们使用 --amend命令修改commit信息</div><div class="line"></div><div class="line">Once you are satisfied with your changes, run</div><div class="line"></div><div class="line">        git rebase --continue     //如果修改完毕，--continue继续下一步</div><div class="line">A@Just-pc MINGW32 /g/git_test/git_repo (master|REBASE-i 1/2)  //看到rebase有两步</div></pre></td></tr></table></figure>
+<ul>
+<li>使用git commit –amend 来修改 SHA-1 为【1169361】的提交信息</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git commit --amend</div><div class="line">[detached HEAD ff5173e] after rebase:third a.txt commit  //修改后的提交信息</div><div class="line"> Date: Sun Nov 20 21:11:11 2016 +0800</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"> </div><div class="line">$ git rebase --continue                         //下一步</div><div class="line">Stopped at 9bc063423f76f8d4a33122943421651255356a69... fourth a.txt commit</div><div class="line">...</div><div class="line">@Just-pc MINGW32 /g/git_test/git_repo (master|REBASE-i 2/2)</div></pre></td></tr></table></figure>
+<ul>
+<li>继续第二步，然后结束rebase<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">$ git commit --amend</div><div class="line">[detached HEAD 89599bf] after rebase:fourth a.txt commit</div><div class="line"> Date: Sun Nov 20 21:12:05 2016 +0800</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"></div><div class="line">$ git rebase continue</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|REBASE-i 2/2)</div><div class="line">$ git rebase --continue</div><div class="line">Successfully rebased and updated refs/heads/master.</div><div class="line"></div><div class="line">$ git lol  //查看历史，近两次提交信息已修改完成</div><div class="line">* 89599bf (HEAD -&gt; master) after rebase:fourth a.txt commit</div><div class="line">* ff5173e after rebase:third a.txt commit</div><div class="line">* f868857 second a.txt commit</div><div class="line">* e232dcd first a.txt commit</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>还有其他命令 git rebase (–continue | –abort | –skip) 亲自体验下咯</p>
+</blockquote>
+<h3 id="重排提交"><a href="#重排提交" class="headerlink" title="重排提交"></a>重排提交</h3><p>可以直接删除某次历史提交<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git rebase -i HEAD~3</div><div class="line">pick 1169361 third a.txt commit              </div><div class="line">pick 9bc0634 fourth a.txt commit</div><div class="line">pick 1169361 third a.txt commit  //直接删除</div></pre></td></tr></table></figure></p>
+<p>结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ git rebase -i HEAD~3</div><div class="line">Successfully rebased and updated refs/heads/master.</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol                         //已不存在 1169361</div><div class="line">* ff5173e (HEAD -&gt; master) after rebase:third a.txt commit</div><div class="line">* f868857 second a.txt commit</div><div class="line">* e232dcd first a.txt commit</div></pre></td></tr></table></figure>
+<blockquote>
+<p>使用rebase期间针对某一提交，也可以进行等操作，直到运行 git rebase –continue结束对这一提交的修改</p>
+</blockquote>
+<h3 id="线性分支"><a href="#线性分支" class="headerlink" title="线性分支"></a>线性分支</h3><ul>
+<li>分支准备<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">$ git checkout -b rebase_branch      //从 ff5173e 引用检出</div><div class="line">Switched to a new branch &apos;rebase_branch&apos;</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (rebase_branch)</div><div class="line">$ vim a.txt                                 //在分支rebase_branch修改、提交文件a.txt</div><div class="line">$ cat a.txt</div><div class="line">1111111</div><div class="line">2222222</div><div class="line">3333333</div><div class="line">initial on rebase_marge                     //添加的内容</div><div class="line">                           </div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ cat a.txt                                 //切换到master分支上，修改文件a.txt</div><div class="line">1111111</div><div class="line">2222222</div><div class="line">3333333</div><div class="line">modify on master </div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol                                  //查看历史，从ff5173e出现tree的节点</div><div class="line">* 95486b0 (HEAD -&gt; master) modify a.txt</div><div class="line">| * a59e983 (rebase_branch) rebase_branch innitail commit</div><div class="line">|/</div><div class="line">* ff5173e after rebase:third a.txt commit</div><div class="line">* f868857 second a.txt commit</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>目的：</p>
+<blockquote>
+<p>不使用marge命令，来使得rebase_branch分支相当于是从 master的最新引用95486b0上checkout出来的，相当于是线性分支</p>
+</blockquote>
+<ul>
+<li>线性融合</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ git rebase master</div><div class="line">...</div><div class="line">CONFLICT (content): Merge conflict in a.txt</div><div class="line">...</div><div class="line">When you have resolved this problem, run &quot;git rebase --continue&quot;.</div><div class="line">If you prefer to skip this patch, run &quot;git rebase --skip&quot; instead.</div><div class="line">To check out the original branch and stop rebasing, run &quot;git rebase --abort&quot;.</div></pre></td></tr></table></figure>
+<blockquote>
+<p>提示中，告诉我们是在处理两个分支有内容冲突的文件 a.txt,使用 –continue继续当前操作，或者–skip 跳过，或者 –abort放弃当前操作</p>
+</blockquote>
+<p>我们这里选择继续当前操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">$ vim a.txt              //修改冲突文件内容</div><div class="line">1111111</div><div class="line">2222222</div><div class="line">3333333</div><div class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; 95486b0adc5c1e743ddcb1df8e7eaff5aeb97670</div><div class="line">modify on master</div><div class="line">=======</div><div class="line">initial on rebase_marge</div><div class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; rebase_branch innitail commit</div><div class="line"></div><div class="line">$ git add .             //然后，add进暂存区</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (rebase_branch|REBASE 1/1)</div><div class="line">$ git rebase --continue //不使用commit，直接 --continue</div><div class="line">Applying: rebase_branch innitail commit</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (rebase_branch)</div><div class="line">$ git lol</div><div class="line">* dcc2a9a (HEAD -&gt; rebase_branch) rebase_branch innitail commit  //已成为线性得了</div></pre></td></tr></table></figure>
+<h2 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h2><p>当上面的 rebase_branch分支执行过线性合并后，其实在历史记录中，使用git log已经找不到之前的修改了，但是如果我们需要还原rebase操作又该怎么呢？</p>
+<p>方法: git reflog与git reset组合</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>git reflog</td>
+<td>可以查看对master分支的所有引用修改</td>
+</tr>
+<tr>
+<td>git reset –hard</td>
+<td>暂存区和工作区都被某一历史还原 </td>
+</tr>
+<tr>
+<td>git reset –mixed</td>
+<td>暂存区被还原 (默认)</td>
+</tr>
+<tr>
+<td>git reset –soft</td>
+<td>不还原</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>相同之处：git reset (–hard | –mixed | –soft) 都将分支和HEAD引用，指向reset的commit</p>
+</blockquote>
+<ul>
+<li>查看所有引用master的历史提交<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">$ git reflog    //a59e983 HEAD@&#123;6&#125; 是第一次在分支rebase_branch 上的提交</div><div class="line">dcc2a9a HEAD@&#123;0&#125;: rebase finished: returning to refs/heads/rebase_branch</div><div class="line">dcc2a9a HEAD@&#123;1&#125;: rebase: rebase_branch innitail commit</div><div class="line">95486b0 HEAD@&#123;2&#125;: rebase: checkout master</div><div class="line">a59e983 HEAD@&#123;3&#125;: checkout: moving from master to rebase_branch</div><div class="line">95486b0 HEAD@&#123;4&#125;: commit: modify a.txt</div><div class="line">ff5173e HEAD@&#123;5&#125;: checkout: moving from rebase_branch to master</div><div class="line">a59e983 HEAD@&#123;6&#125;: commit: rebase_branch innitail commit</div><div class="line">ff5173e HEAD@&#123;7&#125;: checkout: moving from master to rebase_branch</div><div class="line"></div><div class="line">$ git reset --hard HEAD@&#123;6&#125;</div><div class="line">HEAD is now at a59e983 rebase_branch innitail commit</div><div class="line"></div><div class="line">$ git lol</div><div class="line">* 95486b0 (master) modify a.txt</div><div class="line">| * a59e983 (HEAD -&gt; rebase_branch) rebase_branch innitail commit</div><div class="line">|/</div><div class="line">* ff5173e after rebase:third a.txt commit</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="END"><a href="#END" class="headerlink" title="END"></a>END</h3><ul>
+<li>git commit –amend使用新的提交覆盖当前提交</li>
+<li>git rebase比git commit –amend可修改的历史范围更加广泛，还可以处理分支操作，</li>
+<li>git reset依据参数还原某些历史</li>
+</ul>
+<p>注：对于已经push到远程服务中心，即已经共享的提交，需要谨慎操作！~</p>]]></content>
+    
+    <summary type="html">
+    
+      更深入介绍版本控制工具git的使用
+    
+    </summary>
+    
+      <category term="Git" scheme="http://jidea.net/categories/Git/"/>
+    
+    
+      <category term="重写历史" scheme="http://jidea.net/tags/%E9%87%8D%E5%86%99%E5%8E%86%E5%8F%B2/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Git 学习进阶篇-分支与合并</title>
     <link href="http://jidea.net/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87%20-%20%E5%88%86%E6%94%AF%E4%B8%8E%E5%90%88%E5%B9%B6/"/>
     <id>http://jidea.net/2016/11/12/Git 学习进阶篇 - 分支与合并/</id>
@@ -814,127 +935,6 @@
     
     
       <category term="撤销" scheme="http://jidea.net/tags/%E6%92%A4%E9%94%80/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git 学习进阶篇-重写历史记录</title>
-    <link href="http://jidea.net/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87-%E9%87%8D%E5%86%99%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/"/>
-    <id>http://jidea.net/2016/11/12/Git 学习进阶篇-重写历史记录/</id>
-    <published>2016-11-12T09:58:27.000Z</published>
-    <updated>2016-11-20T15:19:36.220Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Git-重写历史记录"><a href="#Git-重写历史记录" class="headerlink" title="Git 重写历史记录"></a>Git 重写历史记录</h2><p>涉及命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#git commit -amend</div><div class="line">#git rebase</div><div class="line">#git reset</div></pre></td></tr></table></figure></p>
-<h2 id="git-commit-–ament"><a href="#git-commit-–ament" class="headerlink" title="git commit –ament"></a>git commit –ament</h2><p>如果刚进行提交操作，发现提交信息写错了，或者还需要几个文件一起提交，那么使用–amend命令可以重新提交。</p>
-<h3 id="忘了添加某个文件，重新提交"><a href="#忘了添加某个文件，重新提交" class="headerlink" title="忘了添加某个文件，重新提交"></a>忘了添加某个文件，重新提交</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ git lol -- stage.txt                   //当前提交信息</div><div class="line">* 3ee6f40 (HEAD -&gt; master) efive commit~</div><div class="line">* d4df151 five</div><div class="line"></div><div class="line">$ touch stage2.txt</div><div class="line">$ git add .                             //git rm </div><div class="line">$ git commit --amend</div><div class="line">[master 6ba634c] two file to commit~</div><div class="line"> Date: Thu Nov 17 23:39:39 2016 +0800</div><div class="line"> 2 files changed, 1 insertion(+)</div><div class="line"> create mode 100644 stage2.txt</div><div class="line"></div><div class="line">$ git lol</div><div class="line">* 6ba634c (HEAD -&gt; master) two file to commit~       //重新提交，覆盖了3ee6f40提交</div><div class="line">* d4df151 five</div></pre></td></tr></table></figure>
-<h3 id="忘了删除某个文件，重新提交"><a href="#忘了删除某个文件，重新提交" class="headerlink" title="忘了删除某个文件，重新提交"></a>忘了删除某个文件，重新提交</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">$ touch a.text b.txt                //添加两个文件</div><div class="line">$ git add .</div><div class="line">$ git commit -m &apos;test for git rm&apos;</div><div class="line"></div><div class="line">$ git lol                           //查看历史</div><div class="line">* 2506ac0 (HEAD -&gt; master) test for git rm</div><div class="line">* 50c430c delete a file</div><div class="line"></div><div class="line">$ git rm b.txt                      //这时，发现b.txt不应该提交，需要删除</div><div class="line">rm &apos;b.txt&apos;</div><div class="line"></div><div class="line">$ git commit --amend                //重写历史，将暂存区内容作为提交的快照</div><div class="line">[master bf8190a] test for git rm,and rm b.txt</div><div class="line"> Date: Sun Nov 20 20:57:20 2016 +0800</div><div class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 a.text</div><div class="line"></div><div class="line">$ git lol                           //查看历史，可以看到记录已被修改</div><div class="line">* bf8190a (HEAD -&gt; master) test for git rm,and rm b.txt</div><div class="line">* 50c430c delete a file</div><div class="line">* ea9691e add file remove.d</div><div class="line"></div><div class="line">$ ls                                //b.txt文件也已经被删除</div><div class="line">a.text  checkoutdir/  cleandir/  master.d  revertdir/  stage.txt</div></pre></td></tr></table></figure>
-<h2 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a>git rebase</h2><p>使用git commit –amend可以重写最近的一次提交，但是无法修改历史中更早的提交；git rebase则可以实现</p>
-<h3 id="修改多个提交说明"><a href="#修改多个提交说明" class="headerlink" title="修改多个提交说明"></a>修改多个提交说明</h3><p>如果你想修改某次提交，需要参数 git rebase -i HEAD~n/SHA-1,如果是已经push到远程中心服务器的提交，需要慎重使用</p>
-<ul>
-<li><p>文件准备</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ git lol -- a.txt</div><div class="line">* 9bc0634 (HEAD -&gt; master) fourth a.txt commit</div><div class="line">* 1169361 third a.txt commit</div><div class="line">* f868857 second a.txt commit</div><div class="line">* e232dcd first a.txt commit</div><div class="line"></div><div class="line">$ cat -- a.txt    //上面每次提交所对应的内容， git log的顺序是从 最新提交到历史提交</div><div class="line">1111111       </div><div class="line">2222222</div><div class="line">3333333</div><div class="line">4444444</div></pre></td></tr></table></figure>
-</li>
-<li><p>执行命令 git rebase -i HEAD~ 修改前两次提交</p>
-</li>
-</ul>
-<blockquote>
-<p>显示顺序 历史-最新，因为rebase是从历史开始修改,与git log 查看历史顺序相反</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">pick 1169361 third a.txt commit              </div><div class="line">pick 9bc0634 fourth a.txt commit</div><div class="line"></div><div class="line"># Rebase f868857..9bc0634 onto f868857 (2 command(s)) //修改的范围</div><div class="line">#</div><div class="line"># Commands:</div><div class="line"># p, pick = use commit</div><div class="line"># r, reword = use commit, but edit the commit message</div><div class="line"># e, edit = use commit, but stop for amending</div><div class="line"># s, squash = use commit, but meld into previous commit</div><div class="line"># f, fixup = like &quot;squash&quot;, but discard this commit&apos;s log message</div><div class="line"># x, exec = run command (the rest of the line) using shell</div><div class="line"># d, drop = remove commit</div></pre></td></tr></table></figure>
-<ul>
-<li><p>使用edit，修改这两次提交信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">edit 1169361 third a.txt commitd</div><div class="line">edit 9bc0634 fourth a.txt commit</div><div class="line"></div><div class="line">//保存，退出</div></pre></td></tr></table></figure>
-</li>
-<li><p>依次修改历史提交信息</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ git rebase -i HEAD~2</div><div class="line">Stopped at 1169361b7859289b58ed36defcaa19d0d2e207b6... third a.txt commitd</div><div class="line">You can amend the commit now, with</div><div class="line"></div><div class="line">        git commit --amend         //告诉我们使用 --amend命令修改commit信息</div><div class="line"></div><div class="line">Once you are satisfied with your changes, run</div><div class="line"></div><div class="line">        git rebase --continue     //如果修改完毕，--continue继续下一步</div><div class="line">A@Just-pc MINGW32 /g/git_test/git_repo (master|REBASE-i 1/2)  //看到rebase有两步</div></pre></td></tr></table></figure>
-<ul>
-<li>使用git commit –amend 来修改 SHA-1 为【1169361】的提交信息</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git commit --amend</div><div class="line">[detached HEAD ff5173e] after rebase:third a.txt commit  //修改后的提交信息</div><div class="line"> Date: Sun Nov 20 21:11:11 2016 +0800</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"> </div><div class="line">$ git rebase --continue                         //下一步</div><div class="line">Stopped at 9bc063423f76f8d4a33122943421651255356a69... fourth a.txt commit</div><div class="line">...</div><div class="line">@Just-pc MINGW32 /g/git_test/git_repo (master|REBASE-i 2/2)</div></pre></td></tr></table></figure>
-<ul>
-<li>继续第二步，然后结束rebase<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">$ git commit --amend</div><div class="line">[detached HEAD 89599bf] after rebase:fourth a.txt commit</div><div class="line"> Date: Sun Nov 20 21:12:05 2016 +0800</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"></div><div class="line">$ git rebase continue</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|REBASE-i 2/2)</div><div class="line">$ git rebase --continue</div><div class="line">Successfully rebased and updated refs/heads/master.</div><div class="line"></div><div class="line">$ git lol  //查看历史，近两次提交信息已修改完成</div><div class="line">* 89599bf (HEAD -&gt; master) after rebase:fourth a.txt commit</div><div class="line">* ff5173e after rebase:third a.txt commit</div><div class="line">* f868857 second a.txt commit</div><div class="line">* e232dcd first a.txt commit</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<blockquote>
-<p>还有其他命令 git rebase (–continue | –abort | –skip) 亲自体验下咯</p>
-</blockquote>
-<h3 id="重排提交"><a href="#重排提交" class="headerlink" title="重排提交"></a>重排提交</h3><p>可以直接删除某次历史提交<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git rebase -i HEAD~3</div><div class="line">pick 1169361 third a.txt commit              </div><div class="line">pick 9bc0634 fourth a.txt commit</div><div class="line">pick 1169361 third a.txt commit  //直接删除</div></pre></td></tr></table></figure></p>
-<p>结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ git rebase -i HEAD~3</div><div class="line">Successfully rebased and updated refs/heads/master.</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol                         //已不存在 1169361</div><div class="line">* ff5173e (HEAD -&gt; master) after rebase:third a.txt commit</div><div class="line">* f868857 second a.txt commit</div><div class="line">* e232dcd first a.txt commit</div></pre></td></tr></table></figure>
-<blockquote>
-<p>使用rebase期间针对某一提交，也可以进行等操作，直到运行 git rebase –continue结束对这一提交的修改</p>
-</blockquote>
-<h3 id="线性分支"><a href="#线性分支" class="headerlink" title="线性分支"></a>线性分支</h3><ul>
-<li>分支准备<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">$ git checkout -b rebase_branch      //从 ff5173e 引用检出</div><div class="line">Switched to a new branch &apos;rebase_branch&apos;</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (rebase_branch)</div><div class="line">$ vim a.txt                                 //在分支rebase_branch修改、提交文件a.txt</div><div class="line">$ cat a.txt</div><div class="line">1111111</div><div class="line">2222222</div><div class="line">3333333</div><div class="line">initial on rebase_marge                     //添加的内容</div><div class="line">                           </div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ cat a.txt                                 //切换到master分支上，修改文件a.txt</div><div class="line">1111111</div><div class="line">2222222</div><div class="line">3333333</div><div class="line">modify on master </div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol                                  //查看历史，从ff5173e出现tree的节点</div><div class="line">* 95486b0 (HEAD -&gt; master) modify a.txt</div><div class="line">| * a59e983 (rebase_branch) rebase_branch innitail commit</div><div class="line">|/</div><div class="line">* ff5173e after rebase:third a.txt commit</div><div class="line">* f868857 second a.txt commit</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>目的：</p>
-<blockquote>
-<p>不使用marge命令，来使得rebase_branch分支相当于是从 master的最新引用95486b0上checkout出来的，相当于是线性分支</p>
-</blockquote>
-<ul>
-<li>线性融合</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ git rebase master</div><div class="line">...</div><div class="line">CONFLICT (content): Merge conflict in a.txt</div><div class="line">...</div><div class="line">When you have resolved this problem, run &quot;git rebase --continue&quot;.</div><div class="line">If you prefer to skip this patch, run &quot;git rebase --skip&quot; instead.</div><div class="line">To check out the original branch and stop rebasing, run &quot;git rebase --abort&quot;.</div></pre></td></tr></table></figure>
-<blockquote>
-<p>提示中，告诉我们是在处理两个分支有内容冲突的文件 a.txt,使用 –continue继续当前操作，或者–skip 跳过，或者 –abort放弃当前操作</p>
-</blockquote>
-<p>我们这里选择继续当前操作：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">$ vim a.txt              //修改冲突文件内容</div><div class="line">1111111</div><div class="line">2222222</div><div class="line">3333333</div><div class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; 95486b0adc5c1e743ddcb1df8e7eaff5aeb97670</div><div class="line">modify on master</div><div class="line">=======</div><div class="line">initial on rebase_marge</div><div class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; rebase_branch innitail commit</div><div class="line"></div><div class="line">$ git add .             //然后，add进暂存区</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (rebase_branch|REBASE 1/1)</div><div class="line">$ git rebase --continue //不使用commit，直接 --continue</div><div class="line">Applying: rebase_branch innitail commit</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (rebase_branch)</div><div class="line">$ git lol</div><div class="line">* dcc2a9a (HEAD -&gt; rebase_branch) rebase_branch innitail commit  //已成为线性得了</div></pre></td></tr></table></figure>
-<h2 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h2><p>当上面的 rebase_branch分支执行过线性合并后，其实在历史记录中，使用git log已经找不到之前的修改了，但是如果我们需要还原rebase操作又该怎么呢？</p>
-<p>方法: git reflog与git reset组合</p>
-<table>
-<thead>
-<tr>
-<th>命令</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>git reflog</td>
-<td>可以查看对master分支的所有引用修改</td>
-</tr>
-<tr>
-<td>git reset –hard</td>
-<td>暂存区和工作区都被某一历史还原 </td>
-</tr>
-<tr>
-<td>git reset –mixed</td>
-<td>暂存区被还原 (默认)</td>
-</tr>
-<tr>
-<td>git reset –soft</td>
-<td>不还原</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>相同之处：git reset (–hard | –mixed | –soft) 都将分支和HEAD引用，指向reset的commit</p>
-</blockquote>
-<ul>
-<li>查看所有引用master的历史提交<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">$ git reflog    //a59e983 HEAD@&#123;6&#125; 是第一次在分支rebase_branch 上的提交</div><div class="line">dcc2a9a HEAD@&#123;0&#125;: rebase finished: returning to refs/heads/rebase_branch</div><div class="line">dcc2a9a HEAD@&#123;1&#125;: rebase: rebase_branch innitail commit</div><div class="line">95486b0 HEAD@&#123;2&#125;: rebase: checkout master</div><div class="line">a59e983 HEAD@&#123;3&#125;: checkout: moving from master to rebase_branch</div><div class="line">95486b0 HEAD@&#123;4&#125;: commit: modify a.txt</div><div class="line">ff5173e HEAD@&#123;5&#125;: checkout: moving from rebase_branch to master</div><div class="line">a59e983 HEAD@&#123;6&#125;: commit: rebase_branch innitail commit</div><div class="line">ff5173e HEAD@&#123;7&#125;: checkout: moving from master to rebase_branch</div><div class="line"></div><div class="line">$ git reset --hard HEAD@&#123;6&#125;</div><div class="line">HEAD is now at a59e983 rebase_branch innitail commit</div><div class="line"></div><div class="line">$ git lol</div><div class="line">* 95486b0 (master) modify a.txt</div><div class="line">| * a59e983 (HEAD -&gt; rebase_branch) rebase_branch innitail commit</div><div class="line">|/</div><div class="line">* ff5173e after rebase:third a.txt commit</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="END"><a href="#END" class="headerlink" title="END"></a>END</h3><ul>
-<li>git commit –amend使用新的提交覆盖当前提交</li>
-<li>git rebase比git commit –amend可修改的历史范围更加广泛，还可以处理分支操作，</li>
-<li>git reset依据参数还原某些历史</li>
-</ul>
-<p>注：对于已经push到远程服务中心，即已经共享的提交，需要谨慎操作！~</p>]]></content>
-    
-    <summary type="html">
-    
-      更深入介绍版本控制工具git的使用
-    
-    </summary>
-    
-      <category term="Git" scheme="http://jidea.net/categories/Git/"/>
-    
-    
-      <category term="重写历史" scheme="http://jidea.net/tags/%E9%87%8D%E5%86%99%E5%8E%86%E5%8F%B2/"/>
     
   </entry>
   
