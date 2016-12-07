@@ -13,16 +13,16 @@
 
 
 
-<meta name="description" content="Hadoop分布式集群搭建">
+<meta name="description" content="学习和使用Redis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hadoop分布式集群搭建 Centos7 环境准备">
-<meta property="og:url" content="http://jidea.net/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/index.html">
+<meta property="og:title" content="Redis数据类型-String">
+<meta property="og:url" content="http://jidea.net/2016/12/07/Redis数据类型-String/index.html">
 <meta property="og:site_name" content="Just_Idea">
-<meta property="og:description" content="Hadoop分布式集群搭建">
-<meta property="og:updated_time" content="2016-11-06T15:39:02.889Z">
+<meta property="og:description" content="学习和使用Redis">
+<meta property="og:updated_time" content="2016-12-07T15:56:32.154Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hadoop分布式集群搭建 Centos7 环境准备">
-<meta name="twitter:description" content="Hadoop分布式集群搭建">
+<meta name="twitter:title" content="Redis数据类型-String">
+<meta name="twitter:description" content="学习和使用Redis">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -52,7 +52,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Hadoop分布式集群搭建 Centos7 环境准备 | Just_Idea</title>
+<title>Redis数据类型-String | Just_Idea</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -245,11 +245,11 @@
     </div>
     <link class="menu-list" tags="Tags" friends="Friends" about="About Me">
 </nav>
-      <div class="body-wrap"><article id="post-Hadoop分布式集群搭建 Centos7 环境准备" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Redis数据类型-String" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/" class="article-date">
-      <time datetime="2016-10-22T09:58:27.000Z" itemprop="datePublished">2016-10-22</time>
+      <a href="/2016/12/07/Redis数据类型-String/" class="article-date">
+      <time datetime="2016-12-07T09:58:27.000Z" itemprop="datePublished">2016-12-07</time>
 </a>
     </div>
   
@@ -260,16 +260,16 @@
     
       <header class="article-header">
         <h1 class="article-title" itemprop="name">
-      Hadoop分布式集群搭建 Centos7 环境准备
+      Redis数据类型-String
     </h1>
       </header>
       
       <div class="article-info article-info-post">
         <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Hadoop/">Hadoop</a>
+    <a class="article-category-link" href="/categories/Redis/">Redis</a>
     </div>
         <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop/">Hadoop</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/String/">String</a></li></ul>
     </div>
         <div class="clearfix"></div>
       </div>
@@ -278,112 +278,153 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h2 id="机器准备"><a href="#机器准备" class="headerlink" title="机器准备"></a>机器准备</h2><ul>
-<li>Centos7 </li>
-<li>Vmware10</li>
-<li>jdk</li>
+        <h2 id="Redis数据类型"><a href="#Redis数据类型" class="headerlink" title="Redis数据类型"></a>Redis数据类型</h2><p>Redis支持的数据类型：string,hash,list,set, zset(sorted set有序集合)</p>
+<h3 id="String-字符串"><a href="#String-字符串" class="headerlink" title="String 字符串"></a>String 字符串</h3><ul>
+<li>redis最基本的类型，你可以理解为与Memcached一模一样的模型，一个key 对应一个 value</li>
+<li>二进制安全，表示redis的string 可以包含任何数据，比如jpg图片或者序列化的对象</li>
+<li>一个键最大能存储512MB</li>
 </ul>
-<h3 id="安装和配置IP"><a href="#安装和配置IP" class="headerlink" title="安装和配置IP"></a>安装和配置IP</h3><table>
+<table>
 <thead>
 <tr>
-<th>主机名称</th>
-<th>用户</th>
-<th>密码</th>
-<th>ip</th>
+<th>命令</th>
+<th>描述</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>master</td>
-<td>master</td>
-<td>master</td>
-<td>192.168.1.122</td>
+<td>set</td>
+<td>存key - value </td>
 </tr>
 <tr>
-<td>slave1</td>
-<td>hadoop</td>
-<td>hadoop</td>
-<td>192.168.1.123</td>
+<td>get</td>
+<td>根据key获取value </td>
 </tr>
 <tr>
-<td>slave2</td>
-<td>hadoop</td>
-<td>hadoop</td>
-<td>192.168.1.124</td>
+<td>nx</td>
+<td>若key 已存在，则返回nil，不替换</td>
 </tr>
 <tr>
-<td>slave3</td>
-<td>hadoop</td>
-<td>hadoop</td>
-<td>192.168.1.125</td>
+<td>xx</td>
+<td>若key 已存在，则替换value,默认也是替换</td>
+</tr>
+<tr>
+<td>mset</td>
+<td>批量存</td>
+</tr>
+<tr>
+<td>mget</td>
+<td>批量取</td>
 </tr>
 </tbody>
 </table>
-<p>在每台主机添加用户 hadoop 密码 hadoop</p>
-<blockquote>
-<p>使用命令 useradd添加用户， passwd为用户hadoop设置密码</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@slave1 ~]# useradd hadoop</div><div class="line">[root@slave1 ~]# passwd hadoop</div><div class="line">Changing password for user hadoop.</div><div class="line">New password: </div><div class="line">BAD PASSWORD: The password is shorter than 8 characters</div><div class="line">Retype new password: </div><div class="line">passwd: all authentication tokens updated successfully.</div><div class="line">[root@slave1 ~]#</div></pre></td></tr></table></figure>
-<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><p>关闭防火墙是必须的,centos7默认是不用iptables</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl stop firewalld.service &amp;&amp; sudo  systemctl disable firewalld.service</div></pre></td></tr></table></figure>
-<h3 id="配置hosts文件"><a href="#配置hosts文件" class="headerlink" title="配置hosts文件"></a>配置hosts文件</h3><p>注意： <strong><em>==sudo==</em></strong> 命名为使用超级管理员用户操作 相当于 root 用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@localhost ~]$ sudo vim /etc/hosts</div></pre></td></tr></table></figure>
-<p>问题：若无法使用sudo命令？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hadoop is not in the sudoers file.  This incident will be reported.</div></pre></td></tr></table></figure></p>
-<p>需要在 /etc/sudoers文件中添加配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">## Allow root to run any commands anywhere </div><div class="line">root	ALL=(ALL) 	ALL</div><div class="line">hadoop ALL=(ALL) ALL</div></pre></td></tr></table></figure>
-<p>hosts文件中添加内容为(其他主机同样添加)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">192.168.1.122 master</div><div class="line">192.168.1.123 slave1</div><div class="line">192.168.1.124 slave2</div><div class="line">192.168.1.125 slave3</div></pre></td></tr></table></figure></p>
-<h2 id="配置SSH-免登陆"><a href="#配置SSH-免登陆" class="headerlink" title="配置SSH 免登陆"></a>配置SSH 免登陆</h2><p>这里需要对 所有机器上的 ==hadoop@主机== 用户配置ssh免密码登录</p>
-<p>在Centos7中已经默认安装ssh服务，ssh-keygen命令无效，说明需要先安装ssh服务,即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo yum install openssh-server</div></pre></td></tr></table></figure></p>
-<h3 id="以-master-主机为例"><a href="#以-master-主机为例" class="headerlink" title="以==master==主机为例."></a>以==master==主机为例.</h3><ul>
-<li><p>生成无密码密钥对,在命令中一路回车即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ ssh-keygen</div></pre></td></tr></table></figure>
-</li>
-<li><h3 id="将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys"><a href="#将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys" class="headerlink" title="将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys"></a>将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys</h3></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</div></pre></td></tr></table></figure>
-<p>查看.ssh中内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd ~/.ssh</div><div class="line">[hadoop@master .ssh]$ ls</div><div class="line">authorized_keys  id_rsa  id_rsa.pub  known_hosts</div></pre></td></tr></table></figure></p>
 <ul>
-<li><p>设置公钥库权限</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ chmod 600 authorized_keys</div></pre></td></tr></table></figure>
+<li>set 与 get</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; set name &apos;just&apos;</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; get name</div><div class="line">&quot;just&quot;</div></pre></td></tr></table></figure>
+<ul>
+<li><p>nx 与 xx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; set name just2 nx</div><div class="line">(nil)</div><div class="line">127.0.0.1:6379&gt; set name just2 xx</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; get name</div><div class="line">&quot;just2&quot;</div></pre></td></tr></table></figure>
 </li>
-<li><p>重启ssh服务 (root权限)</p>
+<li><p>mset 与 mget</p>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo service sshd restart</div></pre></td></tr></table></figure>
-<p><strong>其他主机，即slave1,slave2,slave3，分别执行 ssh-keygen生成密钥对</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; mset a 1 b 2 c 3</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; mget a b</div><div class="line">1) &quot;1&quot;</div><div class="line">2) &quot;2&quot;</div></pre></td></tr></table></figure>
+<p>redis处理字符串数据，若value是基本类型-Integer，则可以进行‘加、减’运算<br>命令 | 描述|<br>—|—<br>incr| value + 1<br>incrby | value + n<br>desr| value - 1<br>desrby | value - n</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; incr counter</div><div class="line">(integer) 101</div><div class="line">127.0.0.1:6379&gt; incr counter</div><div class="line">(integer) 102</div><div class="line">127.0.0.1:6379&gt; get counter</div><div class="line">&quot;102&quot;</div><div class="line">127.0.0.1:6379&gt; decr counter</div><div class="line">(integer) 101</div><div class="line">127.0.0.1:6379&gt; decrby counter 55</div><div class="line">(integer) 46</div><div class="line">127.0.0.1:6379&gt; incrby counter 22</div><div class="line">(integer) 68</div></pre></td></tr></table></figure>
+<p>而且，<strong>incr 这类操作是原子性的，当多个客户同时操作相同key counter时永远不会产生竞争条件</strong>(只有竞争条件的存在，才会发生资源竞争问题)，因为redis不会让多台客户端对一个key同时执行修改操作</p>
+<p>在之前的操作中，可以看到返回的数据往往都是最新的值，那么如果返回修改前value的值呢？</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getset</td>
+<td>替换 value值，返回旧值</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; getset counter 55</div><div class="line">&quot;68&quot;</div></pre></td></tr></table></figure>
+<p>如果你想自增counter，来记录系统的访问量，然后希望每一小时收集一次，则可以使用getset;</p>
+<p>其他比较有用的命名:</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>exists</td>
+<td>判断key是否存在，存在返回1，不存在返回0</td>
+</tr>
+<tr>
+<td>del</td>
+<td>删除key, 删除成功返回1，不成功0</td>
+</tr>
+<tr>
+<td>type</td>
+<td>判断key的数据类型，不存在返回none</td>
+</tr>
+</tbody>
+</table>
+<p>自行验证了~</p>
+<h4 id="Redis-expires"><a href="#Redis-expires" class="headerlink" title="Redis expires"></a>Redis expires</h4><p>Redis期望keys的存在是有时间的，即过一段时间后进行删除,我们可以为key设置‘存在时间’</p>
 <ul>
-<li>将maser主机中的ssh分别发至 slave1,slave2,slave3主机</li>
+<li>时间可以是秒也可以是毫秒</li>
+<li>然而，期望时间是 1 millisecond 为单位</li>
+<li>这个时间是存储在磁盘上的，不管服务是否启动，都会删除</li>
 </ul>
-<p>其中 slave1@slave1 即 xx@yy xx代表用户名，yy代表主机名<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave1:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave2:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave3:~/.ssh/</div></pre></td></tr></table></figure></p>
-<p>重启其他主机的ssh服务</p>
-<ul>
-<li>测试</li>
-</ul>
-<p>主机之间第一次访问时，会需要接受ESDSA可以，yes接受即可，再次互相访问时，就就不在需要了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave3 ~]$ ssh master</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">Last login: Sun Nov  6 06:03:47 2016 from 192.168.1.105</div><div class="line">[hadoop@master ~]$ ssh slave1</div><div class="line">Last login: Sun Nov  6 06:05:12 2016 from 192.168.1.105</div><div class="line">[hadoop@slave1 ~]$ ssh slave2</div><div class="line">Last login: Sun Nov  6 06:11:48 2016 from 192.168.1.105</div><div class="line">[hadoop@slave2 ~]$ ssh slave3</div></pre></td></tr></table></figure>
-<p>maser,slave1,slave2,slave3 四台主机之间都可以无密码访问，即是ssh设置成功了！</p>
-<h2 id="配置JDK"><a href="#配置JDK" class="headerlink" title="配置JDK"></a>配置JDK</h2><p>这里对==master==主机进行配置 将jdk等软件上传至/opt/目录：</p>
-<ul>
-<li>使用<em>超级管理员</em>用户解压 jdk</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tar -zxvf jdk-7u67-linux-x64.tar.gz</div></pre></td></tr></table></figure>
-<p>配置jdk环境变量 /etc/profile，并查看是否成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67/</div><div class="line">export JRE_HOME=/opt/jdk1.7.0_67/jre</div><div class="line">export CLASSPATH=.:$CLASSPATH:$JAVA_HOME/lib:$JRE_HOME/lib</div><div class="line">export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin</div></pre></td></tr></table></figure></p>
-<p>注意，上面配置中，最后一行，$PATH放在前面不生效时，也可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin：$PATH</div></pre></td></tr></table></figure></p>
-<p>重新加载</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">source /etc/profile</div></pre></td></tr></table></figure>
+<p>有设置生存时间的，当然也有设置永久存在的命令 persist</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>expire</td>
+<td>为某一key设置存在时间，当key已存在情况下</td>
+</tr>
+<tr>
+<td>ex</td>
+<td>在set key ex 添加key 中使用</td>
+</tr>
+<tr>
+<td>persist</td>
+<td>将某一key设置为永久存在</td>
+</tr>
+<tr>
+<td>ttl</td>
+<td>查看key剩余存在时间,秒；若key已经不存在返回-2；若永久存在返回-1</td>
+</tr>
+<tr>
+<td>pttl</td>
+<td>查看key剩余存在时间,毫秒；若key已经不存在返回-2；若永久存在返回-1</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; set name aaa</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; expire name 10  ## 存在10s</div><div class="line"></div><div class="line">127.0.0.1:6379&gt; ttl name</div><div class="line">(integer) 4</div><div class="line">127.0.0.1:6379&gt; ttl name    ##已删除</div><div class="line">(integer) -2</div><div class="line">127.0.0.1:6379&gt; get name</div><div class="line">(nil)</div><div class="line">127.0.0.1:6379&gt; set name aaa ex 100</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; persist name  ## 永久存在</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; pttl name  ##返回-1</div><div class="line">(integer) -1</div><div class="line">127.0.0.1:6379&gt; save  ## 保存到磁盘</div><div class="line">OK  </div><div class="line">127.0.0.1:6379&gt; expire name 30  ##设置存在30s</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; get name     ##关闭服务，30后再连接</div><div class="line">Could not connect to Redis at 127.0.0.1:6379: Connection refused</div><div class="line">not connected&gt; get name     ## 可以看到关闭服务也会删除</div><div class="line">(nil)</div></pre></td></tr></table></figure>
       
     </div>
     
   </div>
   
     <div class="copyright">
-        <p><span>Title:</span><a href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/">Hadoop分布式集群搭建 Centos7 环境准备</a></p>
+        <p><span>Title:</span><a href="/2016/12/07/Redis数据类型-String/">Redis数据类型-String</a></p>
         <p><span>Author:</span><a href="/" title="Back to Homepage">Just</a></p>
-        <p><span>Created:</span>2016-10-22, 17:58:27</p>
-        <p><span>Updated:</span>2016-11-06, 23:39:02</p>
+        <p><span>Created:</span>2016-12-07, 17:58:27</p>
+        <p><span>Updated:</span>2016-12-07, 23:56:32</p>
         <p>
-            <span>Full URL:</span><a class="post-url" href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/" title="Hadoop分布式集群搭建 Centos7 环境准备">http://jidea.net/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/</a>
-            <span class="copy-path" data-clipboard-text="From http://jidea.net/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/　　By Just" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
+            <span>Full URL:</span><a class="post-url" href="/2016/12/07/Redis数据类型-String/" title="Redis数据类型-String">http://jidea.net/2016/12/07/Redis数据类型-String/</a>
+            <span class="copy-path" data-clipboard-text="From http://jidea.net/2016/12/07/Redis数据类型-String/　　By Just" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -396,15 +437,15 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/11/07/Linux常用命令小结/">
-                    Linux常用命令小结
+                <a href="/2016/12/07/Redis-Linux下安装/">
+                    Redis-Linux下安装
                 </a>
             </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/22/Hadoop分布式本地集群搭建（二）/">
-                    Hadoop分布式集群搭建（二）
+                <a href="/2016/12/07/Redis数据类型-List/">
+                    Redis数据类型-List
                 </a>
             </div>
         
@@ -414,7 +455,7 @@
 <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#机器准备"><span class="toc-number">1.</span> <span class="toc-text">机器准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装和配置IP"><span class="toc-number">1.1.</span> <span class="toc-text">安装和配置IP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关闭防火墙"><span class="toc-number">1.2.</span> <span class="toc-text">关闭防火墙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置hosts文件"><span class="toc-number">1.3.</span> <span class="toc-text">配置hosts文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置SSH-免登陆"><span class="toc-number">2.</span> <span class="toc-text">配置SSH 免登陆</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#以-master-主机为例"><span class="toc-number">2.1.</span> <span class="toc-text">以==master==主机为例.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys"><span class="toc-number">2.2.</span> <span class="toc-text">将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置JDK"><span class="toc-number">3.</span> <span class="toc-text">配置JDK</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis数据类型"><span class="toc-number">1.</span> <span class="toc-text">Redis数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#String-字符串"><span class="toc-number">1.1.</span> <span class="toc-text">String 字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Redis-expires"><span class="toc-number">1.1.1.</span> <span class="toc-text">Redis expires</span></a></li></ol></li></ol></li></ol>
         
     </div>
     <style>
@@ -448,7 +489,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Hadoop分布式集群搭建 Centos7 环境准备　| Just_Idea　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Redis数据类型-String　| Just_Idea　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -474,7 +515,7 @@
 
 <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/11/07/Linux常用命令小结/" title="Pre: Linux常用命令小结">
+            <a href="/2016/12/07/Redis-Linux下安装/" title="Pre: Redis-Linux下安装">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -482,7 +523,7 @@
         <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/22/Hadoop分布式本地集群搭建（二）/" title="Next: Hadoop分布式集群搭建（二）">
+            <a href="/2016/12/07/Redis数据类型-List/" title="Next: Redis数据类型-List">
                 <i class="fa fa-angle-right"></i>
             </a>
         

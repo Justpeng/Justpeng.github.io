@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://jidea.net/"/>
-  <updated>2016-11-14T16:30:50.812Z</updated>
+  <updated>2016-12-07T15:55:49.204Z</updated>
   <id>http://jidea.net/</id>
   
   <author>
@@ -14,6 +14,398 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis-Java示例</title>
+    <link href="http://jidea.net/2016/12/07/Redis-Java%E7%A4%BA%E4%BE%8B/"/>
+    <id>http://jidea.net/2016/12/07/Redis-Java示例/</id>
+    <published>2016-12-07T09:58:27.000Z</published>
+    <updated>2016-12-07T15:55:49.204Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Redis在Java中使用"><a href="#Redis在Java中使用" class="headerlink" title="Redis在Java中使用"></a>Redis在Java中使用</h2><p>Maven依赖包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;redis.clients&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jedis&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;2.8.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<p>如果redis与我们的开发环境不在同一台机器上的话是需要设置密码的，原因：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">If you want to connect from external computers to Redis you may adopt one of the following solutions: </div><div class="line"></div><div class="line">1) Just disable protected mode sending the command &apos;CONFIG SET protected-mode no&apos; from the loopback interface by connecting to Redis from the same host the server is running, however MAKE SURE Redis is not publicly accessible from internet if you do so. Use CONFIG REWRITE to make this change permanent. </div><div class="line"></div><div class="line">2) Alternatively you can just disable the protected mode by editing the Redis configuration file, and setting the protected mode option to &apos;no&apos;, and then restarting the server. </div><div class="line"></div><div class="line">3) If you started the server manually just for testing, restart it with the &apos;--protected-mode no&apos; option. </div><div class="line"></div><div class="line">4) Setup a bind address or an authentication password.</div><div class="line"></div><div class="line"> NOTE: You only need to do one of the above things in order for the server to start accepting connections from the outside.</div></pre></td></tr></table></figure></p>
+<p>上面提到的4种方法，只有设置密码是最根本的！</p>
+<p>于是在我们的安装目录下找到 redis.conf 设置密码，这里我设置为redis，密码就是名字，好记！~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requirepass redis</div></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; config get requirepass</div><div class="line">1) &quot;requirepass&quot;</div><div class="line">2) &quot;&quot;</div><div class="line">127.0.0.1:6379&gt; config set requirepass &quot;redis&quot;  #修改密码</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; config get requirepass</div><div class="line">(error) NOAUTH Authentication required.</div><div class="line">127.0.0.1:6379&gt; auth redis     #需要重新登录</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; config get requirepass</div><div class="line">1) &quot;requirepass&quot;</div><div class="line">2) &quot;redis&quot;</div></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>测试代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class RedisTest &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //链接本地的服务</div><div class="line">        Jedis jedis = new Jedis(&quot;192.168.1.140&quot;,6379);</div><div class="line">        jedis.auth(&quot;redis&quot;);</div><div class="line">        System.out.println(&quot;Connection to server sucessfully&quot;);</div><div class="line">        //查看服务是否运行</div><div class="line">        System.out.println(&quot;Server is running: &quot;+jedis.ping());</div><div class="line">           //String</div><div class="line">        jedis.set(&quot;age&quot;,&quot;180&quot;);</div><div class="line">        System.out.println(&quot;get age:&quot;+jedis.get(&quot;age&quot;));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Connection to server sucessfully</div><div class="line">Server is running: PONG</div><div class="line">get age:180</div></pre></td></tr></table></figure></p>]]></content>
+    
+    <summary type="html">
+    
+      学习和使用Redis
+    
+    </summary>
+    
+      <category term="Redis" scheme="http://jidea.net/categories/Redis/"/>
+    
+    
+      <category term="Java" scheme="http://jidea.net/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis-Linux下安装</title>
+    <link href="http://jidea.net/2016/12/07/Redis-Linux%E4%B8%8B%E5%AE%89%E8%A3%85/"/>
+    <id>http://jidea.net/2016/12/07/Redis-Linux下安装/</id>
+    <published>2016-12-07T09:58:27.000Z</published>
+    <updated>2016-12-07T15:55:35.769Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="下载并安装"><a href="#下载并安装" class="headerlink" title="下载并安装"></a>下载并安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ wget http://download.redis.io/releases/redis-3.2.1.tar.gz</div><div class="line">$ tar xzf redis-3.2.1.gz</div><div class="line">$ cd redis-3.2.1</div></pre></td></tr></table></figure>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ make</div></pre></td></tr></table></figure>
+<h3 id="错误1：-bin-sh-cc-command-not-found"><a href="#错误1：-bin-sh-cc-command-not-found" class="headerlink" title="错误1： /bin/sh: cc: command not found"></a>错误1： /bin/sh: cc: command not found</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[redis@localhost redis-3.2.1]$ make</div><div class="line">cd src &amp;&amp; make all</div><div class="line">make[1]: Entering directory `/home/redis/Desktop/redis-3.2.1/src&apos;</div><div class="line">    CC adlist.o</div><div class="line">/bin/sh: cc: command not found</div><div class="line">make[1]: *** [adlist.o] Error 127</div><div class="line">make[1]: Leaving directory `/home/redis/Desktop/redis-3.2.1/src&apos;</div><div class="line">make: *** [all] Error 2</div></pre></td></tr></table></figure>
+<p>==这是一台新部署的linux环境，缺少C语言环境，所以需要安装gcc==<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[redis@localhost redis-3.2.1]$ sudo yum install gcc</div><div class="line"></div><div class="line"></div><div class="line"># 一直Y，出现Complete!表示安装成功</div><div class="line">Dependency Updated:</div><div class="line">  glibc.x86_64 0:2.17-106.el7_2.8               glibc-common.x86_64 0:2.17-106.el7_2.8              </div><div class="line"></div><div class="line">Complete!</div></pre></td></tr></table></figure></p>
+<p>继续编译：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[redis@localhost redis-3.2.1]$ make</div><div class="line">cd src &amp;&amp; make all</div><div class="line">make[1]: Entering directory `/home/redis/Desktop/redis-3.2.1/src&apos;</div><div class="line">    CC adlist.o</div><div class="line">In file included from adlist.c:34:0:</div><div class="line">zmalloc.h:50:31: fatal error: jemalloc/jemalloc.h: No such file or directory</div><div class="line"> #include &lt;jemalloc/jemalloc.h&gt;</div><div class="line">                               ^</div><div class="line">compilation terminated.</div><div class="line">make[1]: *** [adlist.o] Error 1</div><div class="line">make[1]: Leaving directory `/home/redis/Desktop/redis-3.2.1/src&apos;</div><div class="line">make: *** [all] Error 2</div></pre></td></tr></table></figure></p>
+<h3 id="错误2：error-jemalloc-jemalloc-h-No-such-file-or-directory"><a href="#错误2：error-jemalloc-jemalloc-h-No-such-file-or-directory" class="headerlink" title="错误2：error: jemalloc/jemalloc.h: No such file or directory"></a>错误2：error: jemalloc/jemalloc.h: No such file or directory</h3><p>redis 环境变量 ==MALLOC== 默认的是 MALLOC=jemalloc, 我们的虚拟机中可能没有 jemalloc所以需要改为 libc</p>
+<ul>
+<li>解决：修改分配器，使用下面的命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">make MALLOC=libc</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>然后，根据提示执行make或make test,发现又出问题了，</p>
+<h3 id="错误3-You-need-tcl-8-5-or-newer-in-order-to-run-the-Redis-test"><a href="#错误3-You-need-tcl-8-5-or-newer-in-order-to-run-the-Redis-test" class="headerlink" title="错误3: You need tcl 8.5 or newer in order to run the Redis test"></a>错误3: You need tcl 8.5 or newer in order to run the Redis test</h3><p>可能是版本太高导致的吧，没办法，强迫症，有新的稳定版的的出现，肯定会去用新的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[redis@localhost redis-3.2.1]$ make test  ，</div><div class="line">cd src &amp;&amp; make test</div><div class="line">make[1]: Entering directory `/home/redis/Desktop/redis-3.2.1/src&apos;</div><div class="line">You need tcl 8.5 or newer in order to run the Redis test</div><div class="line">make[1]: *** [test] Error 1</div><div class="line">make[1]: Leaving directory `/home/redis/Desktop/redis-3.2.1/src&apos;</div><div class="line">make: *** [test] Error 2</div></pre></td></tr></table></figure>
+<ul>
+<li>解决：升级 tcl 喽</li>
+</ul>
+<p>按顺序,分别执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">wget http://downloads.sourceforge.net/tcl/tcl8.6.1-src.tar.gz  </div><div class="line">sudo tar xzvf tcl8.6.1-src.tar.gz  -C /usr/local/  </div><div class="line">cd  /usr/local/tcl8.6.1/unix/  </div><div class="line">sudo ./configure  </div><div class="line">sudo make  </div><div class="line">sudo make install</div></pre></td></tr></table></figure>
+<h3 id="make-test"><a href="#make-test" class="headerlink" title="make test"></a>make test</h3><p>如果，不想在执行make操作时，出现这么多问题，先执行make test检测当前环境，提前解决这些问题也不错。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># make test</div><div class="line">...# 经过漫长的检测，出现如下文字，则表示环境没问题，可以安装了</div><div class="line">\o/ All tests passed without errors!</div><div class="line">Cleanup: may take some time... OK</div><div class="line">make[1]: Leaving directory `/home/redis/Desktop/redis-3.2.1/src&apos;</div></pre></td></tr></table></figure>
+<p>如果make test正常，但是还会出现一些奇葩问题，可以考虑重新解压，重新安装</p>
+<p>执行完make命令后，进入 src目录执行启动命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ./redis-server   # 启动服务</div></pre></td></tr></table></figure></p>
+<p>再打开一个窗口，执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ./redis-cli   #启动客户端</div></pre></td></tr></table></figure></p>]]></content>
+    
+    <summary type="html">
+    
+      学习和使用Redis
+    
+    </summary>
+    
+      <category term="Redis" scheme="http://jidea.net/categories/Redis/"/>
+    
+    
+      <category term="安装" scheme="http://jidea.net/tags/%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis数据类型-String</title>
+    <link href="http://jidea.net/2016/12/07/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-String/"/>
+    <id>http://jidea.net/2016/12/07/Redis数据类型-String/</id>
+    <published>2016-12-07T09:58:27.000Z</published>
+    <updated>2016-12-07T15:56:32.154Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Redis数据类型"><a href="#Redis数据类型" class="headerlink" title="Redis数据类型"></a>Redis数据类型</h2><p>Redis支持的数据类型：string,hash,list,set, zset(sorted set有序集合)</p>
+<h3 id="String-字符串"><a href="#String-字符串" class="headerlink" title="String 字符串"></a>String 字符串</h3><ul>
+<li>redis最基本的类型，你可以理解为与Memcached一模一样的模型，一个key 对应一个 value</li>
+<li>二进制安全，表示redis的string 可以包含任何数据，比如jpg图片或者序列化的对象</li>
+<li>一个键最大能存储512MB</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>set</td>
+<td>存key - value </td>
+</tr>
+<tr>
+<td>get</td>
+<td>根据key获取value </td>
+</tr>
+<tr>
+<td>nx</td>
+<td>若key 已存在，则返回nil，不替换</td>
+</tr>
+<tr>
+<td>xx</td>
+<td>若key 已存在，则替换value,默认也是替换</td>
+</tr>
+<tr>
+<td>mset</td>
+<td>批量存</td>
+</tr>
+<tr>
+<td>mget</td>
+<td>批量取</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>set 与 get</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; set name &apos;just&apos;</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; get name</div><div class="line">&quot;just&quot;</div></pre></td></tr></table></figure>
+<ul>
+<li><p>nx 与 xx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; set name just2 nx</div><div class="line">(nil)</div><div class="line">127.0.0.1:6379&gt; set name just2 xx</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; get name</div><div class="line">&quot;just2&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>mset 与 mget</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; mset a 1 b 2 c 3</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; mget a b</div><div class="line">1) &quot;1&quot;</div><div class="line">2) &quot;2&quot;</div></pre></td></tr></table></figure>
+<p>redis处理字符串数据，若value是基本类型-Integer，则可以进行‘加、减’运算<br>命令 | 描述|<br>—|—<br>incr| value + 1<br>incrby | value + n<br>desr| value - 1<br>desrby | value - n</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; incr counter</div><div class="line">(integer) 101</div><div class="line">127.0.0.1:6379&gt; incr counter</div><div class="line">(integer) 102</div><div class="line">127.0.0.1:6379&gt; get counter</div><div class="line">&quot;102&quot;</div><div class="line">127.0.0.1:6379&gt; decr counter</div><div class="line">(integer) 101</div><div class="line">127.0.0.1:6379&gt; decrby counter 55</div><div class="line">(integer) 46</div><div class="line">127.0.0.1:6379&gt; incrby counter 22</div><div class="line">(integer) 68</div></pre></td></tr></table></figure>
+<p>而且，<strong>incr 这类操作是原子性的，当多个客户同时操作相同key counter时永远不会产生竞争条件</strong>(只有竞争条件的存在，才会发生资源竞争问题)，因为redis不会让多台客户端对一个key同时执行修改操作</p>
+<p>在之前的操作中，可以看到返回的数据往往都是最新的值，那么如果返回修改前value的值呢？</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getset</td>
+<td>替换 value值，返回旧值</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; getset counter 55</div><div class="line">&quot;68&quot;</div></pre></td></tr></table></figure>
+<p>如果你想自增counter，来记录系统的访问量，然后希望每一小时收集一次，则可以使用getset;</p>
+<p>其他比较有用的命名:</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>exists</td>
+<td>判断key是否存在，存在返回1，不存在返回0</td>
+</tr>
+<tr>
+<td>del</td>
+<td>删除key, 删除成功返回1，不成功0</td>
+</tr>
+<tr>
+<td>type</td>
+<td>判断key的数据类型，不存在返回none</td>
+</tr>
+</tbody>
+</table>
+<p>自行验证了~</p>
+<h4 id="Redis-expires"><a href="#Redis-expires" class="headerlink" title="Redis expires"></a>Redis expires</h4><p>Redis期望keys的存在是有时间的，即过一段时间后进行删除,我们可以为key设置‘存在时间’</p>
+<ul>
+<li>时间可以是秒也可以是毫秒</li>
+<li>然而，期望时间是 1 millisecond 为单位</li>
+<li>这个时间是存储在磁盘上的，不管服务是否启动，都会删除</li>
+</ul>
+<p>有设置生存时间的，当然也有设置永久存在的命令 persist</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>expire</td>
+<td>为某一key设置存在时间，当key已存在情况下</td>
+</tr>
+<tr>
+<td>ex</td>
+<td>在set key ex 添加key 中使用</td>
+</tr>
+<tr>
+<td>persist</td>
+<td>将某一key设置为永久存在</td>
+</tr>
+<tr>
+<td>ttl</td>
+<td>查看key剩余存在时间,秒；若key已经不存在返回-2；若永久存在返回-1</td>
+</tr>
+<tr>
+<td>pttl</td>
+<td>查看key剩余存在时间,毫秒；若key已经不存在返回-2；若永久存在返回-1</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; set name aaa</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; expire name 10  ## 存在10s</div><div class="line"></div><div class="line">127.0.0.1:6379&gt; ttl name</div><div class="line">(integer) 4</div><div class="line">127.0.0.1:6379&gt; ttl name    ##已删除</div><div class="line">(integer) -2</div><div class="line">127.0.0.1:6379&gt; get name</div><div class="line">(nil)</div><div class="line">127.0.0.1:6379&gt; set name aaa ex 100</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; persist name  ## 永久存在</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; pttl name  ##返回-1</div><div class="line">(integer) -1</div><div class="line">127.0.0.1:6379&gt; save  ## 保存到磁盘</div><div class="line">OK  </div><div class="line">127.0.0.1:6379&gt; expire name 30  ##设置存在30s</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; get name     ##关闭服务，30后再连接</div><div class="line">Could not connect to Redis at 127.0.0.1:6379: Connection refused</div><div class="line">not connected&gt; get name     ## 可以看到关闭服务也会删除</div><div class="line">(nil)</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      学习和使用Redis
+    
+    </summary>
+    
+      <category term="Redis" scheme="http://jidea.net/categories/Redis/"/>
+    
+    
+      <category term="String" scheme="http://jidea.net/tags/String/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis数据类型-List</title>
+    <link href="http://jidea.net/2016/12/07/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-List/"/>
+    <id>http://jidea.net/2016/12/07/Redis数据类型-List/</id>
+    <published>2016-12-07T09:58:27.000Z</published>
+    <updated>2016-12-07T15:56:39.016Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="List-列表"><a href="#List-列表" class="headerlink" title="List 列表"></a>List 列表</h2><p>Redis列表是简单的字符串列表，按照插入顺序排序，可以添加一个元素到列表的头部或者尾部</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LPUSH</td>
+<td>插入到列表的头部，可同时插入多个元素</td>
+<td>列表中元素数量</td>
+</tr>
+<tr>
+<td>RPUSH</td>
+<td>插入到列表的尾部，可同时插入多个元素</td>
+<td>列表中元素数量</td>
+</tr>
+<tr>
+<td>LRANGE</td>
+<td>获取列表，<strong>参数是正值从左向右计算，是负值从右向左计算</strong></td>
+<td>返回范围内的列表元素</td>
+</tr>
+<tr>
+<td>LPOP</td>
+<td>从头部获取第一个元素返回，并移除，不存在返回nil</td>
+<td>链表的头部元素</td>
+</tr>
+<tr>
+<td>RPOP</td>
+<td>从尾部获取第一个元素返回，并移除，不存在返回nil</td>
+<td>链表的尾部部元素</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>LPOP是 redis lists的一个重要操作</p>
+</blockquote>
+<p>lpush 与 rpush 与 lrang</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; lpush jlist learn</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; lpush jlist redis</div><div class="line">(integer) 2</div><div class="line">127.0.0.1:6379&gt; rpush jlist today</div><div class="line">(integer) 3</div><div class="line">127.0.0.1:6379&gt; lrange jlist 0 1</div><div class="line">1) &quot;redis&quot;</div><div class="line">2) &quot;learn&quot;</div><div class="line">127.0.0.1:6379&gt; lrange jlist 0 4</div><div class="line">1) &quot;redis&quot;</div><div class="line">2) &quot;learn&quot;</div><div class="line">3) &quot;today&quot;</div></pre></td></tr></table></figure>
+<p>lpop 与 rpop</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; lrange mylist 0 4</div><div class="line">1) &quot;c&quot;</div><div class="line">2) &quot;b&quot;</div><div class="line">3) &quot;a&quot;</div><div class="line">127.0.0.1:6379&gt; lpop mylist</div><div class="line">&quot;c&quot;</div><div class="line">127.0.0.1:6379&gt; lpop mylist</div><div class="line">&quot;b&quot;</div><div class="line">127.0.0.1:6379&gt; lpop mylist</div><div class="line">&quot;a&quot;</div><div class="line">127.0.0.1:6379&gt; lrange mylist 0 4   ## 以全部pop，mylist中内容为空</div><div class="line">(empty list or set)</div></pre></td></tr></table></figure>
+<h3 id="Redis-lists-两个常用示例"><a href="#Redis-lists-两个常用示例" class="headerlink" title="Redis lists 两个常用示例"></a>Redis lists 两个常用示例</h3><ul>
+<li>记录用户的近期更新操作，日志<blockquote>
+<p>比如，在社交网站往往会显示用户的最新的照片；那么每当用户上传新的照片后，我们可以使用 lpush将 photo_id 存入list中；当用户访问页面时，我们使用lrange 0 5 来显示最新上传的5张照片</p>
+</blockquote>
+</li>
+<li>进程间数据传递<blockquote>
+<p>在consumer-producer 模型中，生产者将数据放入list，消费者获取这些数据执行一些操作</p>
+</blockquote>
+</li>
+</ul>
+<p>Redis保证这些操作可以信赖而且高效。</p>
+<h3 id="Capped-lists-截取list"><a href="#Capped-lists-截取list" class="headerlink" title="Capped lists 截取list"></a>Capped lists 截取list</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LTRIM</td>
+<td>保留LTRIM范围内的元素，在范围外的元素全部移除</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>LTRIM与LRANGE相似，都会返回范围内的list元素；但区别在于，LTRIM会将范围外的元素全部移除</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; rpush mylist 1 2 3 4 5 6 </div><div class="line">(integer) 6</div><div class="line">127.0.0.1:6379&gt; ltrim mylist 0 2</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; lrange mylist 0 10</div><div class="line">1) &quot;1&quot;</div><div class="line">2) &quot;2&quot;</div><div class="line">3) &quot;3&quot;</div></pre></td></tr></table></figure>
+<p>注：</p>
+<blockquote>
+<p>虽然 LRANGE是时间复杂度为 O(N)的命令，无论是从头部还是从尾部获取小范围的list元素，其时间是一个常量</p>
+</blockquote>
+<h3 id="Blocking-operations-on-lists-阻塞操作"><a href="#Blocking-operations-on-lists-阻塞操作" class="headerlink" title="Blocking operations on lists 阻塞操作"></a>Blocking operations on lists 阻塞操作</h3><p>Redis list的一个特点，可以去实现队列以及在交互系统中实现阻塞操作</p>
+<p>假设，在producer/consumer模型中，producers 使用一个进程向list中写入(lpush)元素，consumers 使用一个不同的进程去读取元素(rpop)。我们可以想到consumers 可能pop不到元素，然后必须等一段时间后再次尝试去pop，于是就产生了轮询。</p>
+<p>轮询的缺点：</p>
+<ul>
+<li>强制 redis和客户端去执行一些没用的命令，因为当list为空的之后，并不能得到我们想要的数据</li>
+<li>延长了获取数据时间，当第一次获取不到数据，可能会需要获取第二次 ，第三次…</li>
+</ul>
+<p>那么，为了解决这个问题，redis提供了：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BLPOP</td>
+<td>list为空，阻塞list，直到list中有一个可用元素；list不为空，返回头部第一个元素，并删除</td>
+</tr>
+<tr>
+<td>BRPOP</td>
+<td>list为空，阻塞list，直到list中有一个可用元素；list不为空，返回尾部第一个元素，并删除</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>BLPOP [key1,key2…] timeout 可获取多个key，阻塞时间</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; brpop tasks 10   # tasks为空，阻塞等待10s，仍没有元素被push,返回nil</div><div class="line">(nil)</div><div class="line">(10.06s)</div><div class="line">127.0.0.1:6379&gt; brpop tasks 10  #tasks为空，阻塞等待10s，使用另一个进程lpush一个元素，被获取并返回</div><div class="line">1) &quot;tasks&quot;</div><div class="line">2) &quot;1&quot;</div><div class="line">(4.92s)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>若 timeout时间设置为 0，则该阻塞会一直等待。而且支持同时阻塞多个list,有一个阻塞获取到值，阻塞都会消失</p>
+</blockquote>
+<p>阻塞命令特点：</p>
+<ul>
+<li>执行阻塞的客户端是有顺序的，如果多个进程同时阻塞一个list,那么当list中lpush元素后，会优先被第一个阻塞进程获取，以此类推</li>
+<li>返回元素是个数组：key和value，因为可能会阻塞多个list</li>
+<li>当阻塞时间到了，返回null</li>
+</ul>
+<h3 id="列表间的数据pop"><a href="#列表间的数据pop" class="headerlink" title="列表间的数据pop"></a>列表间的数据pop</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RPOPLPUSH source destination</td>
+<td>删除列表中的最后一个元素，将其追加到另一个列表（建立安全队列或者轮转队列）</td>
+</tr>
+<tr>
+<td>BRPOPLPUSH source destination timeout</td>
+<td>弹出列表的一个值，将它推到另一个列表，并返回这个值；list为空，则阻塞list直到有一个可用的元素</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; lpush task1 1   ## task1中 push一个元素</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; rpoplpush task1 task2  ## task1中 追加到 task2中</div><div class="line">&quot;1&quot;</div><div class="line">127.0.0.1:6379&gt; rpoplpush task1 task2  ## task1中没有元素了</div><div class="line">(nil)</div><div class="line">127.0.0.1:6379&gt; lrange task2 0 2   </div><div class="line">1) &quot;1&quot;</div><div class="line">127.0.0.1:6379&gt; brpoplpush task1 task2 0  ## 阻塞追加，当另一个进程为task1 push一个元素2，阻塞结束</div><div class="line">&quot;2&quot;</div><div class="line">(15.81s)</div></pre></td></tr></table></figure>
+<h3 id="Redis-自动创建和删除keys"><a href="#Redis-自动创建和删除keys" class="headerlink" title="Redis 自动创建和删除keys"></a>Redis 自动创建和删除keys</h3><p>在Redis我们不需要去创建空的list,其实当list没有元素，key会被redis删除。而且当我们向一个不存在的list中添加元素，redis会先为我们创建一个key;<br>这个Rules，同样适用于 sets ,sorted sets,hashes集合类型：</p>
+<ul>
+<li>当我们向集合中添加元素，如果目标key不存在，一个空集合将会在添加元素前被创建</li>
+<li>当我们对集合进行移除元素操作，如果元素全部被移除，则key也会被自动销毁</li>
+<li>使用一些只读命令，如LLEN(返回集合长度)或者写入命令区删除元素，结果是一样的</li>
+</ul>]]></content>
+    
+    <summary type="html">
+    
+      学习和使用Redis
+    
+    </summary>
+    
+      <category term="Redis" scheme="http://jidea.net/categories/Redis/"/>
+    
+    
+      <category term="List" scheme="http://jidea.net/tags/List/"/>
+    
+  </entry>
   
   <entry>
     <title>Git 学习进阶篇-历史查看</title>
@@ -532,203 +924,6 @@
   </entry>
   
   <entry>
-    <title>Git 学习进阶篇-分支与合并</title>
-    <link href="http://jidea.net/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87%20-%20%E5%88%86%E6%94%AF%E4%B8%8E%E5%90%88%E5%B9%B6/"/>
-    <id>http://jidea.net/2016/11/12/Git 学习进阶篇 - 分支与合并/</id>
-    <published>2016-11-12T09:58:27.000Z</published>
-    <updated>2016-11-13T15:19:21.197Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Git-brach-分支"><a href="#Git-brach-分支" class="headerlink" title="Git brach 分支"></a>Git brach 分支</h2><p>Git可以创建多个分支，用于对不同版本代码分别进行维护操作。</p>
-<blockquote>
-<p>Git对每个分支<strong>默认读取最新commit索引</strong>。</p>
-</blockquote>
-<p>branch操作常用命令：</p>
-<table>
-<thead>
-<tr>
-<th>命令</th>
-<th>描述</th>
-<th>实例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>git branch xx</td>
-<td>创建分支</td>
-<td>git branch test,创建test分支</td>
-</tr>
-<tr>
-<td>git checkout xx</td>
-<td>切换分支</td>
-<td>git checkout test，切换到分支test</td>
-</tr>
-</tbody>
-</table>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git branch test               //创建test分支</div><div class="line">$ ls   //查看master分支下文件，只有master.d</div><div class="line">master.d</div><div class="line">$ git checkout test             //切换到 test分支</div><div class="line">Switched to branch &apos;test&apos;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (test)</div><div class="line">$ vim test.d                    //添加文件 test.d</div><div class="line">$ git add .</div><div class="line">$ git commit -m &apos;first commit on branch test&apos;</div><div class="line">[test be2635d] first commit on branch test</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"> create mode 100644 test.d</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git checkout master           //切换为maste分支</div><div class="line">Switched to branch &apos;master&apos;</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ ls                            //maser分支显示的是之前的最新的commit提交引用</div><div class="line">master.d</div></pre></td></tr></table></figure>
-<blockquote>
-<p>如何让引用指向某一固定提交呢？如指向某些发布的版本， tag!</p>
-</blockquote>
-<h2 id="Git-tag"><a href="#Git-tag" class="headerlink" title="Git tag"></a>Git tag</h2><p>分类：</p>
-<ul>
-<li>轻量级，本地的引用；</li>
-<li>带注解的，就是之前存储在g<strong>it对象中的Git tag对象</strong>。</li>
-</ul>
-<p>相关命令：</p>
-<table>
-<thead>
-<tr>
-<th>命令</th>
-<th>描述</th>
-<th>实例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>git tag</td>
-<td>创建本地tag</td>
-<td>git tag “V0” SHI-ID</td>
-</tr>
-<tr>
-<td>git tag -a</td>
-<td>创建注解tag</td>
-</tr>
-<tr>
-<td>git show</td>
-<td>查看tag内容</td>
-<td>git show V0</td>
-</tr>
-<tr>
-<td>git checkout</td>
-<td>切换到tag</td>
-<td>git checkout V0</td>
-</tr>
-</tbody>
-</table>
-<h3 id="首先，查看当前的历史记录"><a href="#首先，查看当前的历史记录" class="headerlink" title="首先，查看当前的历史记录"></a>首先，查看当前的历史记录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git config --global alias.lol  &quot;log --oneline --all --decorate --graph&quot;  //定义别名</div><div class="line">$ git lol   // 显示所有提交信息</div><div class="line"></div><div class="line">* be2635d (test) first commit on branch test</div><div class="line">* 629aa7f (HEAD -&gt; master) second commit on master</div><div class="line">* 5154992 master.d first time commit</div></pre></td></tr></table></figure>
-<h3 id="create-tag"><a href="#create-tag" class="headerlink" title="create tag"></a>create tag</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git tag &quot;V0&quot; 5154992              //本地</div><div class="line">$ git tag -a &quot;MASTER_FIRST&quot; 5154992 //注解</div></pre></td></tr></table></figure>
-<p>再次查看历史</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol                           // 在索引 5154992中以包含创建的两个tag</div><div class="line">* be2635d (test) first commit on branch test</div><div class="line">* 629aa7f (HEAD -&gt; master) second commit on master</div><div class="line">* 5154992 (tag: V0, tag: MASTER_FIRST) master.d first time commit</div></pre></td></tr></table></figure>
-<p>查看创建的tag内容</p>
-<blockquote>
-<p>其中，看两者不同之处,注解方式的<strong>MASTER_FIRST</strong> tag,是一个tag对象</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git show V0</div><div class="line">commit 51549925f380bd46c291f02d8988d368c28ecaab</div><div class="line">Author: xx</div><div class="line">Date:   Sun Nov 13 13:01:12 2016 +0800</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git show MASTER_FIRST</div><div class="line">tag MASTER_FIRST</div><div class="line">Tagger: xx</div><div class="line">Date:   Sun Nov 13 13:30:00 2016 +0800</div><div class="line">MASTER_COMMIT</div></pre></td></tr></table></figure>
-<h3 id="checkout-tag"><a href="#checkout-tag" class="headerlink" title="checkout tag"></a>checkout tag</h3><blockquote>
-<p>在创建tag时，已经可以看到<strong>tag也是指向某一个commit引用</strong>，所以可以使用checkout命令，切换到tag</p>
-</blockquote>
-<p>checkout tag V0:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git checkout V0</div><div class="line">Note: checking out &apos;V0&apos;.</div><div class="line"></div><div class="line">You are in &apos;detached HEAD&apos; state. You can look around, make experimental</div><div class="line">...</div><div class="line">you may do so (now or later) by using -b with the checkout command again. Example:</div><div class="line"></div><div class="line">  git checkout -b &lt;new-branch-name&gt;</div><div class="line"></div><div class="line">HEAD is now at 5154992... master.d first time commit</div></pre></td></tr></table></figure>
-<blockquote>
-<p>根据提示信息，此时处于 ‘detached HEAD’ 状态，表示当前HEAD指向commit，而不是某个分支;我们在 <strong>‘detached HEAD’状态下的操作不会被保存</strong>，除非我们使用 ‘git checkout -b <new-branch-name>‘ 命令，依据当前HEAD索引，创建新的分支，并切换到新的分支上。</new-branch-name></p>
-</blockquote>
-<p>为了保存操作信息，创建按照提示，创建新的分支 branch_V0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo ((MASTER_FIRST))</div><div class="line">$ git checkout -b branch_V0</div><div class="line">Switched to a new branch &apos;branch_V0&apos;</div></pre></td></tr></table></figure></p>
-<p>对branch_V0分支进行操作，<strong>如果对数据进行了修改，则必须进行 commit或者 stash 否则无法checkout其他分支</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$ ls                                  //查看文件</div><div class="line">master.d </div><div class="line">$ vim master.d                        //修改master.d文件</div><div class="line">$ git add .                           //尝试添加到暂存区，发现遇到error</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$ git checkout master</div><div class="line">error: Your local changes to the following files would be overwritten by checkout:</div><div class="line">        master.d</div><div class="line">Please, commit your changes or stash them before you can switch branches.</div></pre></td></tr></table></figure></p>
-<h3 id="git-stash"><a href="#git-stash" class="headerlink" title="git stash"></a>git stash</h3><p>可以想到，在开发过程中，当前修改还没有完成，又不得不去操作其他分支，如master分支，这时候使用stash比较合适</p>
-<p>相关命令：</p>
-<table>
-<thead>
-<tr>
-<th>命令</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>git stash</td>
-<td>切换分支前，保存没有提交的修改</td>
-</tr>
-<tr>
-<td>git stash save -a</td>
-<td>保存当前操作记录</td>
-</tr>
-<tr>
-<td>git stash list</td>
-<td>查看保存的stash 记录 </td>
-</tr>
-<tr>
-<td>git stash pop</td>
-<td>还原所有stash保存时的操作(如之前我们操作matser.d文件，还未提交)</td>
-</tr>
-<tr>
-<td>git stash pop –index stash@{n}</td>
-<td>还原某个stash</td>
-</tr>
-<tr>
-<td>git stash apply –index stash@{n}</td>
-<td>还原某个stash 但不会删除 stash</td>
-</tr>
-<tr>
-<td>git stash drop stash@{n}</td>
-<td>删除某个stash，如果不加 stash则删除所有</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p><strong>git stash pop 与 git stash apply 区别在于前者会删除stash ，而 apply则不会删除 stash</strong></p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$ git stash save -a &apos;stash_on_bracnV0&apos; //保存 stash</div><div class="line">Saved working directory and index state On branch_V0: stash_on_bracnV0</div><div class="line">HEAD is now at 5154992 master.d first time commit</div><div class="line">$ ls  //上面提示信息，表示已恢复到为修改之前，即tag V0所指向索引的内容</div><div class="line">master.d</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$ cat master.d //查看内容，这里看到和 master第一次提交内容相同</div><div class="line">111111111</div></pre></td></tr></table></figure>
-<p>当完成master分支后，返回branch_V0分支，继续之前的修改，这时候需要查看stash中都有哪些内容。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git stash list  //看到stash@&#123;0&#125; 引用指向我们创建的 stash_on_branchV0</div><div class="line">stash@&#123;0&#125;: On branch_V0: stash_on_bracnV0</div></pre></td></tr></table></figure>
-<p>还原 stash保存的内容，<strong>执行pop操作后，会同步删除还原的stash</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git stash pop --index stash@&#123;0&#125;  //还原stash</div><div class="line">$ cat master.d</div><div class="line">111111111                          //master分支保存的索引内容</div><div class="line"></div><div class="line">modify on branch_V0                //这里是在brachV0上保存的索引内容</div><div class="line"></div><div class="line">$ git stash list                   // 查看stash 发现 stash_on_branchV0已经不存在了</div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$</div></pre></td></tr></table></figure></p>
-<p>验证git stash apply操作，重新保存一次 stash<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$  git stash save -a &apos;stash_second_on_branchV0&apos; //保存stash</div><div class="line">$ cat master.d                        // 查看文件内容</div><div class="line">111111111 </div><div class="line">$ git stash list                      // 还原前查看stash list</div><div class="line">stash@&#123;0&#125;: On branch_V0: stash_onsecond_on_branchV0</div><div class="line"></div><div class="line">$ git stash apply --index stash@&#123;0&#125;   //还原 stash</div><div class="line">On branch branch_V0</div><div class="line">Changes to be committed:</div><div class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">        modified:   master.d</div><div class="line"></div><div class="line">$ cat master.d                       //查看文件内容</div><div class="line">111111111</div><div class="line">modify on branch_V0</div><div class="line">$git stash list                      //apply后查看stash仍然存在    </div><div class="line">stash@&#123;0&#125;: On branch_V0: stash_onsecond_on_branchV0</div></pre></td></tr></table></figure></p>
-<h2 id="Git-merge-合并"><a href="#Git-merge-合并" class="headerlink" title="Git merge 合并"></a>Git merge 合并</h2><blockquote>
-<p>Git merge命令用来合并分支上的操作</p>
-</blockquote>
-<p>相关命令:<br>命令 | 描述 | 示例<br>—|—|—<br>git merge | 当前分支合并某一分支中文件 | git merge test(分支名)<br>git merge –abord | 放弃合并操作| git merge –abord test</p>
-<p>分支准备：</p>
-<ul>
-<li><p>master分支</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ cat master.d                  </div><div class="line">111111111</div><div class="line">222222222</div><div class="line"></div><div class="line">$ git checkout -b branch_merge //创建分支 branch_merge，（是master最新索引）</div><div class="line">Switched to a new branch &apos;branch_merge&apos;</div></pre></td></tr></table></figure>
-</li>
-<li><p>branch_merge分支</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_merge)</div><div class="line">$ vim master.d </div><div class="line">$ git add .</div><div class="line">$ git commit -m &apos;commit on branch_merge&apos; master.d</div><div class="line">$ cat master.d  //branch_merge 分支内容</div><div class="line">111111111</div><div class="line">222222222</div><div class="line">modify on branch branch_marge</div></pre></td></tr></table></figure>
-</li>
-<li><p>branch_V0 分支</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_merge)</div><div class="line">$ git checkout branch_V0  </div><div class="line">$ cat master.d   // branch_V0 分支内容</div><div class="line">111111111</div><div class="line">modify on branch_V0</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>现将 branch_V0分支 和 branch_merge分支内容合并到 master上</p>
-<blockquote>
-<p>区别：barch_V0分支对master.d文件的修改，是基于某一索引，从之前可以知道，是基于mastr的第一次索引；而 branch_merge分支是基于master的最新索引，也就相当于在master基础上修改</p>
-</blockquote>
-<p>先查看下log</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol</div><div class="line">* 872942d (branch_merge) commit on branch_merge</div><div class="line">| * 3b9ceaa (branch_V0) commit on branch_V0</div><div class="line">| | * be2635d (test) first commit on branch test</div><div class="line">| |/</div><div class="line">|/|</div><div class="line">* | 629aa7f (HEAD -&gt; master) second commit on master</div><div class="line">|/</div><div class="line">* 5154992 (tag: V0, tag: MASTER_FIRST) master.d first time commit</div></pre></td></tr></table></figure>
-<h3 id="合并branch-merge"><a href="#合并branch-merge" class="headerlink" title="合并branch_merge"></a>合并branch_merge</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git merge branch_merge</div><div class="line">Updating 629aa7f..872942d</div><div class="line">Fast-forward</div><div class="line"> master.d | 1 +</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"> </div><div class="line">$ git status                    //很干净，没有需要提交的文件</div><div class="line">On branch master</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure>
-<p>从上面可以看到状态 ‘Fast-forward’ 表示不需要进行提交等操作，和之前说的分支区别表示的意义相同。</p>
-<p>查看master.d内容和日志</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ cat master.d</div><div class="line">111111111</div><div class="line">222222222</div><div class="line">modify on branch branch_marge   //分支内容已合并到master上</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol</div><div class="line">* 872942d (HEAD -&gt; master, branch_merge) commit on branch_merge</div><div class="line">| * 3b9ceaa (branch_V0) commit on branch_V0</div><div class="line">| | * be2635d (test) first commit on branch test</div><div class="line">| |/</div><div class="line">|/|</div><div class="line">* | 629aa7f second commit on master</div><div class="line">|/</div><div class="line">* 5154992 (tag: V0, tag: MASTER_FIRST) master.d first time commit</div></pre></td></tr></table></figure>
-<h3 id="合并-branch-V0"><a href="#合并-branch-V0" class="headerlink" title="合并 branch_V0"></a>合并 branch_V0</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git merge branch_V0</div><div class="line">Auto-merging master.d</div><div class="line">CONFLICT (content): Merge conflict in master.d</div><div class="line">Automatic merge failed; fix conflicts and then commit the result.</div></pre></td></tr></table></figure>
-<p>提示状态：Auto-mergign failed，需要修复冲突，然后提交，于是需要编辑 master.d文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|MERGING)</div><div class="line">$ vim master.d</div><div class="line"></div><div class="line">//以下是master.d文件中的内容</div><div class="line"></div><div class="line">111111111</div><div class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div><div class="line">222222222</div><div class="line">modify on branch branch_marge</div><div class="line">=======</div><div class="line"></div><div class="line">modify on branch_V0</div><div class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch_V0</div><div class="line">~</div></pre></td></tr></table></figure>
-<blockquote>
-<p>其中，”&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD” 与 “=======” 之间表示mastet上分支内容； “=======” 与 “&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch_V0”之间表示branch_V0分支上内容；根据需要进行修改(删除分支标识)后，将文件添加进暂存区,然后提交。</p>
-</blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|MERGING)</div><div class="line">$ git add master.d</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|MERGING)</div><div class="line">$ git commit -m &apos;merge branch_V0&apos; master.d  </div><div class="line">fatal: cannot do a partial commit during a merge.</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|MERGING)</div><div class="line">$ git commit  //在 MERGIGN状态下，提交直接使用git commit</div><div class="line">[master d8e6e7d] Merge branch &apos;branch_V0&apos;</div></pre></td></tr></table></figure>
-<h2 id="END"><a href="#END" class="headerlink" title="END"></a>END</h2><ul>
-<li>Git对分支的操作，会在分支上产生不同的引用;</li>
-<li>checkout切换分支，则是将HEAD切换到不用的引用上。</li>
-<li>tag可以指定某一索引的引用</li>
-<li>stash可以保存在某一分支上未完成的修改，实际上是对工作区、暂存区内容的还原</li>
-<li>marge对分支内容进行合并。</li>
-</ul>]]></content>
-    
-    <summary type="html">
-    
-      更深入介绍版本控制工具git的使用
-    
-    </summary>
-    
-      <category term="Git" scheme="http://jidea.net/categories/Git/"/>
-    
-    
-      <category term="分支，合并" scheme="http://jidea.net/tags/%E5%88%86%E6%94%AF%EF%BC%8C%E5%90%88%E5%B9%B6/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Git 学习进阶篇-撤销操作</title>
     <link href="http://jidea.net/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87-%20%E6%92%A4%E9%94%80%E6%93%8D%E4%BD%9C/"/>
     <id>http://jidea.net/2016/11/12/Git 学习进阶篇- 撤销操作/</id>
@@ -935,6 +1130,203 @@
     
     
       <category term="重写历史" scheme="http://jidea.net/tags/%E9%87%8D%E5%86%99%E5%8E%86%E5%8F%B2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Git 学习进阶篇-分支与合并</title>
+    <link href="http://jidea.net/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87%20-%20%E5%88%86%E6%94%AF%E4%B8%8E%E5%90%88%E5%B9%B6/"/>
+    <id>http://jidea.net/2016/11/12/Git 学习进阶篇 - 分支与合并/</id>
+    <published>2016-11-12T09:58:27.000Z</published>
+    <updated>2016-11-13T15:19:21.197Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Git-brach-分支"><a href="#Git-brach-分支" class="headerlink" title="Git brach 分支"></a>Git brach 分支</h2><p>Git可以创建多个分支，用于对不同版本代码分别进行维护操作。</p>
+<blockquote>
+<p>Git对每个分支<strong>默认读取最新commit索引</strong>。</p>
+</blockquote>
+<p>branch操作常用命令：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+<th>实例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>git branch xx</td>
+<td>创建分支</td>
+<td>git branch test,创建test分支</td>
+</tr>
+<tr>
+<td>git checkout xx</td>
+<td>切换分支</td>
+<td>git checkout test，切换到分支test</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git branch test               //创建test分支</div><div class="line">$ ls   //查看master分支下文件，只有master.d</div><div class="line">master.d</div><div class="line">$ git checkout test             //切换到 test分支</div><div class="line">Switched to branch &apos;test&apos;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (test)</div><div class="line">$ vim test.d                    //添加文件 test.d</div><div class="line">$ git add .</div><div class="line">$ git commit -m &apos;first commit on branch test&apos;</div><div class="line">[test be2635d] first commit on branch test</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"> create mode 100644 test.d</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git checkout master           //切换为maste分支</div><div class="line">Switched to branch &apos;master&apos;</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ ls                            //maser分支显示的是之前的最新的commit提交引用</div><div class="line">master.d</div></pre></td></tr></table></figure>
+<blockquote>
+<p>如何让引用指向某一固定提交呢？如指向某些发布的版本， tag!</p>
+</blockquote>
+<h2 id="Git-tag"><a href="#Git-tag" class="headerlink" title="Git tag"></a>Git tag</h2><p>分类：</p>
+<ul>
+<li>轻量级，本地的引用；</li>
+<li>带注解的，就是之前存储在g<strong>it对象中的Git tag对象</strong>。</li>
+</ul>
+<p>相关命令：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+<th>实例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>git tag</td>
+<td>创建本地tag</td>
+<td>git tag “V0” SHI-ID</td>
+</tr>
+<tr>
+<td>git tag -a</td>
+<td>创建注解tag</td>
+</tr>
+<tr>
+<td>git show</td>
+<td>查看tag内容</td>
+<td>git show V0</td>
+</tr>
+<tr>
+<td>git checkout</td>
+<td>切换到tag</td>
+<td>git checkout V0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="首先，查看当前的历史记录"><a href="#首先，查看当前的历史记录" class="headerlink" title="首先，查看当前的历史记录"></a>首先，查看当前的历史记录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git config --global alias.lol  &quot;log --oneline --all --decorate --graph&quot;  //定义别名</div><div class="line">$ git lol   // 显示所有提交信息</div><div class="line"></div><div class="line">* be2635d (test) first commit on branch test</div><div class="line">* 629aa7f (HEAD -&gt; master) second commit on master</div><div class="line">* 5154992 master.d first time commit</div></pre></td></tr></table></figure>
+<h3 id="create-tag"><a href="#create-tag" class="headerlink" title="create tag"></a>create tag</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git tag &quot;V0&quot; 5154992              //本地</div><div class="line">$ git tag -a &quot;MASTER_FIRST&quot; 5154992 //注解</div></pre></td></tr></table></figure>
+<p>再次查看历史</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol                           // 在索引 5154992中以包含创建的两个tag</div><div class="line">* be2635d (test) first commit on branch test</div><div class="line">* 629aa7f (HEAD -&gt; master) second commit on master</div><div class="line">* 5154992 (tag: V0, tag: MASTER_FIRST) master.d first time commit</div></pre></td></tr></table></figure>
+<p>查看创建的tag内容</p>
+<blockquote>
+<p>其中，看两者不同之处,注解方式的<strong>MASTER_FIRST</strong> tag,是一个tag对象</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git show V0</div><div class="line">commit 51549925f380bd46c291f02d8988d368c28ecaab</div><div class="line">Author: xx</div><div class="line">Date:   Sun Nov 13 13:01:12 2016 +0800</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git show MASTER_FIRST</div><div class="line">tag MASTER_FIRST</div><div class="line">Tagger: xx</div><div class="line">Date:   Sun Nov 13 13:30:00 2016 +0800</div><div class="line">MASTER_COMMIT</div></pre></td></tr></table></figure>
+<h3 id="checkout-tag"><a href="#checkout-tag" class="headerlink" title="checkout tag"></a>checkout tag</h3><blockquote>
+<p>在创建tag时，已经可以看到<strong>tag也是指向某一个commit引用</strong>，所以可以使用checkout命令，切换到tag</p>
+</blockquote>
+<p>checkout tag V0:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git checkout V0</div><div class="line">Note: checking out &apos;V0&apos;.</div><div class="line"></div><div class="line">You are in &apos;detached HEAD&apos; state. You can look around, make experimental</div><div class="line">...</div><div class="line">you may do so (now or later) by using -b with the checkout command again. Example:</div><div class="line"></div><div class="line">  git checkout -b &lt;new-branch-name&gt;</div><div class="line"></div><div class="line">HEAD is now at 5154992... master.d first time commit</div></pre></td></tr></table></figure>
+<blockquote>
+<p>根据提示信息，此时处于 ‘detached HEAD’ 状态，表示当前HEAD指向commit，而不是某个分支;我们在 <strong>‘detached HEAD’状态下的操作不会被保存</strong>，除非我们使用 ‘git checkout -b <new-branch-name>‘ 命令，依据当前HEAD索引，创建新的分支，并切换到新的分支上。</new-branch-name></p>
+</blockquote>
+<p>为了保存操作信息，创建按照提示，创建新的分支 branch_V0<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo ((MASTER_FIRST))</div><div class="line">$ git checkout -b branch_V0</div><div class="line">Switched to a new branch &apos;branch_V0&apos;</div></pre></td></tr></table></figure></p>
+<p>对branch_V0分支进行操作，<strong>如果对数据进行了修改，则必须进行 commit或者 stash 否则无法checkout其他分支</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$ ls                                  //查看文件</div><div class="line">master.d </div><div class="line">$ vim master.d                        //修改master.d文件</div><div class="line">$ git add .                           //尝试添加到暂存区，发现遇到error</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$ git checkout master</div><div class="line">error: Your local changes to the following files would be overwritten by checkout:</div><div class="line">        master.d</div><div class="line">Please, commit your changes or stash them before you can switch branches.</div></pre></td></tr></table></figure></p>
+<h3 id="git-stash"><a href="#git-stash" class="headerlink" title="git stash"></a>git stash</h3><p>可以想到，在开发过程中，当前修改还没有完成，又不得不去操作其他分支，如master分支，这时候使用stash比较合适</p>
+<p>相关命令：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>git stash</td>
+<td>切换分支前，保存没有提交的修改</td>
+</tr>
+<tr>
+<td>git stash save -a</td>
+<td>保存当前操作记录</td>
+</tr>
+<tr>
+<td>git stash list</td>
+<td>查看保存的stash 记录 </td>
+</tr>
+<tr>
+<td>git stash pop</td>
+<td>还原所有stash保存时的操作(如之前我们操作matser.d文件，还未提交)</td>
+</tr>
+<tr>
+<td>git stash pop –index stash@{n}</td>
+<td>还原某个stash</td>
+</tr>
+<tr>
+<td>git stash apply –index stash@{n}</td>
+<td>还原某个stash 但不会删除 stash</td>
+</tr>
+<tr>
+<td>git stash drop stash@{n}</td>
+<td>删除某个stash，如果不加 stash则删除所有</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>git stash pop 与 git stash apply 区别在于前者会删除stash ，而 apply则不会删除 stash</strong></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$ git stash save -a &apos;stash_on_bracnV0&apos; //保存 stash</div><div class="line">Saved working directory and index state On branch_V0: stash_on_bracnV0</div><div class="line">HEAD is now at 5154992 master.d first time commit</div><div class="line">$ ls  //上面提示信息，表示已恢复到为修改之前，即tag V0所指向索引的内容</div><div class="line">master.d</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$ cat master.d //查看内容，这里看到和 master第一次提交内容相同</div><div class="line">111111111</div></pre></td></tr></table></figure>
+<p>当完成master分支后，返回branch_V0分支，继续之前的修改，这时候需要查看stash中都有哪些内容。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git stash list  //看到stash@&#123;0&#125; 引用指向我们创建的 stash_on_branchV0</div><div class="line">stash@&#123;0&#125;: On branch_V0: stash_on_bracnV0</div></pre></td></tr></table></figure>
+<p>还原 stash保存的内容，<strong>执行pop操作后，会同步删除还原的stash</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ git stash pop --index stash@&#123;0&#125;  //还原stash</div><div class="line">$ cat master.d</div><div class="line">111111111                          //master分支保存的索引内容</div><div class="line"></div><div class="line">modify on branch_V0                //这里是在brachV0上保存的索引内容</div><div class="line"></div><div class="line">$ git stash list                   // 查看stash 发现 stash_on_branchV0已经不存在了</div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$</div></pre></td></tr></table></figure></p>
+<p>验证git stash apply操作，重新保存一次 stash<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_V0)</div><div class="line">$  git stash save -a &apos;stash_second_on_branchV0&apos; //保存stash</div><div class="line">$ cat master.d                        // 查看文件内容</div><div class="line">111111111 </div><div class="line">$ git stash list                      // 还原前查看stash list</div><div class="line">stash@&#123;0&#125;: On branch_V0: stash_onsecond_on_branchV0</div><div class="line"></div><div class="line">$ git stash apply --index stash@&#123;0&#125;   //还原 stash</div><div class="line">On branch branch_V0</div><div class="line">Changes to be committed:</div><div class="line">  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">        modified:   master.d</div><div class="line"></div><div class="line">$ cat master.d                       //查看文件内容</div><div class="line">111111111</div><div class="line">modify on branch_V0</div><div class="line">$git stash list                      //apply后查看stash仍然存在    </div><div class="line">stash@&#123;0&#125;: On branch_V0: stash_onsecond_on_branchV0</div></pre></td></tr></table></figure></p>
+<h2 id="Git-merge-合并"><a href="#Git-merge-合并" class="headerlink" title="Git merge 合并"></a>Git merge 合并</h2><blockquote>
+<p>Git merge命令用来合并分支上的操作</p>
+</blockquote>
+<p>相关命令:<br>命令 | 描述 | 示例<br>—|—|—<br>git merge | 当前分支合并某一分支中文件 | git merge test(分支名)<br>git merge –abord | 放弃合并操作| git merge –abord test</p>
+<p>分支准备：</p>
+<ul>
+<li><p>master分支</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ cat master.d                  </div><div class="line">111111111</div><div class="line">222222222</div><div class="line"></div><div class="line">$ git checkout -b branch_merge //创建分支 branch_merge，（是master最新索引）</div><div class="line">Switched to a new branch &apos;branch_merge&apos;</div></pre></td></tr></table></figure>
+</li>
+<li><p>branch_merge分支</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_merge)</div><div class="line">$ vim master.d </div><div class="line">$ git add .</div><div class="line">$ git commit -m &apos;commit on branch_merge&apos; master.d</div><div class="line">$ cat master.d  //branch_merge 分支内容</div><div class="line">111111111</div><div class="line">222222222</div><div class="line">modify on branch branch_marge</div></pre></td></tr></table></figure>
+</li>
+<li><p>branch_V0 分支</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (branch_merge)</div><div class="line">$ git checkout branch_V0  </div><div class="line">$ cat master.d   // branch_V0 分支内容</div><div class="line">111111111</div><div class="line">modify on branch_V0</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>现将 branch_V0分支 和 branch_merge分支内容合并到 master上</p>
+<blockquote>
+<p>区别：barch_V0分支对master.d文件的修改，是基于某一索引，从之前可以知道，是基于mastr的第一次索引；而 branch_merge分支是基于master的最新索引，也就相当于在master基础上修改</p>
+</blockquote>
+<p>先查看下log</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol</div><div class="line">* 872942d (branch_merge) commit on branch_merge</div><div class="line">| * 3b9ceaa (branch_V0) commit on branch_V0</div><div class="line">| | * be2635d (test) first commit on branch test</div><div class="line">| |/</div><div class="line">|/|</div><div class="line">* | 629aa7f (HEAD -&gt; master) second commit on master</div><div class="line">|/</div><div class="line">* 5154992 (tag: V0, tag: MASTER_FIRST) master.d first time commit</div></pre></td></tr></table></figure>
+<h3 id="合并branch-merge"><a href="#合并branch-merge" class="headerlink" title="合并branch_merge"></a>合并branch_merge</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git merge branch_merge</div><div class="line">Updating 629aa7f..872942d</div><div class="line">Fast-forward</div><div class="line"> master.d | 1 +</div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"> </div><div class="line">$ git status                    //很干净，没有需要提交的文件</div><div class="line">On branch master</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure>
+<p>从上面可以看到状态 ‘Fast-forward’ 表示不需要进行提交等操作，和之前说的分支区别表示的意义相同。</p>
+<p>查看master.d内容和日志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ cat master.d</div><div class="line">111111111</div><div class="line">222222222</div><div class="line">modify on branch branch_marge   //分支内容已合并到master上</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git lol</div><div class="line">* 872942d (HEAD -&gt; master, branch_merge) commit on branch_merge</div><div class="line">| * 3b9ceaa (branch_V0) commit on branch_V0</div><div class="line">| | * be2635d (test) first commit on branch test</div><div class="line">| |/</div><div class="line">|/|</div><div class="line">* | 629aa7f second commit on master</div><div class="line">|/</div><div class="line">* 5154992 (tag: V0, tag: MASTER_FIRST) master.d first time commit</div></pre></td></tr></table></figure>
+<h3 id="合并-branch-V0"><a href="#合并-branch-V0" class="headerlink" title="合并 branch_V0"></a>合并 branch_V0</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master)</div><div class="line">$ git merge branch_V0</div><div class="line">Auto-merging master.d</div><div class="line">CONFLICT (content): Merge conflict in master.d</div><div class="line">Automatic merge failed; fix conflicts and then commit the result.</div></pre></td></tr></table></figure>
+<p>提示状态：Auto-mergign failed，需要修复冲突，然后提交，于是需要编辑 master.d文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|MERGING)</div><div class="line">$ vim master.d</div><div class="line"></div><div class="line">//以下是master.d文件中的内容</div><div class="line"></div><div class="line">111111111</div><div class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div><div class="line">222222222</div><div class="line">modify on branch branch_marge</div><div class="line">=======</div><div class="line"></div><div class="line">modify on branch_V0</div><div class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch_V0</div><div class="line">~</div></pre></td></tr></table></figure>
+<blockquote>
+<p>其中，”&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD” 与 “=======” 之间表示mastet上分支内容； “=======” 与 “&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch_V0”之间表示branch_V0分支上内容；根据需要进行修改(删除分支标识)后，将文件添加进暂存区,然后提交。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|MERGING)</div><div class="line">$ git add master.d</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|MERGING)</div><div class="line">$ git commit -m &apos;merge branch_V0&apos; master.d  </div><div class="line">fatal: cannot do a partial commit during a merge.</div><div class="line"></div><div class="line">Administrator@Just-pc MINGW32 /g/git_test/git_repo (master|MERGING)</div><div class="line">$ git commit  //在 MERGIGN状态下，提交直接使用git commit</div><div class="line">[master d8e6e7d] Merge branch &apos;branch_V0&apos;</div></pre></td></tr></table></figure>
+<h2 id="END"><a href="#END" class="headerlink" title="END"></a>END</h2><ul>
+<li>Git对分支的操作，会在分支上产生不同的引用;</li>
+<li>checkout切换分支，则是将HEAD切换到不用的引用上。</li>
+<li>tag可以指定某一索引的引用</li>
+<li>stash可以保存在某一分支上未完成的修改，实际上是对工作区、暂存区内容的还原</li>
+<li>marge对分支内容进行合并。</li>
+</ul>]]></content>
+    
+    <summary type="html">
+    
+      更深入介绍版本控制工具git的使用
+    
+    </summary>
+    
+      <category term="Git" scheme="http://jidea.net/categories/Git/"/>
+    
+    
+      <category term="分支，合并" scheme="http://jidea.net/tags/%E5%88%86%E6%94%AF%EF%BC%8C%E5%90%88%E5%B9%B6/"/>
     
   </entry>
   
@@ -1626,113 +2018,6 @@
   </entry>
   
   <entry>
-    <title>Dom4j-使用指导</title>
-    <link href="http://jidea.net/2016/10/22/Dom4j/"/>
-    <id>http://jidea.net/2016/10/22/Dom4j/</id>
-    <published>2016-10-22T09:58:27.000Z</published>
-    <updated>2016-10-22T16:08:53.098Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="what-is-dom4j"><a href="#what-is-dom4j" class="headerlink" title="what is dom4j?"></a>what is dom4j?</h2><p>dom4j 是一个为Java服务的开源的XML框架，可以对xml文档进行读写,操作,创建和修改，集成了DOM和SAX，同样支持xPath</p>
-<p>接下来我们开始了解dom4j的基本用法</p>
-<h2 id="解析xml文档"><a href="#解析xml文档" class="headerlink" title="解析xml文档"></a>解析xml文档</h2><h3 id="获得Document对象"><a href="#获得Document对象" class="headerlink" title="获得Document对象"></a>获得Document对象</h3><p>解析xml文档，首先需要通过 SAXReader 创建一个 document对象</p>
-<blockquote>
-<p>SAXReader.read() 方法可以通过多种方式进行读取，例如：URL、InputStream、File、Reader等</p>
-</blockquote>
-<ul>
-<li>URL路径方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public Document parse(URL url) throws DocumentException &#123;</div><div class="line">       SAXReader reader = new SAXReader();</div><div class="line">       Document document = reader.read(url);</div><div class="line">       return document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>InputStream方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SAXReader reader = new SAXReader();</div><div class="line">//获取类加载器</div><div class="line">ClassLoader loader = Thread.currentThread().getContextClassLoader();</div><div class="line">//获取文件流</div><div class="line">java.io.InputStream inputStream = loader.getResourceAsStream(&quot;out.xml&quot;);</div><div class="line">//创建document对象</div><div class="line">Document doc = reader.read(inputStream);</div></pre></td></tr></table></figure>
-<ul>
-<li>File方式</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div></pre></td></tr></table></figure>
-<p>那么，接下来就是对xml中的Element(Node)，进行获取了。</p>
-<h3 id="获取root元素"><a href="#获取root元素" class="headerlink" title="获取root元素"></a>获取root元素</h3><p>方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Element root = document.getRootElement();</div></pre></td></tr></table></figure>
-<h3 id="使用Iterator获取元素"><a href="#使用Iterator获取元素" class="headerlink" title="使用Iterator获取元素"></a>使用Iterator获取元素</h3><p>dom4j通过内置的方法，可以返回标准的java迭代，方便我们获取元素</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void bar(Document document)&#123;</div><div class="line">     Element element = document.getRootElement();</div><div class="line"></div><div class="line">     //root 元素的子元素进行迭代</div><div class="line">     for(Iterator i = element.elementIterator();i.hasNext();) &#123;</div><div class="line">        Element element1 = (Element) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line">     //iterate through child elements of root with element name &quot;foo&quot;</div><div class="line">     //获取子元素name为 foo的迭代</div><div class="line">     for(Iterator i=element.elementIterator(&quot;foo&quot;);i.hasNext();) &#123;</div><div class="line">         Element foo = (Element) i.next();</div><div class="line">         //do something</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     // iterate through attribute of root</div><div class="line">     // 节点属性</div><div class="line">     for(Iterator i = element.attributeIterator();i.hasNext();) &#123;</div><div class="line">         Attribute attribute = (Attribute) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<p>例如，模拟SpringIOC 依赖注入机制(通过反射实现)，有如下spring_core.xml配置，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"></div><div class="line">&lt;beans&gt;</div><div class="line">  &lt;bean id=&quot;testBean&quot; class=&quot;com.just.Test&quot;/&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
-<p>我们需要根据spring_core.xml配置来获取bean id为 “testBean” 的 class,即类的全路径，获取类的全路径后，就可以随心所欲的进行反射调用了~</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> for (Iterator i = root.elementIterator(&quot;bean&quot;); i.hasNext();)&#123;</div><div class="line">      foo = (Element) i.next();</div><div class="line">      //针对每一个bean实例获取id和name属性</div><div class="line">      Attribute id = foo.attribute(&quot;id&quot;);</div><div class="line">      Attribute clazz = foo.attribute(&quot;class&quot;);</div><div class="line"></div><div class="line">      //利用反射，通过class名称获取class对象</div><div class="line">      Class bean = Class.forName(clazz.getText());</div><div class="line">      // other 省略无关的反射操作</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>如果需要处理的XML文件非常大，每次循环都使用Iterator，那么性能会降低，于是dom4j还提供了更加快速的获取元素的方法 element.nodeCount</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public class ReadXml &#123;</div><div class="line">    public static void init()&#123;</div><div class="line">        try &#123;</div><div class="line">            SAXReader saxReader = new SAXReader();</div><div class="line">            File file = new File(&quot;spring_core.xml&quot;);</div><div class="line">            Document document = saxReader.read(file);</div><div class="line">            Element rootElement = document.getRootElement();</div><div class="line">            treeWalk(rootElement);</div><div class="line">        &#125; catch (DocumentException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static  void treeWalk(Element element) &#123;</div><div class="line">        for ( int i = 0, size = element.nodeCount(); i &lt; size; i++ ) &#123;</div><div class="line">            Node node = element.node(i);</div><div class="line">            if(node instanceof  Element)&#123;</div><div class="line">                Element e = (Element) node;</div><div class="line">                System.out.println(e.attribute(&quot;id&quot;).getText());</div><div class="line">                System.out.println(e.attribute(&quot;class&quot;).getText());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="创建一个document"><a href="#创建一个document" class="headerlink" title="创建一个document"></a>创建一个document</h2><p>使用对象 DocumentHelper对象</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public Document createDocument() &#123;</div><div class="line">       Document document = DocumentHelper.createDocument();</div><div class="line">       Element root = document.addElement(&quot;root&quot;);</div><div class="line">       Element author1 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lip&quot;)</div><div class="line">               .addText(&quot;1323&quot;);</div><div class="line">       Element author2 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lin&quot;)</div><div class="line">               .addText(&quot;4444&quot;);</div><div class="line">       return  document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><p>通过创建XMLWriter对象进行写操作</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public class WriteXml &#123;</div><div class="line">    public static void init() throws IOException &#123;</div><div class="line">        Document document = DocumentHelper.createDocument();</div><div class="line">        Element root = document.addElement(&quot;beans&quot;);</div><div class="line">        Element bean = root.addElement(&quot;bean&quot;)</div><div class="line">                .addAttribute(&quot;id&quot;, &quot;testBean&quot;)</div><div class="line">                .addAttribute(&quot;class&quot;,&quot;com.just.Test&quot;);</div><div class="line">        write(document);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void write(Document document) throws IOException &#123;</div><div class="line">        //输出到文件 out.xml</div><div class="line">        XMLWriter writer = new XMLWriter(new FileWriter(&quot;out.xml&quot;));</div><div class="line">        writer.write(document);</div><div class="line">        writer.flush();</div><div class="line">        writer.close();</div><div class="line">        System.out.println(&quot;------------&quot;);</div><div class="line">        /**</div><div class="line">         * 通过 createPrettyPrint美化输出到控制台</div><div class="line">         */</div><div class="line">        OutputFormat outputFormat = OutputFormat.createPrettyPrint();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line">        System.out.println(&quot;----------------------------------&quot;);</div><div class="line">        /**</div><div class="line">         * 实现压缩</div><div class="line">         */</div><div class="line">        outputFormat = OutputFormat.createCompactFormat();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    public static void main(String args[]) throws IOException &#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="String与Xml转换"><a href="#String与Xml转换" class="headerlink" title="String与Xml转换"></a>String与Xml转换</h2><ul>
-<li>String 转为document对象或其他Node，使用 DocumentHelper.parseText()</li>
-<li>document或其他node节点，转为String，直接调用 .asXML()<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">  * convert from string</div><div class="line">  */</div><div class="line"> public Document convert(String xml) throws DocumentException &#123;</div><div class="line">     Document document = DocumentHelper.parseText(xml);</div><div class="line">     return  document;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * convert to string</div><div class="line">  */</div><div class="line"> public String convert(Document document) throws DocumentException &#123;</div><div class="line">     String str = document.asXML();</div><div class="line">     return str;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="xPath路径处理"><a href="#xPath路径处理" class="headerlink" title="xPath路径处理"></a>xPath路径处理</h2><p>对于xPath,在浏览器debug模式中，查看元素，对于元素进行复制时可以保存为xPath，那么可以理解为一种路径表示方式，在自动化测试中，xPath是一种非常重要的获取页面元素的手段。</p>
-<p>使用xPath需要引入依赖包，顺便贴上maven依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;dom4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;dom4j&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;jaxen&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jaxen&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.1.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>xPath的基本语法</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>expression</th>
-<th>description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>nodename</td>
-<td>当前节点的所有子节点</td>
-</tr>
-<tr>
-<td>/</td>
-<td>根节点选取</td>
-</tr>
-<tr>
-<td>//</td>
-<td>匹配文档中节点，不考虑位置</td>
-</tr>
-<tr>
-<td>.</td>
-<td>当前节点</td>
-</tr>
-<tr>
-<td>..</td>
-<td>当前节点的父节点</td>
-</tr>
-<tr>
-<td>@</td>
-<td>选取属性</td>
-</tr>
-</tbody>
-</table>
-<p>for Example：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div><div class="line">Element rootElement = document.getRootElement();</div><div class="line">List&lt;Object&gt; list = document.selectNodes(&quot;//bean&quot;);</div><div class="line">for (Object n : list) &#123;</div><div class="line">    if(n instanceof Element)&#123;</div><div class="line">        Element e = (Element) n;</div><div class="line">        System.out.println(e.getName());</div><div class="line">        List&lt;Object&gt; aList  = e.selectNodes(&quot;@class&quot;);</div><div class="line">        for(Object a :aList)</div><div class="line">            if(a instanceof Attribute)&#123;</div><div class="line">                Attribute attribute = (Attribute) a;</div><div class="line">                System.out.println(attribute.getText());</div><div class="line"></div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bean</div><div class="line">com.just.Test</div></pre></td></tr></table></figure>
-<h2 id="处理XSLT"><a href="#处理XSLT" class="headerlink" title="处理XSLT"></a>处理XSLT</h2><p>对于XSLT，不甚了解，贴上官方例子</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class Foo &#123;</div><div class="line"></div><div class="line">    public Document styleDocument(</div><div class="line">        Document document,</div><div class="line">        String stylesheet</div><div class="line">    ) throws Exception &#123;</div><div class="line"></div><div class="line">        // load the transformer using JAXP</div><div class="line">        TransformerFactory factory = TransformerFactory.newInstance();</div><div class="line">        Transformer transformer = factory.newTransformer(</div><div class="line">            new StreamSource( stylesheet )</div><div class="line">        );</div><div class="line"></div><div class="line">        // now lets style the given document</div><div class="line">        DocumentSource source = new DocumentSource( document );</div><div class="line">        DocumentResult result = new DocumentResult();</div><div class="line">        transformer.transform( source, result );</div><div class="line"></div><div class="line">        // return the transformed document</div><div class="line">        Document transformedDoc = result.getDocument();</div><div class="line">        return transformedDoc;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>以上只是基于官方guide文档学习时所记录，更多移步<a href="http://www.dom4j.org//" target="_blank" rel="external">http://www.dom4j.org/</a></p>
-<p>.END</p>]]></content>
-    
-    <summary type="html">
-    
-      Dom4j的基础读写处理
-    
-    </summary>
-    
-      <category term="Dom4j" scheme="http://jidea.net/categories/Dom4j/"/>
-    
-      <category term="XML" scheme="http://jidea.net/categories/Dom4j/XML/"/>
-    
-    
-      <category term="Dom4j" scheme="http://jidea.net/tags/Dom4j/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Hadoop分布式集群搭建 Centos7 环境准备</title>
     <link href="http://jidea.net/2016/10/22/Hadoop%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%20Centos7%20%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/"/>
     <id>http://jidea.net/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/</id>
@@ -1973,6 +2258,113 @@
     
     
       <category term="Hadoop" scheme="http://jidea.net/tags/Hadoop/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Dom4j-使用指导</title>
+    <link href="http://jidea.net/2016/10/22/Dom4j/"/>
+    <id>http://jidea.net/2016/10/22/Dom4j/</id>
+    <published>2016-10-22T09:58:27.000Z</published>
+    <updated>2016-10-22T16:08:53.098Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="what-is-dom4j"><a href="#what-is-dom4j" class="headerlink" title="what is dom4j?"></a>what is dom4j?</h2><p>dom4j 是一个为Java服务的开源的XML框架，可以对xml文档进行读写,操作,创建和修改，集成了DOM和SAX，同样支持xPath</p>
+<p>接下来我们开始了解dom4j的基本用法</p>
+<h2 id="解析xml文档"><a href="#解析xml文档" class="headerlink" title="解析xml文档"></a>解析xml文档</h2><h3 id="获得Document对象"><a href="#获得Document对象" class="headerlink" title="获得Document对象"></a>获得Document对象</h3><p>解析xml文档，首先需要通过 SAXReader 创建一个 document对象</p>
+<blockquote>
+<p>SAXReader.read() 方法可以通过多种方式进行读取，例如：URL、InputStream、File、Reader等</p>
+</blockquote>
+<ul>
+<li>URL路径方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public Document parse(URL url) throws DocumentException &#123;</div><div class="line">       SAXReader reader = new SAXReader();</div><div class="line">       Document document = reader.read(url);</div><div class="line">       return document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>InputStream方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">SAXReader reader = new SAXReader();</div><div class="line">//获取类加载器</div><div class="line">ClassLoader loader = Thread.currentThread().getContextClassLoader();</div><div class="line">//获取文件流</div><div class="line">java.io.InputStream inputStream = loader.getResourceAsStream(&quot;out.xml&quot;);</div><div class="line">//创建document对象</div><div class="line">Document doc = reader.read(inputStream);</div></pre></td></tr></table></figure>
+<ul>
+<li>File方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div></pre></td></tr></table></figure>
+<p>那么，接下来就是对xml中的Element(Node)，进行获取了。</p>
+<h3 id="获取root元素"><a href="#获取root元素" class="headerlink" title="获取root元素"></a>获取root元素</h3><p>方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Element root = document.getRootElement();</div></pre></td></tr></table></figure>
+<h3 id="使用Iterator获取元素"><a href="#使用Iterator获取元素" class="headerlink" title="使用Iterator获取元素"></a>使用Iterator获取元素</h3><p>dom4j通过内置的方法，可以返回标准的java迭代，方便我们获取元素</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void bar(Document document)&#123;</div><div class="line">     Element element = document.getRootElement();</div><div class="line"></div><div class="line">     //root 元素的子元素进行迭代</div><div class="line">     for(Iterator i = element.elementIterator();i.hasNext();) &#123;</div><div class="line">        Element element1 = (Element) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line">     //iterate through child elements of root with element name &quot;foo&quot;</div><div class="line">     //获取子元素name为 foo的迭代</div><div class="line">     for(Iterator i=element.elementIterator(&quot;foo&quot;);i.hasNext();) &#123;</div><div class="line">         Element foo = (Element) i.next();</div><div class="line">         //do something</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     // iterate through attribute of root</div><div class="line">     // 节点属性</div><div class="line">     for(Iterator i = element.attributeIterator();i.hasNext();) &#123;</div><div class="line">         Attribute attribute = (Attribute) i.next();</div><div class="line">         // do something</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>例如，模拟SpringIOC 依赖注入机制(通过反射实现)，有如下spring_core.xml配置，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"></div><div class="line">&lt;beans&gt;</div><div class="line">  &lt;bean id=&quot;testBean&quot; class=&quot;com.just.Test&quot;/&gt;</div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<p>我们需要根据spring_core.xml配置来获取bean id为 “testBean” 的 class,即类的全路径，获取类的全路径后，就可以随心所欲的进行反射调用了~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"> for (Iterator i = root.elementIterator(&quot;bean&quot;); i.hasNext();)&#123;</div><div class="line">      foo = (Element) i.next();</div><div class="line">      //针对每一个bean实例获取id和name属性</div><div class="line">      Attribute id = foo.attribute(&quot;id&quot;);</div><div class="line">      Attribute clazz = foo.attribute(&quot;class&quot;);</div><div class="line"></div><div class="line">      //利用反射，通过class名称获取class对象</div><div class="line">      Class bean = Class.forName(clazz.getText());</div><div class="line">      // other 省略无关的反射操作</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果需要处理的XML文件非常大，每次循环都使用Iterator，那么性能会降低，于是dom4j还提供了更加快速的获取元素的方法 element.nodeCount</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public class ReadXml &#123;</div><div class="line">    public static void init()&#123;</div><div class="line">        try &#123;</div><div class="line">            SAXReader saxReader = new SAXReader();</div><div class="line">            File file = new File(&quot;spring_core.xml&quot;);</div><div class="line">            Document document = saxReader.read(file);</div><div class="line">            Element rootElement = document.getRootElement();</div><div class="line">            treeWalk(rootElement);</div><div class="line">        &#125; catch (DocumentException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static  void treeWalk(Element element) &#123;</div><div class="line">        for ( int i = 0, size = element.nodeCount(); i &lt; size; i++ ) &#123;</div><div class="line">            Node node = element.node(i);</div><div class="line">            if(node instanceof  Element)&#123;</div><div class="line">                Element e = (Element) node;</div><div class="line">                System.out.println(e.attribute(&quot;id&quot;).getText());</div><div class="line">                System.out.println(e.attribute(&quot;class&quot;).getText());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="创建一个document"><a href="#创建一个document" class="headerlink" title="创建一个document"></a>创建一个document</h2><p>使用对象 DocumentHelper对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public Document createDocument() &#123;</div><div class="line">       Document document = DocumentHelper.createDocument();</div><div class="line">       Element root = document.addElement(&quot;root&quot;);</div><div class="line">       Element author1 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lip&quot;)</div><div class="line">               .addText(&quot;1323&quot;);</div><div class="line">       Element author2 = root.addElement(&quot;author&quot;)</div><div class="line">               .addAttribute(&quot;name&quot;, &quot;lin&quot;)</div><div class="line">               .addText(&quot;4444&quot;);</div><div class="line">       return  document;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h2 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h2><p>通过创建XMLWriter对象进行写操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public class WriteXml &#123;</div><div class="line">    public static void init() throws IOException &#123;</div><div class="line">        Document document = DocumentHelper.createDocument();</div><div class="line">        Element root = document.addElement(&quot;beans&quot;);</div><div class="line">        Element bean = root.addElement(&quot;bean&quot;)</div><div class="line">                .addAttribute(&quot;id&quot;, &quot;testBean&quot;)</div><div class="line">                .addAttribute(&quot;class&quot;,&quot;com.just.Test&quot;);</div><div class="line">        write(document);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void write(Document document) throws IOException &#123;</div><div class="line">        //输出到文件 out.xml</div><div class="line">        XMLWriter writer = new XMLWriter(new FileWriter(&quot;out.xml&quot;));</div><div class="line">        writer.write(document);</div><div class="line">        writer.flush();</div><div class="line">        writer.close();</div><div class="line">        System.out.println(&quot;------------&quot;);</div><div class="line">        /**</div><div class="line">         * 通过 createPrettyPrint美化输出到控制台</div><div class="line">         */</div><div class="line">        OutputFormat outputFormat = OutputFormat.createPrettyPrint();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line">        System.out.println(&quot;----------------------------------&quot;);</div><div class="line">        /**</div><div class="line">         * 实现压缩</div><div class="line">         */</div><div class="line">        outputFormat = OutputFormat.createCompactFormat();</div><div class="line">        writer = new XMLWriter(System.out, outputFormat);</div><div class="line">        writer.write(document);</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    public static void main(String args[]) throws IOException &#123;</div><div class="line">        init();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="String与Xml转换"><a href="#String与Xml转换" class="headerlink" title="String与Xml转换"></a>String与Xml转换</h2><ul>
+<li>String 转为document对象或其他Node，使用 DocumentHelper.parseText()</li>
+<li>document或其他node节点，转为String，直接调用 .asXML()<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">  * convert from string</div><div class="line">  */</div><div class="line"> public Document convert(String xml) throws DocumentException &#123;</div><div class="line">     Document document = DocumentHelper.parseText(xml);</div><div class="line">     return  document;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * convert to string</div><div class="line">  */</div><div class="line"> public String convert(Document document) throws DocumentException &#123;</div><div class="line">     String str = document.asXML();</div><div class="line">     return str;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="xPath路径处理"><a href="#xPath路径处理" class="headerlink" title="xPath路径处理"></a>xPath路径处理</h2><p>对于xPath,在浏览器debug模式中，查看元素，对于元素进行复制时可以保存为xPath，那么可以理解为一种路径表示方式，在自动化测试中，xPath是一种非常重要的获取页面元素的手段。</p>
+<p>使用xPath需要引入依赖包，顺便贴上maven依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;dom4j&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;dom4j&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.6.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;jaxen&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jaxen&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.1.1&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>xPath的基本语法</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>expression</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodename</td>
+<td>当前节点的所有子节点</td>
+</tr>
+<tr>
+<td>/</td>
+<td>根节点选取</td>
+</tr>
+<tr>
+<td>//</td>
+<td>匹配文档中节点，不考虑位置</td>
+</tr>
+<tr>
+<td>.</td>
+<td>当前节点</td>
+</tr>
+<tr>
+<td>..</td>
+<td>当前节点的父节点</td>
+</tr>
+<tr>
+<td>@</td>
+<td>选取属性</td>
+</tr>
+</tbody>
+</table>
+<p>for Example：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">SAXReader saxReader = new SAXReader();</div><div class="line">File file = new File(&quot;out.xml&quot;);</div><div class="line">Document document = saxReader.read(file);</div><div class="line">Element rootElement = document.getRootElement();</div><div class="line">List&lt;Object&gt; list = document.selectNodes(&quot;//bean&quot;);</div><div class="line">for (Object n : list) &#123;</div><div class="line">    if(n instanceof Element)&#123;</div><div class="line">        Element e = (Element) n;</div><div class="line">        System.out.println(e.getName());</div><div class="line">        List&lt;Object&gt; aList  = e.selectNodes(&quot;@class&quot;);</div><div class="line">        for(Object a :aList)</div><div class="line">            if(a instanceof Attribute)&#123;</div><div class="line">                Attribute attribute = (Attribute) a;</div><div class="line">                System.out.println(attribute.getText());</div><div class="line"></div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">bean</div><div class="line">com.just.Test</div></pre></td></tr></table></figure>
+<h2 id="处理XSLT"><a href="#处理XSLT" class="headerlink" title="处理XSLT"></a>处理XSLT</h2><p>对于XSLT，不甚了解，贴上官方例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">public class Foo &#123;</div><div class="line"></div><div class="line">    public Document styleDocument(</div><div class="line">        Document document,</div><div class="line">        String stylesheet</div><div class="line">    ) throws Exception &#123;</div><div class="line"></div><div class="line">        // load the transformer using JAXP</div><div class="line">        TransformerFactory factory = TransformerFactory.newInstance();</div><div class="line">        Transformer transformer = factory.newTransformer(</div><div class="line">            new StreamSource( stylesheet )</div><div class="line">        );</div><div class="line"></div><div class="line">        // now lets style the given document</div><div class="line">        DocumentSource source = new DocumentSource( document );</div><div class="line">        DocumentResult result = new DocumentResult();</div><div class="line">        transformer.transform( source, result );</div><div class="line"></div><div class="line">        // return the transformed document</div><div class="line">        Document transformedDoc = result.getDocument();</div><div class="line">        return transformedDoc;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>以上只是基于官方guide文档学习时所记录，更多移步<a href="http://www.dom4j.org//" target="_blank" rel="external">http://www.dom4j.org/</a></p>
+<p>.END</p>]]></content>
+    
+    <summary type="html">
+    
+      Dom4j的基础读写处理
+    
+    </summary>
+    
+      <category term="Dom4j" scheme="http://jidea.net/categories/Dom4j/"/>
+    
+      <category term="XML" scheme="http://jidea.net/categories/Dom4j/XML/"/>
+    
+    
+      <category term="Dom4j" scheme="http://jidea.net/tags/Dom4j/"/>
     
   </entry>
   

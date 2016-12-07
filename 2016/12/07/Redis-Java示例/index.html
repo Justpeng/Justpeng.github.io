@@ -13,16 +13,16 @@
 
 
 
-<meta name="description" content="Be Better!">
-<meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://jidea.net/tags/index.html">
+<meta name="description" content="学习和使用Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-Java示例">
+<meta property="og:url" content="http://jidea.net/2016/12/07/Redis-Java示例/index.html">
 <meta property="og:site_name" content="Just_Idea">
-<meta property="og:description" content="Be Better!">
-<meta property="og:updated_time" content="2016-09-03T12:15:58.000Z">
+<meta property="og:description" content="学习和使用Redis">
+<meta property="og:updated_time" content="2016-12-07T15:55:49.204Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tags">
-<meta name="twitter:description" content="Be Better!">
+<meta name="twitter:title" content="Redis-Java示例">
+<meta name="twitter:description" content="学习和使用Redis">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -52,7 +52,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>tags | Just_Idea</title>
+<title>Redis-Java示例 | Just_Idea</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -62,7 +62,7 @@
         fancybox: true,
         animate: false,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
         isTag: false,
         isCategory: false,
@@ -245,11 +245,11 @@
     </div>
     <link class="menu-list" tags="Tags" friends="Friends" about="About Me">
 </nav>
-      <div class="body-wrap"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Redis-Java示例" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/tags/index.html" class="article-date">
-      <time datetime="2016-09-02T04:45:12.000Z" itemprop="datePublished">2016-09-02</time>
+      <a href="/2016/12/07/Redis-Java示例/" class="article-date">
+      <time datetime="2016-12-07T09:58:27.000Z" itemprop="datePublished">2016-12-07</time>
 </a>
     </div>
   
@@ -260,13 +260,17 @@
     
       <header class="article-header">
         <h1 class="article-title" itemprop="name">
-      tags
+      Redis-Java示例
     </h1>
       </header>
       
       <div class="article-info article-info-post">
-        
-        
+        <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Redis/">Redis</a>
+    </div>
+        <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+    </div>
         <div class="clearfix"></div>
       </div>
       
@@ -274,94 +278,72 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <style>
-    .article-meta { display: none; }
-    #container .article .article-title { padding-right: 0; }
-    .article-header {
-        padding: 0;
-        padding-top: 26px;
-        border-left: none;
-        text-align: center;
-    }
-    .article-header:hover { border-left: none; }
-    .article-title { font-size: 1.6em }
-    .article-entry hr { margin: 0;}
-    .article-meta,
-    #container .article-info-post.article-info { display: none;}
-    #container .article .article-title { padding: 0; }
-</style>
-
-
-    <!-- Tag Cloud Page -->
-    <hr>
-<br>
-<ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Dom4j/">Dom4j</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Git/">Git</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hadoop/">Hadoop</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li></ul>
-
-<p class="count"></p>
-
-<div class="tags">
-    <a href="/tags/Dom4j/" style="font-size: 16px; color: #808080">Dom4j</a> <a href="/tags/Hadoop/" style="font-size: 35px; color: #000">Hadoop</a> <a href="/tags/Java/" style="font-size: 16px; color: #808080">Java</a> <a href="/tags/List/" style="font-size: 16px; color: #808080">List</a> <a href="/tags/String/" style="font-size: 16px; color: #808080">String</a> <a href="/tags/git历史/" style="font-size: 16px; color: #808080">git历史</a> <a href="/tags/分支，合并/" style="font-size: 16px; color: #808080">分支，合并</a> <a href="/tags/安装/" style="font-size: 16px; color: #808080">安装</a> <a href="/tags/撤销/" style="font-size: 16px; color: #808080">撤销</a> <a href="/tags/版本控制/" style="font-size: 16px; color: #808080">版本控制</a> <a href="/tags/重写历史/" style="font-size: 16px; color: #808080">重写历史</a>
-</div>
-<style>
-    .category-list li{
-        display: inline-block;
-        margin: 0 1em .5em 0;
-        padding: 4px;
-        border: 1px solid lightgray;
-        font-size: 1.2rem;
-    }
-    .category-list a { color: gray; }
-    .category-list-item:hover a {
-        color: gray;
-        text-decoration: none;
-    }
-    .category-list-count {
-        margin-left: 2px;
-        font-size: .9rem;
-    }
-    .article-entry ul li:before{ display: none; }
-    .article-inner { text-align: center; }
-    .tags {
-        max-width: 42em;
-        margin: 2em auto;
-        margin-top: 0em;
-    }
-    .tags a {
-        margin-right: 1em;
-        line-height: 65px;
-        border-bottom: 1px solid gray;
-        white-space: nowrap;
-        transition: border-bottom .5s;
-    }
-    .tags a:hover {
-        border-bottom: 3px dotted gray;
-        text-decoration: none;
-    }
-    #count > span {
-        margin: auto .2em;
-        font-weight: bold;
-    }
-</style>
-
-<!-- Count tags and categories -->
-<p id="count">
-         <span><script>document.write($(".category-list-item").length)</script></span>Categories,
-         <span><script>document.write($(".tags > a").length)</script></span>Tags
-</p>
-<script>
-    $('#count').appendTo('.count');
-</script>
-          
-        
+        <h2 id="Redis在Java中使用"><a href="#Redis在Java中使用" class="headerlink" title="Redis在Java中使用"></a>Redis在Java中使用</h2><p>Maven依赖包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;redis.clients&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;jedis&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;2.8.0&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<p>如果redis与我们的开发环境不在同一台机器上的话是需要设置密码的，原因：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">If you want to connect from external computers to Redis you may adopt one of the following solutions: </div><div class="line"></div><div class="line">1) Just disable protected mode sending the command &apos;CONFIG SET protected-mode no&apos; from the loopback interface by connecting to Redis from the same host the server is running, however MAKE SURE Redis is not publicly accessible from internet if you do so. Use CONFIG REWRITE to make this change permanent. </div><div class="line"></div><div class="line">2) Alternatively you can just disable the protected mode by editing the Redis configuration file, and setting the protected mode option to &apos;no&apos;, and then restarting the server. </div><div class="line"></div><div class="line">3) If you started the server manually just for testing, restart it with the &apos;--protected-mode no&apos; option. </div><div class="line"></div><div class="line">4) Setup a bind address or an authentication password.</div><div class="line"></div><div class="line"> NOTE: You only need to do one of the above things in order for the server to start accepting connections from the outside.</div></pre></td></tr></table></figure></p>
+<p>上面提到的4种方法，只有设置密码是最根本的！</p>
+<p>于是在我们的安装目录下找到 redis.conf 设置密码，这里我设置为redis，密码就是名字，好记！~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">requirepass redis</div></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; config get requirepass</div><div class="line">1) &quot;requirepass&quot;</div><div class="line">2) &quot;&quot;</div><div class="line">127.0.0.1:6379&gt; config set requirepass &quot;redis&quot;  #修改密码</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; config get requirepass</div><div class="line">(error) NOAUTH Authentication required.</div><div class="line">127.0.0.1:6379&gt; auth redis     #需要重新登录</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; config get requirepass</div><div class="line">1) &quot;requirepass&quot;</div><div class="line">2) &quot;redis&quot;</div></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>测试代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class RedisTest &#123;</div><div class="line">    public static void main(String args[])&#123;</div><div class="line">        //链接本地的服务</div><div class="line">        Jedis jedis = new Jedis(&quot;192.168.1.140&quot;,6379);</div><div class="line">        jedis.auth(&quot;redis&quot;);</div><div class="line">        System.out.println(&quot;Connection to server sucessfully&quot;);</div><div class="line">        //查看服务是否运行</div><div class="line">        System.out.println(&quot;Server is running: &quot;+jedis.ping());</div><div class="line">           //String</div><div class="line">        jedis.set(&quot;age&quot;,&quot;180&quot;);</div><div class="line">        System.out.println(&quot;get age:&quot;+jedis.get(&quot;age&quot;));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Connection to server sucessfully</div><div class="line">Server is running: PONG</div><div class="line">get age:180</div></pre></td></tr></table></figure></p>
       
     </div>
     
   </div>
   
-    
+    <div class="copyright">
+        <p><span>Title:</span><a href="/2016/12/07/Redis-Java示例/">Redis-Java示例</a></p>
+        <p><span>Author:</span><a href="/" title="Back to Homepage">Just</a></p>
+        <p><span>Created:</span>2016-12-07, 17:58:27</p>
+        <p><span>Updated:</span>2016-12-07, 23:55:49</p>
+        <p>
+            <span>Full URL:</span><a class="post-url" href="/2016/12/07/Redis-Java示例/" title="Redis-Java示例">http://jidea.net/2016/12/07/Redis-Java示例/</a>
+            <span class="copy-path" data-clipboard-text="From http://jidea.net/2016/12/07/Redis-Java示例/　　By Just" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>License:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"CC BY-NC-SA 4.0"</a> Keep Link &amp; Author if Distribute.
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/12/07/Redis-Linux下安装/">
+                    Redis-Linux下安装
+                </a>
+            </div>
+        
+    </nav>
   
 </article>
+<div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis在Java中使用"><span class="toc-number">1.</span> <span class="toc-text">Redis在Java中使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试"><span class="toc-number">2.</span> <span class="toc-text">测试</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
 
+    <input type="button" id="tocButton" value="Hide" title="Show or Hide Table of Contents">
+
+    <script>
+        yiliaConfig.toc = ["Hide", "Show", !!"false"];
+    </script>
 
 
     <div class="share">
@@ -377,7 +359,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"tags　| Just_Idea　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Redis-Java示例　| Just_Idea　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -401,7 +383,21 @@
     
 
 
+<div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="Back to Homepage"><i class="fa fa-home"></i></a>
+        
 
+        <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/12/07/Redis-Linux下安装/" title="Next: Redis-Linux下安装">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/12/07/Redis数据类型-List/">Redis数据类型-List</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/07/Redis-Java示例/">Redis-Java示例</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/07/Redis-Linux下安装/">Redis-Linux下安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/07/Redis数据类型-String/">Redis数据类型-String</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/13/Git 学习进阶篇 -历史查看/">Git 学习进阶篇-历史查看</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/12/Git 学习进阶篇- 撤销操作/">Git 学习进阶篇-撤销操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/12/Git 学习进阶篇-重写历史记录/">Git 学习进阶篇-重写历史记录</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/12/Git 学习进阶篇 - 分支与合并/">Git 学习进阶篇-分支与合并</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/12/Git 学习初始篇/">Git 学习初始篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/07/Linux常用命令小结/">Linux常用命令小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式本地集群搭建（二）/">Hadoop分布式集群搭建（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/">Hadoop分布式集群搭建 Centos7 环境准备</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/22/Dom4j/">Dom4j-使用指导</a></li></ul>
 
 
     <script>

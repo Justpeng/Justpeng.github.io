@@ -13,16 +13,16 @@
 
 
 
-<meta name="description" content="Hadoop分布式集群搭建">
+<meta name="description" content="学习和使用Redis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hadoop分布式集群搭建 Centos7 环境准备">
-<meta property="og:url" content="http://jidea.net/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/index.html">
+<meta property="og:title" content="Redis数据类型-List">
+<meta property="og:url" content="http://jidea.net/2016/12/07/Redis数据类型-List/index.html">
 <meta property="og:site_name" content="Just_Idea">
-<meta property="og:description" content="Hadoop分布式集群搭建">
-<meta property="og:updated_time" content="2016-11-06T15:39:02.889Z">
+<meta property="og:description" content="学习和使用Redis">
+<meta property="og:updated_time" content="2016-12-07T15:56:39.016Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hadoop分布式集群搭建 Centos7 环境准备">
-<meta name="twitter:description" content="Hadoop分布式集群搭建">
+<meta name="twitter:title" content="Redis数据类型-List">
+<meta name="twitter:description" content="学习和使用Redis">
 
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -52,7 +52,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>Hadoop分布式集群搭建 Centos7 环境准备 | Just_Idea</title>
+<title>Redis数据类型-List | Just_Idea</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -245,11 +245,11 @@
     </div>
     <link class="menu-list" tags="Tags" friends="Friends" about="About Me">
 </nav>
-      <div class="body-wrap"><article id="post-Hadoop分布式集群搭建 Centos7 环境准备" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Redis数据类型-List" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/" class="article-date">
-      <time datetime="2016-10-22T09:58:27.000Z" itemprop="datePublished">2016-10-22</time>
+      <a href="/2016/12/07/Redis数据类型-List/" class="article-date">
+      <time datetime="2016-12-07T09:58:27.000Z" itemprop="datePublished">2016-12-07</time>
 </a>
     </div>
   
@@ -260,16 +260,16 @@
     
       <header class="article-header">
         <h1 class="article-title" itemprop="name">
-      Hadoop分布式集群搭建 Centos7 环境准备
+      Redis数据类型-List
     </h1>
       </header>
       
       <div class="article-info article-info-post">
         <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/Hadoop/">Hadoop</a>
+    <a class="article-category-link" href="/categories/Redis/">Redis</a>
     </div>
         <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hadoop/">Hadoop</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/List/">List</a></li></ul>
     </div>
         <div class="clearfix"></div>
       </div>
@@ -278,112 +278,160 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <h2 id="机器准备"><a href="#机器准备" class="headerlink" title="机器准备"></a>机器准备</h2><ul>
-<li>Centos7 </li>
-<li>Vmware10</li>
-<li>jdk</li>
-</ul>
-<h3 id="安装和配置IP"><a href="#安装和配置IP" class="headerlink" title="安装和配置IP"></a>安装和配置IP</h3><table>
+        <h2 id="List-列表"><a href="#List-列表" class="headerlink" title="List 列表"></a>List 列表</h2><p>Redis列表是简单的字符串列表，按照插入顺序排序，可以添加一个元素到列表的头部或者尾部</p>
+<table>
 <thead>
 <tr>
-<th>主机名称</th>
-<th>用户</th>
-<th>密码</th>
-<th>ip</th>
+<th>命令</th>
+<th>描述</th>
+<th>返回值</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>master</td>
-<td>master</td>
-<td>master</td>
-<td>192.168.1.122</td>
+<td>LPUSH</td>
+<td>插入到列表的头部，可同时插入多个元素</td>
+<td>列表中元素数量</td>
 </tr>
 <tr>
-<td>slave1</td>
-<td>hadoop</td>
-<td>hadoop</td>
-<td>192.168.1.123</td>
+<td>RPUSH</td>
+<td>插入到列表的尾部，可同时插入多个元素</td>
+<td>列表中元素数量</td>
 </tr>
 <tr>
-<td>slave2</td>
-<td>hadoop</td>
-<td>hadoop</td>
-<td>192.168.1.124</td>
+<td>LRANGE</td>
+<td>获取列表，<strong>参数是正值从左向右计算，是负值从右向左计算</strong></td>
+<td>返回范围内的列表元素</td>
 </tr>
 <tr>
-<td>slave3</td>
-<td>hadoop</td>
-<td>hadoop</td>
-<td>192.168.1.125</td>
+<td>LPOP</td>
+<td>从头部获取第一个元素返回，并移除，不存在返回nil</td>
+<td>链表的头部元素</td>
+</tr>
+<tr>
+<td>RPOP</td>
+<td>从尾部获取第一个元素返回，并移除，不存在返回nil</td>
+<td>链表的尾部部元素</td>
 </tr>
 </tbody>
 </table>
-<p>在每台主机添加用户 hadoop 密码 hadoop</p>
 <blockquote>
-<p>使用命令 useradd添加用户， passwd为用户hadoop设置密码</p>
+<p>LPOP是 redis lists的一个重要操作</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@slave1 ~]# useradd hadoop</div><div class="line">[root@slave1 ~]# passwd hadoop</div><div class="line">Changing password for user hadoop.</div><div class="line">New password: </div><div class="line">BAD PASSWORD: The password is shorter than 8 characters</div><div class="line">Retype new password: </div><div class="line">passwd: all authentication tokens updated successfully.</div><div class="line">[root@slave1 ~]#</div></pre></td></tr></table></figure>
-<h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><p>关闭防火墙是必须的,centos7默认是不用iptables</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo systemctl stop firewalld.service &amp;&amp; sudo  systemctl disable firewalld.service</div></pre></td></tr></table></figure>
-<h3 id="配置hosts文件"><a href="#配置hosts文件" class="headerlink" title="配置hosts文件"></a>配置hosts文件</h3><p>注意： <strong><em>==sudo==</em></strong> 命名为使用超级管理员用户操作 相当于 root 用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@localhost ~]$ sudo vim /etc/hosts</div></pre></td></tr></table></figure>
-<p>问题：若无法使用sudo命令？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hadoop is not in the sudoers file.  This incident will be reported.</div></pre></td></tr></table></figure></p>
-<p>需要在 /etc/sudoers文件中添加配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">## Allow root to run any commands anywhere </div><div class="line">root	ALL=(ALL) 	ALL</div><div class="line">hadoop ALL=(ALL) ALL</div></pre></td></tr></table></figure>
-<p>hosts文件中添加内容为(其他主机同样添加)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">192.168.1.122 master</div><div class="line">192.168.1.123 slave1</div><div class="line">192.168.1.124 slave2</div><div class="line">192.168.1.125 slave3</div></pre></td></tr></table></figure></p>
-<h2 id="配置SSH-免登陆"><a href="#配置SSH-免登陆" class="headerlink" title="配置SSH 免登陆"></a>配置SSH 免登陆</h2><p>这里需要对 所有机器上的 ==hadoop@主机== 用户配置ssh免密码登录</p>
-<p>在Centos7中已经默认安装ssh服务，ssh-keygen命令无效，说明需要先安装ssh服务,即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo yum install openssh-server</div></pre></td></tr></table></figure></p>
-<h3 id="以-master-主机为例"><a href="#以-master-主机为例" class="headerlink" title="以==master==主机为例."></a>以==master==主机为例.</h3><ul>
-<li><p>生成无密码密钥对,在命令中一路回车即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ ssh-keygen</div></pre></td></tr></table></figure>
+<p>lpush 与 rpush 与 lrang</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; lpush jlist learn</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; lpush jlist redis</div><div class="line">(integer) 2</div><div class="line">127.0.0.1:6379&gt; rpush jlist today</div><div class="line">(integer) 3</div><div class="line">127.0.0.1:6379&gt; lrange jlist 0 1</div><div class="line">1) &quot;redis&quot;</div><div class="line">2) &quot;learn&quot;</div><div class="line">127.0.0.1:6379&gt; lrange jlist 0 4</div><div class="line">1) &quot;redis&quot;</div><div class="line">2) &quot;learn&quot;</div><div class="line">3) &quot;today&quot;</div></pre></td></tr></table></figure>
+<p>lpop 与 rpop</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; lrange mylist 0 4</div><div class="line">1) &quot;c&quot;</div><div class="line">2) &quot;b&quot;</div><div class="line">3) &quot;a&quot;</div><div class="line">127.0.0.1:6379&gt; lpop mylist</div><div class="line">&quot;c&quot;</div><div class="line">127.0.0.1:6379&gt; lpop mylist</div><div class="line">&quot;b&quot;</div><div class="line">127.0.0.1:6379&gt; lpop mylist</div><div class="line">&quot;a&quot;</div><div class="line">127.0.0.1:6379&gt; lrange mylist 0 4   ## 以全部pop，mylist中内容为空</div><div class="line">(empty list or set)</div></pre></td></tr></table></figure>
+<h3 id="Redis-lists-两个常用示例"><a href="#Redis-lists-两个常用示例" class="headerlink" title="Redis lists 两个常用示例"></a>Redis lists 两个常用示例</h3><ul>
+<li>记录用户的近期更新操作，日志<blockquote>
+<p>比如，在社交网站往往会显示用户的最新的照片；那么每当用户上传新的照片后，我们可以使用 lpush将 photo_id 存入list中；当用户访问页面时，我们使用lrange 0 5 来显示最新上传的5张照片</p>
+</blockquote>
 </li>
-<li><h3 id="将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys"><a href="#将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys" class="headerlink" title="将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys"></a>将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys</h3></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</div></pre></td></tr></table></figure>
-<p>查看.ssh中内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master ~]$ cd ~/.ssh</div><div class="line">[hadoop@master .ssh]$ ls</div><div class="line">authorized_keys  id_rsa  id_rsa.pub  known_hosts</div></pre></td></tr></table></figure></p>
-<ul>
-<li><p>设置公钥库权限</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ chmod 600 authorized_keys</div></pre></td></tr></table></figure>
-</li>
-<li><p>重启ssh服务 (root权限)</p>
+<li>进程间数据传递<blockquote>
+<p>在consumer-producer 模型中，生产者将数据放入list，消费者获取这些数据执行一些操作</p>
+</blockquote>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ sudo service sshd restart</div></pre></td></tr></table></figure>
-<p><strong>其他主机，即slave1,slave2,slave3，分别执行 ssh-keygen生成密钥对</strong></p>
+<p>Redis保证这些操作可以信赖而且高效。</p>
+<h3 id="Capped-lists-截取list"><a href="#Capped-lists-截取list" class="headerlink" title="Capped lists 截取list"></a>Capped lists 截取list</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LTRIM</td>
+<td>保留LTRIM范围内的元素，在范围外的元素全部移除</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>LTRIM与LRANGE相似，都会返回范围内的list元素；但区别在于，LTRIM会将范围外的元素全部移除</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; rpush mylist 1 2 3 4 5 6 </div><div class="line">(integer) 6</div><div class="line">127.0.0.1:6379&gt; ltrim mylist 0 2</div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; lrange mylist 0 10</div><div class="line">1) &quot;1&quot;</div><div class="line">2) &quot;2&quot;</div><div class="line">3) &quot;3&quot;</div></pre></td></tr></table></figure>
+<p>注：</p>
+<blockquote>
+<p>虽然 LRANGE是时间复杂度为 O(N)的命令，无论是从头部还是从尾部获取小范围的list元素，其时间是一个常量</p>
+</blockquote>
+<h3 id="Blocking-operations-on-lists-阻塞操作"><a href="#Blocking-operations-on-lists-阻塞操作" class="headerlink" title="Blocking operations on lists 阻塞操作"></a>Blocking operations on lists 阻塞操作</h3><p>Redis list的一个特点，可以去实现队列以及在交互系统中实现阻塞操作</p>
+<p>假设，在producer/consumer模型中，producers 使用一个进程向list中写入(lpush)元素，consumers 使用一个不同的进程去读取元素(rpop)。我们可以想到consumers 可能pop不到元素，然后必须等一段时间后再次尝试去pop，于是就产生了轮询。</p>
+<p>轮询的缺点：</p>
 <ul>
-<li>将maser主机中的ssh分别发至 slave1,slave2,slave3主机</li>
+<li>强制 redis和客户端去执行一些没用的命令，因为当list为空的之后，并不能得到我们想要的数据</li>
+<li>延长了获取数据时间，当第一次获取不到数据，可能会需要获取第二次 ，第三次…</li>
 </ul>
-<p>其中 slave1@slave1 即 xx@yy xx代表用户名，yy代表主机名<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave1:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave2:~/.ssh/</div><div class="line">[hadoop@master /]$ scp ~/.ssh/* hadoop@slave3:~/.ssh/</div></pre></td></tr></table></figure></p>
-<p>重启其他主机的ssh服务</p>
+<p>那么，为了解决这个问题，redis提供了：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BLPOP</td>
+<td>list为空，阻塞list，直到list中有一个可用元素；list不为空，返回头部第一个元素，并删除</td>
+</tr>
+<tr>
+<td>BRPOP</td>
+<td>list为空，阻塞list，直到list中有一个可用元素；list不为空，返回尾部第一个元素，并删除</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>BLPOP [key1,key2…] timeout 可获取多个key，阻塞时间</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; brpop tasks 10   # tasks为空，阻塞等待10s，仍没有元素被push,返回nil</div><div class="line">(nil)</div><div class="line">(10.06s)</div><div class="line">127.0.0.1:6379&gt; brpop tasks 10  #tasks为空，阻塞等待10s，使用另一个进程lpush一个元素，被获取并返回</div><div class="line">1) &quot;tasks&quot;</div><div class="line">2) &quot;1&quot;</div><div class="line">(4.92s)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>若 timeout时间设置为 0，则该阻塞会一直等待。而且支持同时阻塞多个list,有一个阻塞获取到值，阻塞都会消失</p>
+</blockquote>
+<p>阻塞命令特点：</p>
 <ul>
-<li>测试</li>
+<li>执行阻塞的客户端是有顺序的，如果多个进程同时阻塞一个list,那么当list中lpush元素后，会优先被第一个阻塞进程获取，以此类推</li>
+<li>返回元素是个数组：key和value，因为可能会阻塞多个list</li>
+<li>当阻塞时间到了，返回null</li>
 </ul>
-<p>主机之间第一次访问时，会需要接受ESDSA可以，yes接受即可，再次互相访问时，就就不在需要了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[hadoop@slave3 ~]$ ssh master</div><div class="line">The authenticity of host &apos;master (192.168.1.122)&apos; can&apos;t be established.</div><div class="line">ECDSA key fingerprint is 3b:14:33:d5:5a:c4:92:c5:62:65:49:3d:4f:90:07:16.</div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line">Warning: Permanently added &apos;master,192.168.1.122&apos; (ECDSA) to the list of known hosts.</div><div class="line">Last login: Sun Nov  6 06:03:47 2016 from 192.168.1.105</div><div class="line">[hadoop@master ~]$ ssh slave1</div><div class="line">Last login: Sun Nov  6 06:05:12 2016 from 192.168.1.105</div><div class="line">[hadoop@slave1 ~]$ ssh slave2</div><div class="line">Last login: Sun Nov  6 06:11:48 2016 from 192.168.1.105</div><div class="line">[hadoop@slave2 ~]$ ssh slave3</div></pre></td></tr></table></figure>
-<p>maser,slave1,slave2,slave3 四台主机之间都可以无密码访问，即是ssh设置成功了！</p>
-<h2 id="配置JDK"><a href="#配置JDK" class="headerlink" title="配置JDK"></a>配置JDK</h2><p>这里对==master==主机进行配置 将jdk等软件上传至/opt/目录：</p>
+<h3 id="列表间的数据pop"><a href="#列表间的数据pop" class="headerlink" title="列表间的数据pop"></a>列表间的数据pop</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RPOPLPUSH source destination</td>
+<td>删除列表中的最后一个元素，将其追加到另一个列表（建立安全队列或者轮转队列）</td>
+</tr>
+<tr>
+<td>BRPOPLPUSH source destination timeout</td>
+<td>弹出列表的一个值，将它推到另一个列表，并返回这个值；list为空，则阻塞list直到有一个可用的元素</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">127.0.0.1:6379&gt; lpush task1 1   ## task1中 push一个元素</div><div class="line">(integer) 1</div><div class="line">127.0.0.1:6379&gt; rpoplpush task1 task2  ## task1中 追加到 task2中</div><div class="line">&quot;1&quot;</div><div class="line">127.0.0.1:6379&gt; rpoplpush task1 task2  ## task1中没有元素了</div><div class="line">(nil)</div><div class="line">127.0.0.1:6379&gt; lrange task2 0 2   </div><div class="line">1) &quot;1&quot;</div><div class="line">127.0.0.1:6379&gt; brpoplpush task1 task2 0  ## 阻塞追加，当另一个进程为task1 push一个元素2，阻塞结束</div><div class="line">&quot;2&quot;</div><div class="line">(15.81s)</div></pre></td></tr></table></figure>
+<h3 id="Redis-自动创建和删除keys"><a href="#Redis-自动创建和删除keys" class="headerlink" title="Redis 自动创建和删除keys"></a>Redis 自动创建和删除keys</h3><p>在Redis我们不需要去创建空的list,其实当list没有元素，key会被redis删除。而且当我们向一个不存在的list中添加元素，redis会先为我们创建一个key;<br>这个Rules，同样适用于 sets ,sorted sets,hashes集合类型：</p>
 <ul>
-<li>使用<em>超级管理员</em>用户解压 jdk</li>
+<li>当我们向集合中添加元素，如果目标key不存在，一个空集合将会在添加元素前被创建</li>
+<li>当我们对集合进行移除元素操作，如果元素全部被移除，则key也会被自动销毁</li>
+<li>使用一些只读命令，如LLEN(返回集合长度)或者写入命令区删除元素，结果是一样的</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo tar -zxvf jdk-7u67-linux-x64.tar.gz</div></pre></td></tr></table></figure>
-<p>配置jdk环境变量 /etc/profile，并查看是否成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">export JAVA_HOME=/opt/jdk1.7.0_67/</div><div class="line">export JRE_HOME=/opt/jdk1.7.0_67/jre</div><div class="line">export CLASSPATH=.:$CLASSPATH:$JAVA_HOME/lib:$JRE_HOME/lib</div><div class="line">export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin</div></pre></td></tr></table></figure></p>
-<p>注意，上面配置中，最后一行，$PATH放在前面不生效时，也可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=$JAVA_HOME/bin:$JRE_HOME/bin：$PATH</div></pre></td></tr></table></figure></p>
-<p>重新加载</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">source /etc/profile</div></pre></td></tr></table></figure>
       
     </div>
     
   </div>
   
     <div class="copyright">
-        <p><span>Title:</span><a href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/">Hadoop分布式集群搭建 Centos7 环境准备</a></p>
+        <p><span>Title:</span><a href="/2016/12/07/Redis数据类型-List/">Redis数据类型-List</a></p>
         <p><span>Author:</span><a href="/" title="Back to Homepage">Just</a></p>
-        <p><span>Created:</span>2016-10-22, 17:58:27</p>
-        <p><span>Updated:</span>2016-11-06, 23:39:02</p>
+        <p><span>Created:</span>2016-12-07, 17:58:27</p>
+        <p><span>Updated:</span>2016-12-07, 23:56:39</p>
         <p>
-            <span>Full URL:</span><a class="post-url" href="/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/" title="Hadoop分布式集群搭建 Centos7 环境准备">http://jidea.net/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/</a>
-            <span class="copy-path" data-clipboard-text="From http://jidea.net/2016/10/22/Hadoop分布式集群搭建 Centos7 环境准备/　　By Just" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
+            <span>Full URL:</span><a class="post-url" href="/2016/12/07/Redis数据类型-List/" title="Redis数据类型-List">http://jidea.net/2016/12/07/Redis数据类型-List/</a>
+            <span class="copy-path" data-clipboard-text="From http://jidea.net/2016/12/07/Redis数据类型-List/　　By Just" title="Copy Article&#39;s Link &amp; Author"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -396,15 +444,15 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/11/07/Linux常用命令小结/">
-                    Linux常用命令小结
+                <a href="/2016/12/07/Redis数据类型-String/">
+                    Redis数据类型-String
                 </a>
             </div>
         
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/10/22/Hadoop分布式本地集群搭建（二）/">
-                    Hadoop分布式集群搭建（二）
+                <a href="/2016/11/13/Git 学习进阶篇 -历史查看/">
+                    Git 学习进阶篇-历史查看
                 </a>
             </div>
         
@@ -414,7 +462,7 @@
 <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#机器准备"><span class="toc-number">1.</span> <span class="toc-text">机器准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装和配置IP"><span class="toc-number">1.1.</span> <span class="toc-text">安装和配置IP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关闭防火墙"><span class="toc-number">1.2.</span> <span class="toc-text">关闭防火墙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置hosts文件"><span class="toc-number">1.3.</span> <span class="toc-text">配置hosts文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置SSH-免登陆"><span class="toc-number">2.</span> <span class="toc-text">配置SSH 免登陆</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#以-master-主机为例"><span class="toc-number">2.1.</span> <span class="toc-text">以==master==主机为例.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#将公钥写入公钥库中-这里公钥库使用默认库名-authorized-keys"><span class="toc-number">2.2.</span> <span class="toc-text">将公钥写入公钥库中,这里公钥库使用默认库名 authorized_keys</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置JDK"><span class="toc-number">3.</span> <span class="toc-text">配置JDK</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#List-列表"><span class="toc-number">1.</span> <span class="toc-text">List 列表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-lists-两个常用示例"><span class="toc-number">1.1.</span> <span class="toc-text">Redis lists 两个常用示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Capped-lists-截取list"><span class="toc-number">1.2.</span> <span class="toc-text">Capped lists 截取list</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Blocking-operations-on-lists-阻塞操作"><span class="toc-number">1.3.</span> <span class="toc-text">Blocking operations on lists 阻塞操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列表间的数据pop"><span class="toc-number">1.4.</span> <span class="toc-text">列表间的数据pop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-自动创建和删除keys"><span class="toc-number">1.5.</span> <span class="toc-text">Redis 自动创建和删除keys</span></a></li></ol></li></ol>
         
     </div>
     <style>
@@ -448,7 +496,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"Hadoop分布式集群搭建 Centos7 环境准备　| Just_Idea　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Redis数据类型-List　| Just_Idea　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -474,7 +522,7 @@
 
 <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/11/07/Linux常用命令小结/" title="Pre: Linux常用命令小结">
+            <a href="/2016/12/07/Redis数据类型-String/" title="Pre: Redis数据类型-String">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -482,7 +530,7 @@
         <a title="Mini Archives"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/10/22/Hadoop分布式本地集群搭建（二）/" title="Next: Hadoop分布式集群搭建（二）">
+            <a href="/2016/11/13/Git 学习进阶篇 -历史查看/" title="Next: Git 学习进阶篇-历史查看">
                 <i class="fa fa-angle-right"></i>
             </a>
         

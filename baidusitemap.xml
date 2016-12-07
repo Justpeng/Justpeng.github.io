@@ -3,6 +3,86 @@
 
 
     
+  <url>
+    <loc>http://jidea.net/2016/12/07/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-List/</loc>
+    <lastmod>2016-12-07T15:56:39.016Z</lastmod>
+    <data>
+        <display>
+        <title>Redis数据类型-List</title>
+        <pubTime>2016-12-07T09:58:27.000Z</pubTime>
+        
+        <tag>List</tag>
+         
+         
+           
+             
+              <breadCrumb title="Redis" url="http://jidea.net/categories/Redis/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://jidea.net/2016/12/07/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-String/</loc>
+    <lastmod>2016-12-07T15:56:32.154Z</lastmod>
+    <data>
+        <display>
+        <title>Redis数据类型-String</title>
+        <pubTime>2016-12-07T09:58:27.000Z</pubTime>
+        
+        <tag>String</tag>
+         
+         
+           
+             
+              <breadCrumb title="Redis" url="http://jidea.net/categories/Redis/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://jidea.net/2016/12/07/Redis-Java%E7%A4%BA%E4%BE%8B/</loc>
+    <lastmod>2016-12-07T15:55:49.204Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-Java示例</title>
+        <pubTime>2016-12-07T09:58:27.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="Redis" url="http://jidea.net/categories/Redis/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://jidea.net/2016/12/07/Redis-Linux%E4%B8%8B%E5%AE%89%E8%A3%85/</loc>
+    <lastmod>2016-12-07T15:55:35.769Z</lastmod>
+    <data>
+        <display>
+        <title>Redis-Linux下安装</title>
+        <pubTime>2016-12-07T09:58:27.000Z</pubTime>
+        
+        <tag>安装</tag>
+         
+         
+           
+             
+              <breadCrumb title="Redis" url="http://jidea.net/categories/Redis/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>http://jidea.net/2016/11/12/Git%20%E5%AD%A6%E4%B9%A0%E8%BF%9B%E9%98%B6%E7%AF%87-%E9%87%8D%E5%86%99%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95/</loc>
